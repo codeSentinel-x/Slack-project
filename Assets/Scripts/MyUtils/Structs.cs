@@ -1,14 +1,12 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
- namespace MyUtils.Structs {
-    
+namespace MyUtils.Structs {
+
     [Serializable]
-    public struct NoiseSetting{
+    public struct NoiseSetting {
         public int mapSize;
-        public float noiseScale;
+        public float scale;
         public int octaves;
         public float persistance;
         public uint seed;
@@ -17,11 +15,11 @@ using UnityEngine;
         public float lacunarity;
     }
     [Serializable]
-    public struct FallofSetting{
+    public struct FalloffSetting {
         public float a;
-        
+        public float b;
     }
-    
-    
-    
+
+
+
 }
