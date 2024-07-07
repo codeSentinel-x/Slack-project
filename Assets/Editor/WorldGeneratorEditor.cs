@@ -12,8 +12,11 @@ public class WorldGeneratorEditor : Editor {
         if (DrawDefaultInspector()) {
             //Maybe later
         }
-        if (GUILayout.Button("Regenerate")) {
+        if (GUILayout.Button("Regenerate world ('old')")) {
             worldGen.GenerateWorld();
+        }
+        if (GUILayout.Button("Regenerate chunks")) {
+            worldGen.GenerateChunks();
         }
     }
 

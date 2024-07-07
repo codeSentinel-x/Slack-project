@@ -12,6 +12,7 @@ namespace MyUtils.Structs {
         public Vector2 offset;
         public float lacunarity;
 
+
     }
 
     [Serializable]
@@ -19,6 +20,7 @@ namespace MyUtils.Structs {
         public float a;
         public float b;
     }
+    
 
 
 
