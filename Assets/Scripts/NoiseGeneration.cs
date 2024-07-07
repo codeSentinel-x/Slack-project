@@ -8,33 +8,74 @@ using System;
 using Unity.Burst;
 using Unity.Mathematics;
 public class NoiseGeneration : MonoBehaviour {
-    public NoiseSetting _noiseSetting;
-    public FalloffSetting _falloffSetting;
     public static NoiseGeneration _instance;
     public Action<float[,]> _onNoiseGenerationCompleat;
-    private JobHandle _noiseJobH, _falloffJobH;
-    private NativeList<float> _noiseMapResult, _falloffMapResult;
-    public IEnumerator GenerateNoiseWithFalloff() {
-        _noiseMapResult = new(Allocator.TempJob);
-        _falloffMapResult = new(Allocator.TempJob);
+
+    void Awake() {
+        _instance = this;
+    }
+    //This two methods start coroutines that will create noise map   
+    public void GenerateNoise(NoiseSetting nS) {
+        StartCoroutine(GenerateNoiseCoroutine(nS)); //Without falloff
+    }
+    public void GenerateNoise(NoiseSetting nS, FalloffSetting fS) {
+        StartCoroutine(GenerateNoiseCoroutine(nS, fS)); //With falloff
+    }
+
+
+
+    private IEnumerator GenerateNoiseCoroutine(NoiseSetting nS) {
+        NativeList<float> _noiseMapResult = new(Allocator.TempJob);
+
         GenerateNoiseMapJob noiseGenJob = new() {
             result = _noiseMapResult,
-            seed = _noiseSetting.seed,
-            mapSize = _noiseSetting.mapSize,
-            lacunarity = _noiseSetting.lacunarity,
-            scale = _noiseSetting.scale,
-            octaves = _noiseSetting.octaves,
-            persistance = _noiseSetting.persistance,
-            offset = new(_noiseSetting.offset.x, _noiseSetting.offset.y)
+            seed = nS.seed,
+            mapSize = nS.mapSize,
+            lacunarity = nS.lacunarity,
+            scale = nS.scale,
+            octaves = nS.octaves,
+            persistance = nS.persistance,
+            offset = new(nS.offset.x, nS.offset.y)
+        };
+
+        JobHandle _noiseJobH = noiseGenJob.Schedule();
+
+        _noiseJobH.Complete();
+
+        while (!_noiseJobH.IsCompleted) {
+            yield return new WaitForSeconds(0.5f);
+        }
+        float[,] generatedResult = new float[nS.mapSize, nS.mapSize];
+        for (int x = 0; x < generatedResult.GetLength(0); x++) {
+            for (int y = 0; y < generatedResult.GetLength(1); y++) {
+                generatedResult[x, y] = _noiseMapResult[x + nS.mapSize * y];
+            }
+        }
+        _noiseMapResult.Dispose();
+        _onNoiseGenerationCompleat?.Invoke(generatedResult);
+    }
+    private IEnumerator GenerateNoiseCoroutine(NoiseSetting nS, FalloffSetting fS) {
+        int mapSize = nS.mapSize;
+        NativeList<float> _noiseMapResult = new(Allocator.TempJob);
+        NativeList<float> _falloffMapResult = new(Allocator.TempJob);
+        GenerateNoiseMapJob noiseGenJob = new() {
+            result = _noiseMapResult,
+            seed = nS.seed,
+            mapSize = mapSize,
+            lacunarity = nS.lacunarity,
+            scale = nS.scale,
+            octaves = nS.octaves,
+            persistance = nS.persistance,
+            offset = new(nS.offset.x, nS.offset.y)
         };
         GenerateFalloffMapJob falloffGenJob = new() {
             result = _falloffMapResult,
-            size = _noiseSetting.mapSize,
-            a = _falloffSetting.a,
-            b = _falloffSetting.b,
+            size = mapSize,
+            a = fS.a,
+            b = fS.b,
         };
-        _noiseJobH = noiseGenJob.Schedule();
-        _falloffJobH = falloffGenJob.Schedule();
+        JobHandle _noiseJobH = noiseGenJob.Schedule();
+        JobHandle _falloffJobH = falloffGenJob.Schedule();
 
         _noiseJobH.Complete();
         _falloffJobH.Complete();
@@ -42,10 +83,10 @@ public class NoiseGeneration : MonoBehaviour {
         while (!_noiseJobH.IsCompleted || !_falloffJobH.IsCompleted) {
             yield return new WaitForSeconds(0.5f);
         }
-        float[,] generatedResult = new float[_noiseSetting.mapSize, _noiseSetting.mapSize];
+        float[,] generatedResult = new float[mapSize, mapSize];
         for (int x = 0; x < generatedResult.GetLength(0); x++) {
             for (int y = 0; y < generatedResult.GetLength(1); y++) {
-                generatedResult[x, y] = Mathf.Clamp01(_noiseMapResult[x + _noiseSetting.mapSize * y] - _falloffMapResult[x + _noiseSetting.mapSize * y]);
+                generatedResult[x, y] = Mathf.Clamp01(_noiseMapResult[x + mapSize * y] - _falloffMapResult[x + mapSize * y]);
             }
         }
         _noiseMapResult.Dispose();

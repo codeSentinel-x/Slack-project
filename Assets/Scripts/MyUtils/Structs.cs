@@ -11,7 +11,6 @@ namespace MyUtils.Structs {
         public float persistance;
         public uint seed;
         public Vector2 offset;
-        public bool applyFalloff;
         public float lacunarity;
     }
     [Serializable]
