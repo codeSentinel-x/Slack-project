@@ -428,6 +428,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b80d2a5a408c78109855cd46d55834f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _biome: {fileID: 11400000, guid: 4e83740854a640cceafeec15f161d54b, type: 2}
   _noiseSetting:
     mapSize: 100
     scale: 10
@@ -436,6 +437,30 @@ MonoBehaviour:
     seed: 8465321
     offset: {x: 0, y: 0}
     lacunarity: 2
+    heightCurve:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: -0.049999237
+        value: 0.35624695
+        inSlope: 0
+        outSlope: 0
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 2
+        outSlope: 2
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0
+        outWeight: 0
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
   _falloffSetting:
     a: 3
     b: 6
@@ -452,6 +477,7 @@ MonoBehaviour:
   - {r: 0.4811321, g: 0.4811321, b: 0.4811321, a: 1}
   - {r: 0.2830189, g: 0.2830189, b: 0.2830189, a: 1}
   - {r: 0.9811321, g: 0.9811321, b: 0.9811321, a: 1}
+  createFromSO: 0
 --- !u!4 &1710238900
 Transform:
   m_ObjectHideFlags: 0

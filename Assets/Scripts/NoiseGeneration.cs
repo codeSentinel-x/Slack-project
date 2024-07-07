@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using MyUtils.Structs;
 using Unity.Jobs;
@@ -7,35 +6,38 @@ using Unity.Collections;
 using System;
 using Unity.Burst;
 using Unity.Mathematics;
+using Unity.VisualScripting;
+
 public class NoiseGeneration : MonoBehaviour {
     public static NoiseGeneration _instance;
+    public static uint seed = 768754;
     public Action<float[,]> _onNoiseGenerationCompleat;
 
     void Awake() {
         _instance = this;
     }
+    public static void RefreshSeed() {
+        seed = (uint)UnityEngine.Random.Range(1, 1000000);
+    }
     //This two methods start coroutines that will create noise map   
-    public void GenerateNoise(NoiseSetting nS) {
-        StartCoroutine(GenerateNoiseCoroutine(nS)); //Without falloff
+    public void GenerateNoise(NoiseSetting nS, AnimationCurve aC) {
+        StartCoroutine(GenerateNoiseCoroutine(nS, aC)); //Without falloff
     }
-    public void GenerateNoise(NoiseSetting nS, FalloffSetting fS) {
-        StartCoroutine(GenerateNoiseCoroutine(nS, fS)); //With falloff
+    public void GenerateNoise(NoiseSetting nS, FalloffSetting fS, AnimationCurve aC) {
+        StartCoroutine(GenerateNoiseCoroutine(nS, fS, aC)); //With falloff
     }
-
-
-
-    private IEnumerator GenerateNoiseCoroutine(NoiseSetting nS) {
+    private IEnumerator GenerateNoiseCoroutine(NoiseSetting nS, AnimationCurve heightCurve) {
         NativeList<float> _noiseMapResult = new(Allocator.TempJob);
 
         GenerateNoiseMapJob noiseGenJob = new() {
             result = _noiseMapResult,
-            seed = nS.seed,
+            seed = seed,
             mapSize = nS.mapSize,
             lacunarity = nS.lacunarity,
             scale = nS.scale,
             octaves = nS.octaves,
             persistance = nS.persistance,
-            offset = new(nS.offset.x, nS.offset.y)
+            offset = new(nS.offset.x, nS.offset.y),
         };
 
         JobHandle _noiseJobH = noiseGenJob.Schedule();
@@ -48,25 +50,27 @@ public class NoiseGeneration : MonoBehaviour {
         float[,] generatedResult = new float[nS.mapSize, nS.mapSize];
         for (int x = 0; x < generatedResult.GetLength(0); x++) {
             for (int y = 0; y < generatedResult.GetLength(1); y++) {
-                generatedResult[x, y] = _noiseMapResult[x + nS.mapSize * y];
+                generatedResult[x, y] = heightCurve.Evaluate(_noiseMapResult[x + nS.mapSize * y]);
             }
         }
+
         _noiseMapResult.Dispose();
         _onNoiseGenerationCompleat?.Invoke(generatedResult);
     }
-    private IEnumerator GenerateNoiseCoroutine(NoiseSetting nS, FalloffSetting fS) {
+    private IEnumerator GenerateNoiseCoroutine(NoiseSetting nS, FalloffSetting fS, AnimationCurve heightCurve) {
         int mapSize = nS.mapSize;
+
         NativeList<float> _noiseMapResult = new(Allocator.TempJob);
         NativeList<float> _falloffMapResult = new(Allocator.TempJob);
         GenerateNoiseMapJob noiseGenJob = new() {
             result = _noiseMapResult,
-            seed = nS.seed,
+            seed = seed,
             mapSize = mapSize,
             lacunarity = nS.lacunarity,
             scale = nS.scale,
             octaves = nS.octaves,
             persistance = nS.persistance,
-            offset = new(nS.offset.x, nS.offset.y)
+            offset = new(nS.offset.x, nS.offset.y),
         };
         GenerateFalloffMapJob falloffGenJob = new() {
             result = _falloffMapResult,
@@ -86,14 +90,24 @@ public class NoiseGeneration : MonoBehaviour {
         float[,] generatedResult = new float[mapSize, mapSize];
         for (int x = 0; x < generatedResult.GetLength(0); x++) {
             for (int y = 0; y < generatedResult.GetLength(1); y++) {
-                generatedResult[x, y] = Mathf.Clamp01(_noiseMapResult[x + mapSize * y] - _falloffMapResult[x + mapSize * y]);
+                float h = heightCurve.Evaluate(_noiseMapResult[x + mapSize * y]);
+                generatedResult[x, y] = Mathf.Clamp01(h - _falloffMapResult[x + mapSize * y]);
             }
         }
+
         _noiseMapResult.Dispose();
         _falloffMapResult.Dispose();
         _onNoiseGenerationCompleat?.Invoke(generatedResult);
     }
 
+    private NativeArray<Keyframe> CurveToNativeArray(AnimationCurve curve) {
+        Keyframe[] keyframes = curve.keys;
+        NativeArray<Keyframe> nativeArray = new(keyframes.Length, Allocator.TempJob);
+        for (int i = 0; i < keyframes.Length; i++) {
+            nativeArray[i] = keyframes[i];
+        }
+        return nativeArray;
+    }
     [BurstCompile]
     public struct GenerateNoiseMapJob : IJob {
 
@@ -157,10 +171,12 @@ public class NoiseGeneration : MonoBehaviour {
                 }
             }
         }
-        public readonly float InverseLerp(float p1, float p2, float v) {
+        private readonly float InverseLerp(float p1, float p2, float v) {
             float factor = (v - p1) / (p2 - p1);
             return factor;
         }
+
+
     }
     [BurstCompile]
     public struct GenerateFalloffMapJob : IJob {
