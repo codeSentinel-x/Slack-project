@@ -7,6 +7,5 @@ using UnityEngine;
 
 [CreateAssetMenu(menuName = "Slack project/BiomeSO")]
 public class BiomeSO : ScriptableObject {
-    public AnimationCurve heightCurve;
-    public Gradient _heightMap;
+        public Gradient _heightMap;
 }

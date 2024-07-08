@@ -19,7 +19,7 @@ public class InputScrollUpdate : MonoBehaviour {
                 inputField.text = x.ToString("f2");
             }
         });
-        inputField.onValueChanged.AddListener((x) => {
+        inputField.onDeselect.AddListener((x) => {
 
 
             if (isUint) {
