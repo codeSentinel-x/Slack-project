@@ -22,4 +22,7 @@ public class CameraController : MonoBehaviour {
         _dir = new Vector3(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
         _scrollAmount = Input.mouseScrollDelta.y;
     }
+    public void ChangeSpeed(float v) {
+        _speed = v;
+    }
 }

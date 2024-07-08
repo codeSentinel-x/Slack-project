@@ -112,7 +112,7 @@ public class WorldGeneration : MonoBehaviour {
                             float localH = Mathf.InverseLerp(minH, maxH, h);
                             chunkColors[y * mapSize + x] = _biome.terrainTypes[i].gradient.Evaluate(localH);
                             cT.chunkH[x, y].h = h;
-                            cT.name = _biome.terrainTypes[i].name;
+                            cT.chunkH[x, y].name = _biome.terrainTypes[i].name;
                             break;
 
                         }

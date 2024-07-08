@@ -7,9 +7,10 @@ using UnityEngine.UI;
 
 public class WorldController : MonoBehaviour {
 
+    public GameObject debugDisplay;
     public TextMeshProUGUI nameDisplay;
     public TextMeshProUGUI posDisplay;
-    public Image imageDisplay;
+    // public Image imageDisplay;
     private MouseController mouseController;
     void Start() {
         mouseController = MouseController._instance;
@@ -19,18 +20,25 @@ public class WorldController : MonoBehaviour {
 
     private void GetClickedCell(Vector2 vector) {
         // Debug.Log("pos = " + vector.ToString());
-        Vector2Int chunkPos = new() {
-            x = Mathf.FloorToInt(vector.x / WorldGeneration.chunkSize),
-            y = Mathf.FloorToInt(vector.y / WorldGeneration.chunkSize),
-        };
-        Transform chunk = WorldGeneration._instance.chunks[chunkPos.x, chunkPos.y];
-        Texture2D texture = (Texture2D)chunk.GetComponent<MeshRenderer>().material.mainTexture;
-        Color c = texture.GetPixel(Mathf.FloorToInt(vector.x - chunkPos.x * WorldGeneration.chunkSize), Mathf.FloorToInt(vector.y - chunkPos.y * WorldGeneration.chunkSize));
-        string name = chunk.GetComponent<ChunkController>().chunkH[Mathf.FloorToInt(vector.x - chunkPos.x * WorldGeneration.chunkSize), Mathf.FloorToInt(vector.y - chunkPos.y * WorldGeneration.chunkSize)].name;
+        try {
+            debugDisplay.SetActive(true);
+            Vector2Int chunkPos = new() {
+                x = Mathf.FloorToInt(vector.x / WorldGeneration.chunkSize),
+                y = Mathf.FloorToInt(vector.y / WorldGeneration.chunkSize),
+            };
+            Transform chunk = WorldGeneration._instance.chunks[chunkPos.x, chunkPos.y];
+            Texture2D texture = (Texture2D)chunk.GetComponent<MeshRenderer>().material.mainTexture;
+            Color c = texture.GetPixel(Mathf.FloorToInt(vector.x - chunkPos.x * WorldGeneration.chunkSize), Mathf.FloorToInt(vector.y - chunkPos.y * WorldGeneration.chunkSize));
+            string name = chunk.GetComponent<ChunkController>().chunkH[Mathf.FloorToInt(vector.x - chunkPos.x * WorldGeneration.chunkSize), Mathf.FloorToInt(vector.y - chunkPos.y * WorldGeneration.chunkSize)].name;
 
-        imageDisplay.color = c;
-        posDisplay.text = new Vector2Int(Mathf.FloorToInt(vector.x), Mathf.FloorToInt(vector.y)).ToString();
-        nameDisplay.text = name;
+            // imageDisplay.color = c;
+            posDisplay.text = new Vector2Int(Mathf.FloorToInt(vector.x), Mathf.FloorToInt(vector.y)).ToString();
+            nameDisplay.text = name;
+        }
+        catch {
+            debugDisplay.SetActive(false);
+            Debug.Log("No tile selected");
+        }
 
     }
     public float ColorInverseLerp(Color a, Color b, Color value) {
