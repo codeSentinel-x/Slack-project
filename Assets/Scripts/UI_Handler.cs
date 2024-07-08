@@ -24,15 +24,17 @@ public class UI_Handler : MonoBehaviour {
     public void GenerateWorld() {
         NoiseSetting setting = new() {
             mapSize = int.Parse(mapSizeText.text),
-            scale = float.Parse(scaleText.text),
+            scale = float.Parse(scaleText.text.Replace(',', '.'), System.Globalization.CultureInfo.InvariantCulture),
             octaves = int.Parse(octavesText.text),
-            persistance = float.Parse(persistanceText.text),
-            lacunarity = float.Parse(lacunarityText.text)
+            persistance = float.Parse(persistanceText.text.Replace(',', '.'), System.Globalization.CultureInfo.InvariantCulture),
+            lacunarity = float.Parse(lacunarityText.text.Replace(',', '.'), System.Globalization.CultureInfo.InvariantCulture)
         };
         uint seed = uint.Parse(seedText.text);
         int chunkSize = int.Parse(chunkMapSizeText.text);
+        _worldGenerator.GenerateChunks(setting, seed, chunkSize);
     }
     public void DestroyWorld() {
         _worldGenerator.DestroyWorld();
     }
+    // public void 
 }

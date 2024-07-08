@@ -43,7 +43,7 @@ public class WorldGeneration : MonoBehaviour {
             }
         }
     }
-    public void GenerateChunks(NoiseSetting nS, uint seed) {
+    public void GenerateChunks(NoiseSetting nS, uint seed, int chunkSize) {
         if (chunkHolder == null) chunkHolder = new("Chunk holder");
         else {
             Destroy(chunkHolder);
@@ -51,8 +51,8 @@ public class WorldGeneration : MonoBehaviour {
         }
 
         NoiseGeneration.seed = seed;
-        for (int i = 0; i < _mapSizeInChunk; i++) {
-            for (int j = 0; j < _mapSizeInChunk; j++) {
+        for (int i = 0; i < chunkSize; i++) {
+            for (int j = 0; j < chunkSize; j++) {
                 noiseGen.GenerateNoise(nS, _biome.heightCurve, new Vector2Int(i * nS.mapSize, j * nS.mapSize));
             }
         }
