@@ -26,29 +26,19 @@ public class WorldController : MonoBehaviour {
         Transform chunk = WorldGeneration._instance.chunks[chunkPos.x, chunkPos.y];
         Texture2D texture = (Texture2D)chunk.GetComponent<MeshRenderer>().material.mainTexture;
         Color c = texture.GetPixel(Mathf.FloorToInt(vector.x - chunkPos.x * WorldGeneration.chunkSize), Mathf.FloorToInt(vector.y - chunkPos.y * WorldGeneration.chunkSize));
-        float h = ColorInverseLerp(Color.black, Color.white, c);
+        string name = chunk.GetComponent<ChunkController>().chunkH[Mathf.FloorToInt(vector.x - chunkPos.x * WorldGeneration.chunkSize), Mathf.FloorToInt(vector.y - chunkPos.y * WorldGeneration.chunkSize)].name;
 
         imageDisplay.color = c;
-        posDisplay.text = new Vector2Int(Mathf.FloorToInt(vector.x - chunkPos.x * WorldGeneration.chunkSize), Mathf.FloorToInt(vector.y - chunkPos.y * WorldGeneration.chunkSize)).ToString();
-        nameDisplay.text = h switch {
-                _ when 0.13f >= h => "Water deep",
-                _ when 0.285f >= h => "Water low",
-                _ when 0.47f >= h => "Sand",
-                _ when 0.66f >= h => "Grass low",
-                _ when 0.78f >= h => "Grass",
-                _ when 0.9f >= h => "Mountain h",
-                _ when 1f >= h => "Snow",
-                _ => "Error",
-            };
+        posDisplay.text = new Vector2Int(Mathf.FloorToInt(vector.x), Mathf.FloorToInt(vector.y)).ToString();
+        nameDisplay.text = name;
 
     }
-    public float ColorInverseLerp(Color a, Color b, Color value)
-    {
+    public float ColorInverseLerp(Color a, Color b, Color value) {
         float rLerp = Mathf.InverseLerp(a.r, b.r, value.r);
         float gLerp = Mathf.InverseLerp(a.g, b.g, value.g);
         float bLerp = Mathf.InverseLerp(a.b, b.b, value.b);
         float aLerp = Mathf.InverseLerp(a.a, b.a, value.a);
-        
+
         // Average the interpolations
         return (rLerp + gLerp + bLerp + aLerp) / 4f;
     }

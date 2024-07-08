@@ -13,11 +13,22 @@ namespace MyUtils.Structs {
 
 
     }
+    [Serializable]
+    public struct TerrainType {
+        public Gradient gradient;
+        public float h;
+        public string name;
+    }
 
     [Serializable]
     public struct FalloffSetting {
         public float a;
         public float b;
+    }
+    [Serializable]
+    public struct ChunkItem {
+        public string name;
+        public float h;
     }
 
 

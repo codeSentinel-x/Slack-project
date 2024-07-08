@@ -81,7 +81,15 @@ public class WorldGeneration : MonoBehaviour {
                     SpriteRenderer sprR = t.GetComponent<SpriteRenderer>();
                     t.parent = chunkHolder.transform;
                     float h = obj[x, y];
-                    sprR.color = _biome._heightMap.Evaluate(h);
+                    for (int i = 0; i < _biome.terrainTypes.Length; i++) {
+                        if (_biome.terrainTypes[i].h >= h) {
+                            float minH = i == 0 ? 0f : _biome.terrainTypes[i - 1].h;
+                            float maxH = i == _biome.terrainTypes.Length - 1 ? 1 : _biome.terrainTypes[i + 1].h;
+                            float localH = Mathf.InverseLerp(minH, maxH, h);
+                            sprR.color = _biome.terrainTypes[i].gradient.Evaluate(localH);
+                            break;
+                        }
+                    }
                 }
             }
         }
@@ -89,15 +97,27 @@ public class WorldGeneration : MonoBehaviour {
             int mapSize = obj.GetLength(0);
             chunkSize = mapSize;
             GameObject chunk = Instantiate(_chunkPrefab, new Vector3(start.x + mapSize / 2, start.y + mapSize / 2), Quaternion.identity).gameObject;
+            ChunkController cT = chunk.GetComponent<ChunkController>();
+            cT.chunkH = new ChunkItem[obj.GetLength(0), obj.GetLength(1)];
             chunk.transform.localScale = new Vector3(mapSize, mapSize, 1);
             Texture2D colorTexture = new(mapSize, mapSize);
-            Texture2D heightMapTexture = new(mapSize, mapSize);
             Color[] chunkColors = new Color[mapSize * mapSize];
-            Color[] chunkHeights = new Color[mapSize * mapSize];
             for (int y = 0; y < mapSize; y++) {
                 for (int x = 0; x < mapSize; x++) {
-                    chunkColors[y * mapSize + x] = _biome._heightMap.Evaluate(obj[x, y]);
-                    chunkHeights[y * mapSize + x] = Color.Lerp(Color.black, Color.white, obj[x, y]);
+                    float h = obj[x, y];
+                    for (int i = 0; i < _biome.terrainTypes.Length; i++) {
+                        if (_biome.terrainTypes[i].h >= h) {
+                            float minH = i == 0 ? 0f : _biome.terrainTypes[i - 1].h;
+                            float maxH = _biome.terrainTypes[i].h;
+                            float localH = Mathf.InverseLerp(minH, maxH, h);
+                            chunkColors[y * mapSize + x] = _biome.terrainTypes[i].gradient.Evaluate(localH);
+                            cT.chunkH[x, y].h = h;
+                            cT.name = _biome.terrainTypes[i].name;
+                            break;
+
+                        }
+                    }
+
                 }
             }
 
@@ -106,17 +126,13 @@ public class WorldGeneration : MonoBehaviour {
             colorTexture.SetPixels(chunkColors);
             colorTexture.Apply();
 
-            // heightMapTexture.wrapMode = TextureWrapMode.Clamp;
-            // heightMapTexture.filterMode = FilterMode.Point;
-            // heightMapTexture.SetPixels(chunkHeights);
-            // heightMapTexture.Apply();
 
             (chunk.GetComponent<MeshRenderer>().material = new Material(_sourceMaterial)).mainTexture = colorTexture;
-            // (chunk.GetComponent<MeshRenderer>().material = new Material(_sourceMaterial)).mainTexture = heightMapTexture;
 
             chunks[start.x / chunkSize, start.y / chunkSize] = chunk.transform;
             chunk.transform.parent = chunkHolder.transform;
         }
     }
-        
 }
+
+

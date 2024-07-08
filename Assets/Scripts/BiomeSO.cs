@@ -7,5 +7,5 @@ using UnityEngine;
 
 [CreateAssetMenu(menuName = "Slack project/BiomeSO")]
 public class BiomeSO : ScriptableObject {
-        public Gradient _heightMap;
+    public TerrainType[] terrainTypes;
 }
