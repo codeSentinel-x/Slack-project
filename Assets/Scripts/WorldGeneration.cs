@@ -24,7 +24,7 @@ public class WorldGeneration : MonoBehaviour {
     public Transform _chunkPrefab;
     public Material _sourceMaterial;
     public AnimationCurve defaultCurve;
-
+    public Transform[,] chunks;
     private NoiseGeneration noiseGen;
     public GameObject chunkHolder;
     void Awake() {
@@ -43,6 +43,7 @@ public class WorldGeneration : MonoBehaviour {
             Destroy(chunkHolder);
             chunkHolder = new("Chunk holder");
         }
+        chunks = new Transform[chunkSize, chunkSize];
 
         if (_changeSeed) NoiseGeneration.RefreshSeed();
         for (int i = 0; i < _mapSizeInChunk; i++) {
@@ -57,6 +58,7 @@ public class WorldGeneration : MonoBehaviour {
             Destroy(chunkHolder);
             chunkHolder = new("Chunk holder");
         }
+        chunks = new Transform[chunkSize, chunkSize];
 
         NoiseGeneration.seed = seed;
         for (int i = 0; i < chunkSize; i++) {
@@ -86,22 +88,35 @@ public class WorldGeneration : MonoBehaviour {
         else {
             int mapSize = obj.GetLength(0);
             chunkSize = mapSize;
-            GameObject chunk = Instantiate(_chunkPrefab, new Vector3(start.x, start.y), Quaternion.identity).gameObject;
+            GameObject chunk = Instantiate(_chunkPrefab, new Vector3(start.x + mapSize / 2, start.y + mapSize / 2), Quaternion.identity).gameObject;
             chunk.transform.localScale = new Vector3(mapSize, mapSize, 1);
-            Texture2D texture = new(mapSize, mapSize);
-            Color[] chunkColor = new Color[mapSize * mapSize];
+            Texture2D colorTexture = new(mapSize, mapSize);
+            Texture2D heightMapTexture = new(mapSize, mapSize);
+            Color[] chunkColors = new Color[mapSize * mapSize];
+            Color[] chunkHeights = new Color[mapSize * mapSize];
             for (int y = 0; y < mapSize; y++) {
                 for (int x = 0; x < mapSize; x++) {
-                    chunkColor[y * mapSize + x] = _biome._heightMap.Evaluate(obj[x, y]);
+                    chunkColors[y * mapSize + x] = _biome._heightMap.Evaluate(obj[x, y]);
+                    chunkHeights[y * mapSize + x] = Color.Lerp(Color.black, Color.white, obj[x, y]);
                 }
             }
-            texture.wrapMode = TextureWrapMode.Clamp;
-            texture.filterMode = FilterMode.Point;
-            texture.SetPixels(chunkColor);
-            texture.Apply();
-            (chunk.GetComponent<MeshRenderer>().material = new Material(_sourceMaterial)).mainTexture = texture;
+
+            colorTexture.wrapMode = TextureWrapMode.Clamp;
+            colorTexture.filterMode = FilterMode.Point;
+            colorTexture.SetPixels(chunkColors);
+            colorTexture.Apply();
+
+            // heightMapTexture.wrapMode = TextureWrapMode.Clamp;
+            // heightMapTexture.filterMode = FilterMode.Point;
+            // heightMapTexture.SetPixels(chunkHeights);
+            // heightMapTexture.Apply();
+
+            (chunk.GetComponent<MeshRenderer>().material = new Material(_sourceMaterial)).mainTexture = colorTexture;
+            // (chunk.GetComponent<MeshRenderer>().material = new Material(_sourceMaterial)).mainTexture = heightMapTexture;
+
+            chunks[start.x / chunkSize, start.y / chunkSize] = chunk.transform;
             chunk.transform.parent = chunkHolder.transform;
         }
     }
-
+        
 }
