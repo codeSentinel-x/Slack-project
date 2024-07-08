@@ -7,12 +7,12 @@ using System;
 using Unity.Burst;
 using Unity.Mathematics;
 using Unity.VisualScripting;
+using System.ComponentModel;
 
 public class NoiseGeneration : MonoBehaviour {
     public static NoiseGeneration _instance;
     public static uint seed = 768754;
-    public Action<float[,]> _onNoiseGenerationCompleat;
-    public Action<float[,], Vector2Int> _onPartNoiseGenerationCompleat;
+    public Action<float[,], Vector2Int> _onNoiseGenerationCompleat;
 
     void Awake() {
         _instance = this;
@@ -21,27 +21,22 @@ public class NoiseGeneration : MonoBehaviour {
         seed = (uint)UnityEngine.Random.Range(1, 1000000);
     }
 
-    public void GeneratePartOfNoise(NoiseSetting ns, AnimationCurve ac, Vector2Int startPos) {
-        StartCoroutine(GeneratePartOfNoiseCoroutine(ns, ac, startPos));
+    public void GenerateNoise(NoiseSetting nS, AnimationCurve aC, Vector2Int offset = default) {
+        if (offset == default) offset = Vector2Int.zero;
+        StartCoroutine(GenerateNoiseCoroutine(nS, aC, offset)); //Without falloff
     }
-    public void GenerateNoise(NoiseSetting nS, AnimationCurve aC) {
-        StartCoroutine(GenerateNoiseCoroutine(nS, aC)); //Without falloff
+    public void GenerateNoise(NoiseSetting nS, FalloffSetting fS, AnimationCurve aC, Vector2Int offset = default) {
+        if (offset == default) offset = Vector2Int.zero;
+        StartCoroutine(GenerateNoiseCoroutine(nS, fS, aC, offset)); //With falloff
     }
-    public void GenerateNoise(NoiseSetting nS, FalloffSetting fS, AnimationCurve aC) {
-        StartCoroutine(GenerateNoiseCoroutine(nS, fS, aC)); //With falloff
-    }
-    private IEnumerator GenerateNoiseCoroutine(NoiseSetting nS, AnimationCurve heightCurve) {
-        NativeList<float> _noiseMapResult = new(Allocator.TempJob);
+    private IEnumerator GenerateNoiseCoroutine(NoiseSetting nS, AnimationCurve heightCurve, Vector2Int offset) {
+        NativeArray<float> _noiseMapResult = new(nS.mapSize * nS.mapSize, Allocator.TempJob);
 
         GenerateEntireNoiseMapJob noiseGenJob = new() {
             result = _noiseMapResult,
             seed = seed,
-            mapSize = nS.mapSize,
-            lacunarity = nS.lacunarity,
-            scale = nS.scale,
-            octaves = nS.octaves,
-            persistance = nS.persistance,
-            offset = new(nS.offset.x, nS.offset.y),
+            nS = nS,
+            offset = new(offset.x, offset.y),
         };
 
         JobHandle _noiseJobH = noiseGenJob.Schedule();
@@ -59,54 +54,18 @@ public class NoiseGeneration : MonoBehaviour {
         }
 
         _noiseMapResult.Dispose();
-        _onNoiseGenerationCompleat?.Invoke(generatedResult);
+        _onNoiseGenerationCompleat?.Invoke(generatedResult, offset);
     }
-    private IEnumerator GeneratePartOfNoiseCoroutine(NoiseSetting nS, AnimationCurve heightCurve, Vector2Int startPos) {
-        NativeList<float> _noiseMapResult = new(Allocator.TempJob);
-
-        GeneratePartOfNoiseMapJob noiseGenJob = new() {
-            result = _noiseMapResult,
-            seed = seed,
-            mapSize = nS.mapSize,
-            lacunarity = nS.lacunarity,
-            scale = nS.scale,
-            octaves = nS.octaves,
-            persistance = nS.persistance,
-            offset = new(nS.offset.x, nS.offset.y),
-            startPos = new(startPos.x, startPos.y),
-        };
-
-        JobHandle _noiseJobH = noiseGenJob.Schedule();
-
-        _noiseJobH.Complete();
-
-        while (!_noiseJobH.IsCompleted) {
-            yield return new WaitForSeconds(0.5f);
-        }
-        float[,] generatedResult = new float[nS.mapSize, nS.mapSize];
-        for (int x = 0; x < generatedResult.GetLength(0); x++) {
-            for (int y = 0; y < generatedResult.GetLength(1); y++) {
-                generatedResult[x, y] = heightCurve.Evaluate(_noiseMapResult[x + nS.mapSize * y]);
-            }
-        }
-
-        _noiseMapResult.Dispose();
-        _onPartNoiseGenerationCompleat?.Invoke(generatedResult, startPos);
-    }
-    private IEnumerator GenerateNoiseCoroutine(NoiseSetting nS, FalloffSetting fS, AnimationCurve heightCurve) {
+    private IEnumerator GenerateNoiseCoroutine(NoiseSetting nS, FalloffSetting fS, AnimationCurve heightCurve, Vector2Int offset) {
         int mapSize = nS.mapSize;
 
-        NativeList<float> _noiseMapResult = new(Allocator.TempJob);
-        NativeList<float> _falloffMapResult = new(Allocator.TempJob);
+        NativeArray<float> _noiseMapResult = new(nS.mapSize * nS.mapSize, Allocator.TempJob);
+        NativeArray<float> _falloffMapResult = new(nS.mapSize * nS.mapSize, Allocator.TempJob);
         GenerateEntireNoiseMapJob noiseGenJob = new() {
             result = _noiseMapResult,
             seed = seed,
-            mapSize = mapSize,
-            lacunarity = nS.lacunarity,
-            scale = nS.scale,
-            octaves = nS.octaves,
-            persistance = nS.persistance,
-            offset = new(nS.offset.x, nS.offset.y),
+            nS = nS,
+            offset = new(offset.x, offset.y),
         };
         GenerateFalloffMapJob falloffGenJob = new() {
             result = _falloffMapResult,
@@ -133,68 +92,68 @@ public class NoiseGeneration : MonoBehaviour {
 
         _noiseMapResult.Dispose();
         _falloffMapResult.Dispose();
-        _onNoiseGenerationCompleat?.Invoke(generatedResult);
+        _onNoiseGenerationCompleat?.Invoke(generatedResult, offset);
     }
 
     [BurstCompile]
     public struct GenerateEntireNoiseMapJob : IJob {
 
-        public NativeList<float> result;
+        public NativeArray<float> result;
+        public NoiseSetting nS;
         public uint seed;
-        public int mapSize;
-        public float scale;
-        public int octaves;
-        public float persistance;
-        public float lacunarity;
         public float2 offset;
         public void Execute() {
             Unity.Mathematics.Random rng = new(seed);
-            NativeList<float2> octaveOffset = new(Allocator.Temp);
-            for (int x = 0; x < mapSize; x++) {
-                for (int y = 0; y < mapSize; y++) {
-                    result.Add(0);
-                }
-            }
-            for (int i = 0; i < octaves; i++) octaveOffset.Add(0);
+            NativeArray<float2> octaveOffset = new(nS.mapSize * nS.mapSize, Allocator.Temp);
 
-            for (int i = 0; i < octaves; i++) {
+            float maxPossibleH = 0f;
+            float amplitude = 1f;
+            float frequency = 1f;
+
+            for (int i = 0; i < nS.octaves; i++) {
                 float x = rng.NextInt(-100000, 100000) + offset.x;
                 float y = rng.NextInt(-100000, 100000) + offset.y;
+                
+                maxPossibleH += amplitude;
+                amplitude *= nS.persistance;
                 octaveOffset[i] = new float2(x, y);
             }
 
             float maxNoiseH = float.MinValue;
             float minNoiseH = float.MaxValue;
 
-            for (int y = 0; y < mapSize; y++) {
-                for (int x = 0; x < mapSize; x++) {
-                    float amplitude = 1f;
-                    float frequency = 1f;
+            for (int y = 0; y < nS.mapSize; y++) {
+                for (int x = 0; x < nS.mapSize; x++) {
+                    amplitude = 1f;
+                    frequency = 1f;
                     float noiseH = 0f;
 
-                    for (int i = 0; i < octaves; i++) {
+                    for (int i = 0; i < nS.octaves; i++) {
 
-                        float2 sample = new((x - mapSize / 2) / scale * frequency + octaveOffset[i].x,
-                                            (y - mapSize / 2) / scale * frequency + octaveOffset[i].y);
+                        float2 sample = new((x - (nS.mapSize / 2) + octaveOffset[i].x) / nS.scale * frequency,
+                                            (y - (nS.mapSize / 2) + octaveOffset[i].y) / nS.scale * frequency);
 
                         float perlinValue = Mathf.PerlinNoise(sample.x, sample.y) * 2 - 1;
                         noiseH += perlinValue * amplitude;
 
-                        amplitude *= persistance;
-                        frequency *= lacunarity;
+                        amplitude *= nS.persistance;
+                        frequency *= nS.lacunarity;
                     }
 
                     if (noiseH > maxNoiseH) maxNoiseH = noiseH;
                     else if (noiseH < minNoiseH) minNoiseH = noiseH;
 
-                    result[x + y * mapSize] = noiseH;
+                    result[x + y * nS.mapSize] = noiseH;
+
+                    float normalizedHeight = (result[x + y * nS.mapSize] + 1) / (maxPossibleH / 0.9f);
+                    result[x + y * nS.mapSize] = Mathf.Clamp(normalizedHeight, 0, int.MaxValue);
                 }
             }
-            for (int y = 0; y < mapSize; y++) {
-                for (int x = 0; x < mapSize; x++) {
-                    result[x + y * mapSize] = InverseLerp(minNoiseH, maxNoiseH, result[x + y * mapSize]);
-                }
-            }
+            // for (int y = 0; y < nS.mapSize; y++) {
+            //     for (int x = 0; x < nS.mapSize; x++) {
+            //         result[x + y * nS.mapSize] = InverseLerp(minNoiseH, maxNoiseH, result[x + y * nS.mapSize]);
+            //     }
+            // }
         }
         private readonly float InverseLerp(float p1, float p2, float v) {
             float factor = (v - p1) / (p2 - p1);
@@ -203,82 +162,17 @@ public class NoiseGeneration : MonoBehaviour {
 
 
     }
-    [BurstCompile]
-    public struct GeneratePartOfNoiseMapJob : IJob {
-
-        public NativeList<float> result;
-        public uint seed;
-        public int mapSize;
-        public float scale;
-        public int octaves;
-        public float persistance;
-        public float lacunarity;
-        public float2 offset;
-        public int2 startPos;
-        public void Execute() {
-            Unity.Mathematics.Random rng = new(seed);
-            NativeList<float2> octaveOffset = new(Allocator.Temp);
-            for (int x = 0; x < mapSize; x++) {
-                for (int y = 0; y < mapSize; y++) {
-                    result.Add(0);
-                }
-            }
-            for (int i = 0; i < octaves; i++) octaveOffset.Add(0);
-
-            for (int i = 0; i < octaves; i++) {
-                float x = rng.NextInt(-100000, 100000) + offset.x;
-                float y = rng.NextInt(-100000, 100000) + offset.y;
-                octaveOffset[i] = new float2(x, y);
-            }
-
-            float maxNoiseH = float.MinValue;
-            float minNoiseH = float.MaxValue;
-
-            for (int y = 0; y < mapSize; y++) {
-                for (int x = 0; x < mapSize; x++) {
-                    float amplitude = 1f;
-                    float frequency = 1f;
-                    float noiseH = 0f;
-
-                    for (int i = 0; i < octaves; i++) {
-
-                        float2 sample = new(((x + startPos.x) - mapSize / 2) / scale * frequency + octaveOffset[i].x,
-                                            ((y + startPos.y) - mapSize / 2) / scale * frequency + octaveOffset[i].y);
-
-                        float perlinValue = Mathf.PerlinNoise(sample.x, sample.y) * 2 - 1;
-                        noiseH += perlinValue * amplitude;
-
-                        amplitude *= persistance;
-                        frequency *= lacunarity;
-                    }
-
-                    if (noiseH > maxNoiseH) maxNoiseH = noiseH;
-                    else if (noiseH < minNoiseH) minNoiseH = noiseH;
-
-                    result[x + y * mapSize] = noiseH;
-                }
-            }
-            for (int y = 0; y < mapSize; y++) {
-                for (int x = 0; x < mapSize; x++) {
-                    result[x + y * mapSize] = InverseLerp(minNoiseH, maxNoiseH, result[x + y * mapSize]);
-                }
-            }
-        }
-        private readonly float InverseLerp(float p1, float p2, float v) {
-            float factor = (v - p1) / (p2 - p1);
-            return factor;
-        }
 
 
-    }
+
+
     [BurstCompile]
     public struct GenerateFalloffMapJob : IJob {
-        public NativeList<float> result;
+        public NativeArray<float> result;
         public int size;
         public float a;
         public float b;
         public void Execute() {
-            for (int i = 0; i < size; i++) for (int j = 0; j < size; j++) result.Add(0);
 
             for (int i = 0; i < size; i++) {
                 for (int j = 0; j < size; j++) {

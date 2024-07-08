@@ -9,7 +9,6 @@ namespace MyUtils.Structs {
         public float scale;
         public int octaves;
         public float persistance;
-        public Vector2 offset;
         public float lacunarity;
 
 
@@ -20,7 +19,7 @@ namespace MyUtils.Structs {
         public float a;
         public float b;
     }
-    
+
 
 
 
