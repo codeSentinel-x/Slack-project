@@ -11,6 +11,7 @@ using UnityEngine;
 
 public class UI_Handler : MonoBehaviour {
 
+    public static UI_Handler _instance;
     public TMP_InputField mapSizeText;
     public TMP_InputField scaleText;
     public TMP_InputField octavesText;
@@ -24,6 +25,9 @@ public class UI_Handler : MonoBehaviour {
     private WorldGeneration _worldGenerator;
     private int index = 0;
     private List<UI_LayerHandler> layers = new();
+    void Awake(){
+        _instance = this;
+    }
     void Start() {
         _worldGenerator = WorldGeneration._instance;
         if (useMultipleLayer) CreateNewLayer();
@@ -71,34 +75,20 @@ public class UI_Handler : MonoBehaviour {
         return wS;
     }
 
-    public void SaveCurrentSetting() {
-        NoiseSettingData data = GetNoiseData();
-        string jsonData = JsonUtility.ToJson(data);
-        using FileStream stream = new("Assets/Resources/NoiseSettings/Test.bak", FileMode.Create);
-        using StreamWriter writer = new(stream);
-        writer.Write(jsonData);
-        // Resources.
+    public void SaveCurrentSetting(string name) {
+        SaveSystem.Save<NoiseSettingData>("NoiseSettings", name, GetNoiseData());
     }
-    public void LoadSetting() {
-        NoiseSettingData loadedData;
-        string fullPath = "Assets/Resources/NoiseSettings/Test.bak";
-        if (File.Exists(fullPath)) {
+    public void LoadSetting(string name) {
 
-            string dataToLoad = "";
-            using (FileStream stream = new(fullPath, FileMode.Open)) {
-                using StreamReader reader = new(stream);
-                dataToLoad = reader.ReadToEnd();
-            }
-
-            loadedData = JsonUtility.FromJson<NoiseSettingData>(dataToLoad);
-            layers.ForEach((x) => Destroy(x.gameObject));
-            layers.Clear();
-            layers = new();
-            foreach (var w in loadedData.settings) {
-                CreateNewLayer(w.noiseSetting.scale, w.noiseSetting.octaves, w.noiseSetting.persistance, w.noiseSetting.lacunarity, w.weight);
-            }
-            layers[0].gameObject.SetActive(true);
+        NoiseSettingData loadedData = SaveSystem.Load<NoiseSettingData>("NoiseSettings", name);
+        layers.ForEach((x) => Destroy(x.gameObject));
+        layers.Clear();
+        layers = new();
+        foreach (var w in loadedData.settings) {
+            CreateNewLayer(w.noiseSetting.scale, w.noiseSetting.octaves, w.noiseSetting.persistance, w.noiseSetting.lacunarity, w.weight);
         }
+        layers[0].gameObject.SetActive(true);
+
     }
     public void CreateNewLayer() {
         UI_LayerHandler l = Instantiate(layerPrefab, layerHandler).GetComponent<UI_LayerHandler>();
