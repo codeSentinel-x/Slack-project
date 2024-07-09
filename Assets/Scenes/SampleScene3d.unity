@@ -3443,16 +3443,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 754bdb79cba46b026ad2ddee5e76e5cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  noiseGeneration: {fileID: 0}
+  noiseGeneration: {fileID: 1294450211}
   meshFilter: {fileID: 745924644}
+  meshRenderer: {fileID: 745924643}
   ws:
   - noiseSetting:
-      mapSize: 20
-      scale: 10
+      mapSize: 100
+      scale: 100
+      octaves: 6
+      persistance: 0.55
+      lacunarity: 2
+    weight: 0.7
+  - noiseSetting:
+      mapSize: 100
+      scale: 20.5
+      octaves: 8
+      persistance: 0.6
+      lacunarity: 1.6
+    weight: 0.09
+  - noiseSetting:
+      mapSize: 100
+      scale: 1
       octaves: 7
       persistance: 0.55
       lacunarity: 2
-    weight: 1
+    weight: 0.1
   hCurve:
     serializedVersion: 2
     m_Curve:
@@ -3466,8 +3481,8 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
-      time: 0.944898
-      value: 7.9300203
+      time: 0.9685186
+      value: 11.895032
       inSlope: 2
       outSlope: 2
       tangentMode: 0
@@ -3477,6 +3492,8 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 0
     m_RotationOrder: 4
+  _sourceMaterial: {fileID: 2100000, guid: b7dd32907d9cd80d8a75b689e0506dbb, type: 2}
+  _biome: {fileID: 11400000, guid: 4e83740854a640cceafeec15f161d54b, type: 2}
 --- !u!23 &745924643
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -7157,7 +7174,7 @@ MonoBehaviour:
     a: 3
     b: 6
   _biome: {fileID: 11400000, guid: 4e83740854a640cceafeec15f161d54b, type: 2}
-  _mapSizeInChunk: 2
+  _mapSizeInChunk: 1
   _applyFalloff: 1
   _changeSeed: 0
   _prefab: {fileID: 6767066938474356729, guid: b644ab98a0357f8d289f27ea1af55aba, type: 3}
@@ -7188,8 +7205,36 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   chunkHolder: {fileID: 0}
-  ws: []
-  genWs: 0
+  ws:
+  - noiseSetting:
+      mapSize: 300
+      scale: 300
+      octaves: 6
+      persistance: 0.55
+      lacunarity: 2
+    weight: 0.7
+  - noiseSetting:
+      mapSize: 300
+      scale: 50
+      octaves: 8
+      persistance: 0.6
+      lacunarity: 1.6
+    weight: 0.2
+  - noiseSetting:
+      mapSize: 300
+      scale: 25
+      octaves: 7
+      persistance: 0.55
+      lacunarity: 2
+    weight: 0.07
+  - noiseSetting:
+      mapSize: 300
+      scale: 10
+      octaves: 7
+      persistance: 0.55
+      lacunarity: 2
+    weight: 0.07
+  genWs: 1
 --- !u!4 &1710238900
 Transform:
   m_ObjectHideFlags: 0

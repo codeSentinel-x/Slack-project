@@ -31,7 +31,7 @@ public class NoiseGeneration : MonoBehaviour {
     }
     public void GenerateNoise(WeightedNoiseSetting[] ws, Vector2Int offset = default) {
         if (offset == default) offset = Vector2Int.zero;
-        StartCoroutine(GenerateMultipleNoise(ws, offset)); //With falloff
+        StartCoroutine(GenerateMultipleNoise(ws, offset));
     }
 
     private IEnumerator GenerateNoiseCoroutine(NoiseSetting nS, AnimationCurve heightCurve, Vector2Int offset) {
@@ -122,13 +122,19 @@ public class NoiseGeneration : MonoBehaviour {
             }
             for (int x = 0; x < finalResult.GetLength(0); x++) {
                 for (int y = 0; y < finalResult.GetLength(1); y++) {
-                    finalResult[x, y] += _noiseMapResult[x + w.noiseSetting.mapSize * y] * w.weight;
+                    finalResult[x, y] += _noiseMapResult[x + w.noiseSetting.mapSize * y] * GetNormalizedWeight(weightedNoiseSettings, w.weight);
                 }
             }
 
             _noiseMapResult.Dispose();
-            _onNoiseGenerationCompleat?.Invoke(finalResult, offset);
         }
+        _onNoiseGenerationCompleat?.Invoke(finalResult, offset);
+
+    }
+    private float GetNormalizedWeight(WeightedNoiseSetting[] ws, float v) {
+        float allWeight = 0f;
+        foreach (WeightedNoiseSetting w in ws) allWeight += w.weight;
+        return Mathf.InverseLerp(0, allWeight, v);
     }
     [BurstCompile]
     public struct GenerateEntireNoiseMapJob : IJob {

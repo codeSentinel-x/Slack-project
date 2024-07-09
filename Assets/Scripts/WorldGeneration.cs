@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using MyUtils.Structs;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -52,7 +53,7 @@ public class WorldGeneration : MonoBehaviour {
         if (genWs) {
             for (int i = 0; i < _mapSizeInChunk; i++) {
                 for (int j = 0; j < _mapSizeInChunk; j++) {
-                    noiseGen.GenerateNoise(ws, new Vector2Int(i * _noiseSetting.mapSize, j * _noiseSetting.mapSize));
+                    noiseGen.GenerateNoise(ws, new Vector2Int(i * ws[0].noiseSetting.mapSize, j * ws[0].noiseSetting.mapSize));
                 }
             }
         }
@@ -81,11 +82,25 @@ public class WorldGeneration : MonoBehaviour {
             }
         }
     }
+    public void GenerateChunks(WeightedNoiseSetting[] ws, uint seed, int chunkSize) {
+        if (chunkHolder == null) chunkHolder = new("Chunk holder");
+        else {
+            Destroy(chunkHolder);
+            chunkHolder = new("Chunk holder");
+        }
+        chunks = new Transform[chunkSize, chunkSize];
 
+        for (int i = 0; i < _mapSizeInChunk; i++) {
+            for (int j = 0; j < _mapSizeInChunk; j++) {
+                noiseGen.GenerateNoise(ws, new Vector2Int(i * ws[0].noiseSetting.mapSize, j * ws[0].noiseSetting.mapSize));
+            }
+        }
+    }
     public void DestroyWorld() {
         if (chunkHolder != null) Destroy(chunkHolder);
     }
     private void GenerateChunk(float[,] obj, Vector2Int start) {
+        if (chunkHolder == null) return;
         if (_mode == WorldGenerationMode.Normal) {
             GameObject chunkHolder = new(start.ToString());
             chunkHolder.transform.parent = this.chunkHolder.transform;
@@ -143,7 +158,7 @@ public class WorldGeneration : MonoBehaviour {
 
             (chunk.GetComponent<MeshRenderer>().material = new Material(_sourceMaterial)).mainTexture = colorTexture;
 
-            chunks[start.x / chunkSize, start.y / chunkSize] = chunk.transform;
+            // chunks[start.x / chunkSize, start.y / chunkSize] = chunk.transform;
             chunk.transform.parent = chunkHolder.transform;
         }
     }

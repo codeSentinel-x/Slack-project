@@ -14,10 +14,15 @@ public class UI_Handler : MonoBehaviour {
     public TMP_InputField lacunarityText;
     public TMP_InputField seedText;
     public TMP_InputField chunkMapSizeText;
+    public RectTransform layerHandler;
+    public GameObject layerPrefab;
+    public bool useMultipleLayer;
     private WorldGeneration _worldGenerator;
-
+    private int index = 0;
+    private List<UI_LayerHandler> layers = new();
     void Start() {
         _worldGenerator = WorldGeneration._instance;
+        if (useMultipleLayer) CreateNewLayer();
     }
 
 
@@ -32,6 +37,44 @@ public class UI_Handler : MonoBehaviour {
         uint seed = uint.Parse(seedText.text);
         int chunkSize = int.Parse(chunkMapSizeText.text);
         _worldGenerator.GenerateChunks(setting, seed, chunkSize);
+    }
+    public void GenerateWorldMultipleLayer() {
+        WeightedNoiseSetting[] wS = new WeightedNoiseSetting[layers.Count];
+        for (int i = 0; i < wS.Length; i++) {
+            wS[i].noiseSetting = new NoiseSetting() {
+                mapSize = int.Parse(mapSizeText.text),
+                scale = float.Parse(layers[i].scaleText.text.Replace(',', '.'), System.Globalization.CultureInfo.InvariantCulture),
+                octaves = int.Parse(layers[i].octavesText.text),
+                persistance = float.Parse(layers[i].persistanceText.text.Replace(',', '.'), System.Globalization.CultureInfo.InvariantCulture),
+                lacunarity = float.Parse(layers[i].lacunarityText.text.Replace(',', '.'), System.Globalization.CultureInfo.InvariantCulture)
+
+            };
+            wS[i].weight = float.Parse(layers[i].weightText.text.Replace(',', '.'), System.Globalization.CultureInfo.InvariantCulture);
+        }
+        NoiseSetting setting = new() {
+        };
+        uint seed = uint.Parse(seedText.text);
+        int chunkSize = int.Parse(chunkMapSizeText.text);
+        _worldGenerator.GenerateChunks(wS, seed, chunkSize);
+    }
+
+
+    public void CreateNewLayer() {
+        UI_LayerHandler l = Instantiate(layerPrefab, layerHandler).GetComponent<UI_LayerHandler>();
+        layers.Add(l);
+        l.Setup(layers.Count - 1);
+    }
+    public void DeleteLayer(int index) {
+        layers.RemoveAt(index);
+    }
+    public void NextLayer() {
+        layers[index].gameObject.SetActive(false);
+        index++;
+        if (index >= layers.Count) index = 0;
+        layers[index].gameObject.SetActive(true);
+    }
+    public void PreviousLayer() {
+
     }
     public void DestroyWorld() {
         _worldGenerator.DestroyWorld();
