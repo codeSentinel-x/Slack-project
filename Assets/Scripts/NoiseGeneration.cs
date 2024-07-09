@@ -13,6 +13,7 @@ public class NoiseGeneration : MonoBehaviour {
     public static NoiseGeneration _instance;
     public static uint seed = 768754;
     public Action<float[,], Vector2Int> _onNoiseGenerationCompleat;
+    public Action<float[,], Vector2Int> _onPartOfNoiseGenerationCompleat;
 
     void Awake() {
         _instance = this;
@@ -103,7 +104,7 @@ public class NoiseGeneration : MonoBehaviour {
     private IEnumerator GenerateMultipleNoise(WeightedNoiseSetting[] weightedNoiseSettings, Vector2Int offset) {
         float[,] finalResult = new float[weightedNoiseSettings[0].noiseSetting.mapSize, weightedNoiseSettings[0].noiseSetting.mapSize];
         foreach (WeightedNoiseSetting w in weightedNoiseSettings) {
-
+            if (w.weight == 0) continue;
             NativeArray<float> _noiseMapResult = new(w.noiseSetting.mapSize * w.noiseSetting.mapSize, Allocator.TempJob);
 
             GenerateEntireNoiseMapJob noiseGenJob = new() {
@@ -127,6 +128,7 @@ public class NoiseGeneration : MonoBehaviour {
             }
 
             _noiseMapResult.Dispose();
+            _onPartOfNoiseGenerationCompleat?.Invoke(finalResult, offset);
         }
         _onNoiseGenerationCompleat?.Invoke(finalResult, offset);
 

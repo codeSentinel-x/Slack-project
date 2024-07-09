@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class CameraController : MonoBehaviour {
+    public bool is2D;
     public float _speed;
     public float _scrollMultiplier;
     private Vector3 _dir;
@@ -15,11 +16,13 @@ public class CameraController : MonoBehaviour {
     void Update() {
         PlayerInput();
         transform.position += _dir * _speed * Time.deltaTime;
-        _camera.orthographicSize += _scrollAmount * _scrollMultiplier * Time.deltaTime;
+        if (is2D) _camera.orthographicSize += _scrollAmount * _scrollMultiplier * Time.deltaTime;
+        else transform.position += new Vector3(0, _scrollAmount * _scrollMultiplier * Time.deltaTime, 0);
     }
 
     private void PlayerInput() {
-        _dir = new Vector3(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+        if (is2D) _dir = new Vector3(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+        else _dir = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical"));
         _scrollAmount = Input.mouseScrollDelta.y;
     }
     public void ChangeSpeed(float v) {

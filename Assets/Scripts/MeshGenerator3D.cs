@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using MyUtils.Structs;
@@ -5,14 +6,17 @@ using UnityEngine;
 
 public class MeshGenerator3D : MonoBehaviour {
 
-
+    public static MeshGenerator3D _instance;
     public NoiseGeneration noiseGeneration;
-    public MeshFilter meshFilter;
-    public MeshRenderer meshRenderer;
     public WeightedNoiseSetting[] ws;
     public AnimationCurve hCurve;
     public Material _sourceMaterial;
     public BiomeSO _biome;
+    private GameObject chunkHolder;
+
+    void Awake() {
+        _instance = this;
+    }
     void Start() {
         noiseGeneration = NoiseGeneration._instance;
         noiseGeneration._onNoiseGenerationCompleat += GenerateTerrainMesh;
@@ -21,8 +25,23 @@ public class MeshGenerator3D : MonoBehaviour {
     public void GenerateMesh() {
         noiseGeneration.GenerateNoise(ws);
     }
+    public void GenerateMesh(WeightedNoiseSetting[] ws, uint seed, int chunkSize) {
+        if (chunkHolder == null) chunkHolder = new("Chunk holder");
+        else {
+            Destroy(chunkHolder);
+            chunkHolder = new("Chunk holder");
+        }
+        NoiseGeneration.seed = seed;
+        for (int i = 0; i < chunkSize; i++) {
+            for (int j = 0; j < chunkSize; j++) {
+                noiseGeneration.GenerateNoise(ws, new Vector2Int(i * ws[0].noiseSetting.mapSize, j * ws[0].noiseSetting.mapSize));
+            }
+        }
+
+    }
 
     public void GenerateTerrainMesh(float[,] heightMap, Vector2Int offset) {
+
         int mapSize = heightMap.GetLength(0);
         float topLeftX = (mapSize - 1) / -2f;
         float topLeftZ = (mapSize - 1) / 2f;
@@ -59,9 +78,11 @@ public class MeshGenerator3D : MonoBehaviour {
         colorTexture.SetPixels(colors);
         colorTexture.Apply();
 
-
-        (meshRenderer.material = new Material(_sourceMaterial)).mainTexture = colorTexture;
-        meshFilter.mesh = meshData.CreateMesh();
+        GameObject meshDisplay = new("MeshDisplay", new System.Type[2] { typeof(MeshRenderer), typeof(MeshFilter) });
+        meshDisplay.transform.position = new Vector3(offset.x, 0, offset.y);
+        (meshDisplay.GetComponent<MeshRenderer>().material = new Material(_sourceMaterial)).mainTexture = colorTexture;
+        meshDisplay.GetComponent<MeshFilter>().mesh = meshData.CreateMesh();
+        meshDisplay.transform.SetParent(chunkHolder.transform);
 
     }
 }

@@ -19,10 +19,12 @@ public class UI_Handler : MonoBehaviour {
     public bool useMultipleLayer;
     private WorldGeneration _worldGenerator;
     private int index = 0;
+    public bool render3d;
     private List<UI_LayerHandler> layers = new();
     void Start() {
         _worldGenerator = WorldGeneration._instance;
         if (useMultipleLayer) CreateNewLayer();
+        NextLayer();
     }
 
 
@@ -55,17 +57,16 @@ public class UI_Handler : MonoBehaviour {
         };
         uint seed = uint.Parse(seedText.text);
         int chunkSize = int.Parse(chunkMapSizeText.text);
-        _worldGenerator.GenerateChunks(wS, seed, chunkSize);
+        if (render3d) MeshGenerator3D._instance.GenerateMesh(wS, seed, chunkSize);
+        else _worldGenerator.GenerateChunks(wS, seed, chunkSize);
     }
 
 
     public void CreateNewLayer() {
         UI_LayerHandler l = Instantiate(layerPrefab, layerHandler).GetComponent<UI_LayerHandler>();
         layers.Add(l);
+        l.gameObject.SetActive(false);
         l.Setup(layers.Count - 1);
-    }
-    public void DeleteLayer(int index) {
-        layers.RemoveAt(index);
     }
     public void NextLayer() {
         layers[index].gameObject.SetActive(false);
@@ -74,7 +75,10 @@ public class UI_Handler : MonoBehaviour {
         layers[index].gameObject.SetActive(true);
     }
     public void PreviousLayer() {
-
+        layers[index].gameObject.SetActive(false);
+        index--;
+        if (index <= 0) index = layers.Count - 1;
+        layers[index].gameObject.SetActive(true);
     }
     public void DestroyWorld() {
         _worldGenerator.DestroyWorld();
