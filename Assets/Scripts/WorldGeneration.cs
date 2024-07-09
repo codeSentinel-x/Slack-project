@@ -9,7 +9,7 @@ public class WorldGeneration : MonoBehaviour {
 
     public enum WorldGenerationMode {
         Normal,
-        ChunkAsSquareWithTexture
+        ChunkAsSquareWithTextureNormal,
     }
     public static WorldGeneration _instance;
     public static int chunkSize;
@@ -27,6 +27,9 @@ public class WorldGeneration : MonoBehaviour {
     public Transform[,] chunks;
     private NoiseGeneration noiseGen;
     public GameObject chunkHolder;
+    public WeightedNoiseSetting[] ws;
+    public bool genWs;
+
     void Awake() {
         _instance = this;
     }
@@ -46,11 +49,22 @@ public class WorldGeneration : MonoBehaviour {
         chunks = new Transform[chunkSize, chunkSize];
 
         if (_changeSeed) NoiseGeneration.RefreshSeed();
-        for (int i = 0; i < _mapSizeInChunk; i++) {
-            for (int j = 0; j < _mapSizeInChunk; j++) {
-                noiseGen.GenerateNoise(_noiseSetting, defaultCurve, new Vector2Int(i * _noiseSetting.mapSize, j * _noiseSetting.mapSize));
+        if (genWs) {
+            for (int i = 0; i < _mapSizeInChunk; i++) {
+                for (int j = 0; j < _mapSizeInChunk; j++) {
+                    noiseGen.GenerateNoise(ws, new Vector2Int(i * _noiseSetting.mapSize, j * _noiseSetting.mapSize));
+                }
             }
         }
+        else {
+            for (int i = 0; i < _mapSizeInChunk; i++) {
+                for (int j = 0; j < _mapSizeInChunk; j++) {
+                    noiseGen.GenerateNoise(_noiseSetting, defaultCurve, new Vector2Int(i * _noiseSetting.mapSize, j * _noiseSetting.mapSize));
+                }
+            }
+        }
+
+
     }
     public void GenerateChunks(NoiseSetting nS, uint seed, int chunkSize) {
         if (chunkHolder == null) chunkHolder = new("Chunk holder");

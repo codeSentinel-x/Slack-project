@@ -29,6 +29,11 @@ public class NoiseGeneration : MonoBehaviour {
         if (offset == default) offset = Vector2Int.zero;
         StartCoroutine(GenerateNoiseCoroutine(nS, fS, aC, offset)); //With falloff
     }
+    public void GenerateNoise(WeightedNoiseSetting[] ws, Vector2Int offset = default) {
+        if (offset == default) offset = Vector2Int.zero;
+        StartCoroutine(GenerateMultipleNoise(ws, offset)); //With falloff
+    }
+
     private IEnumerator GenerateNoiseCoroutine(NoiseSetting nS, AnimationCurve heightCurve, Vector2Int offset) {
         NativeArray<float> _noiseMapResult = new(nS.mapSize * nS.mapSize, Allocator.TempJob);
 
@@ -95,6 +100,36 @@ public class NoiseGeneration : MonoBehaviour {
         _onNoiseGenerationCompleat?.Invoke(generatedResult, offset);
     }
 
+    private IEnumerator GenerateMultipleNoise(WeightedNoiseSetting[] weightedNoiseSettings, Vector2Int offset) {
+        float[,] finalResult = new float[weightedNoiseSettings[0].noiseSetting.mapSize, weightedNoiseSettings[0].noiseSetting.mapSize];
+        foreach (WeightedNoiseSetting w in weightedNoiseSettings) {
+
+            NativeArray<float> _noiseMapResult = new(w.noiseSetting.mapSize * w.noiseSetting.mapSize, Allocator.TempJob);
+
+            GenerateEntireNoiseMapJob noiseGenJob = new() {
+                result = _noiseMapResult,
+                seed = seed,
+                nS = w.noiseSetting,
+                offset = new(offset.x, offset.y),
+            };
+
+            JobHandle _noiseJobH = noiseGenJob.Schedule();
+
+            _noiseJobH.Complete();
+
+            while (!_noiseJobH.IsCompleted) {
+                yield return new WaitForSeconds(0.5f);
+            }
+            for (int x = 0; x < finalResult.GetLength(0); x++) {
+                for (int y = 0; y < finalResult.GetLength(1); y++) {
+                    finalResult[x, y] += _noiseMapResult[x + w.noiseSetting.mapSize * y] * w.weight;
+                }
+            }
+
+            _noiseMapResult.Dispose();
+            _onNoiseGenerationCompleat?.Invoke(finalResult, offset);
+        }
+    }
     [BurstCompile]
     public struct GenerateEntireNoiseMapJob : IJob {
 
@@ -113,7 +148,7 @@ public class NoiseGeneration : MonoBehaviour {
             for (int i = 0; i < nS.octaves; i++) {
                 float x = rng.NextInt(-100000, 100000) + offset.x;
                 float y = rng.NextInt(-100000, 100000) + offset.y;
-                
+
                 maxPossibleH += amplitude;
                 amplitude *= nS.persistance;
                 octaveOffset[i] = new float2(x, y);
@@ -162,6 +197,7 @@ public class NoiseGeneration : MonoBehaviour {
 
 
     }
+
 
 
 

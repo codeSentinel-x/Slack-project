@@ -14,6 +14,11 @@ namespace MyUtils.Structs {
 
     }
     [Serializable]
+    public struct WeightedNoiseSetting {
+        public NoiseSetting noiseSetting;
+        public float weight;
+    }
+    [Serializable]
     public struct TerrainType {
         public Gradient gradient;
         public float h;
