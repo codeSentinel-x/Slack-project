@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Runtime.InteropServices;
 using MyUtils.Structs;
 using TMPro;
 using Unity.Android.Gradle.Manifest;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
@@ -72,16 +74,43 @@ public class UI_Handler : MonoBehaviour {
     public void SaveCurrentSetting() {
         NoiseSettingData data = GetNoiseData();
         string jsonData = JsonUtility.ToJson(data);
-        
+        using FileStream stream = new("Assets/Resources/NoiseSettings/Test.bak", FileMode.Create);
+        using StreamWriter writer = new(stream);
+        writer.Write(jsonData);
+        // Resources.
     }
     public void LoadSetting() {
+        NoiseSettingData loadedData;
+        string fullPath = "Assets/Resources/NoiseSettings/Test.bak";
+        if (File.Exists(fullPath)) {
 
+            string dataToLoad = "";
+            using (FileStream stream = new(fullPath, FileMode.Open)) {
+                using StreamReader reader = new(stream);
+                dataToLoad = reader.ReadToEnd();
+            }
+
+            loadedData = JsonUtility.FromJson<NoiseSettingData>(dataToLoad);
+            layers.ForEach((x) => Destroy(x.gameObject));
+            layers.Clear();
+            layers = new();
+            foreach (var w in loadedData.settings) {
+                CreateNewLayer(w.noiseSetting.scale, w.noiseSetting.octaves, w.noiseSetting.persistance, w.noiseSetting.lacunarity, w.weight);
+            }
+            layers[0].gameObject.SetActive(true);
+        }
     }
     public void CreateNewLayer() {
         UI_LayerHandler l = Instantiate(layerPrefab, layerHandler).GetComponent<UI_LayerHandler>();
         layers.Add(l);
         l.gameObject.SetActive(false);
         l.Setup(layers.Count - 1);
+    }
+    public void CreateNewLayer(float scale, int octaves, float persistance, float lacunarity, float weight) {
+        UI_LayerHandler l = Instantiate(layerPrefab, layerHandler).GetComponent<UI_LayerHandler>();
+        layers.Add(l);
+        l.gameObject.SetActive(false);
+        l.Setup(layers.Count - 1, scale, octaves, persistance, lacunarity, weight);
     }
     public void NextLayer() {
         layers[index].gameObject.SetActive(false);
