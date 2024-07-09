@@ -35,10 +35,8 @@ public class WorldGeneration : MonoBehaviour {
         _instance = this;
     }
     void Start() {
-
         noiseGen = NoiseGeneration._instance;
         noiseGen._onNoiseGenerationCompleat += GenerateChunk;
-        noiseGen._onPartOfNoiseGenerationCompleat += GenerateChunkPart;
     }
 
 
@@ -136,6 +134,7 @@ public class WorldGeneration : MonoBehaviour {
             for (int y = 0; y < mapSize; y++) {
                 for (int x = 0; x < mapSize; x++) {
                     float h = obj[x, y];
+                    h = Mathf.Clamp01(h);
                     for (int i = 0; i < _biome.terrainTypes.Length; i++) {
                         if (_biome.terrainTypes[i].h >= h) {
                             float minH = i == 0 ? 0f : _biome.terrainTypes[i - 1].h;
@@ -145,7 +144,6 @@ public class WorldGeneration : MonoBehaviour {
                             cT.chunkH[x, y].h = h;
                             cT.chunkH[x, y].name = _biome.terrainTypes[i].name;
                             break;
-
                         }
                     }
 
@@ -160,54 +158,11 @@ public class WorldGeneration : MonoBehaviour {
 
             (chunk.GetComponent<MeshRenderer>().material = new Material(_sourceMaterial)).mainTexture = colorTexture;
 
-            // chunks[start.x / chunkSize, start.y / chunkSize] = chunk.transform;
+            chunks[start.x / chunkSize, start.y / chunkSize] = chunk.transform;
             chunk.transform.parent = chunkHolder.transform;
         }
     }
-    private void GenerateChunkPart(float[,] obj, Vector2Int start) {
-        if (chunkHolder == null) chunkHolder = new("Chunk holder");
-        else {
-            Destroy(chunkHolder);
-            chunkHolder = new("Chunk holder");
-        }
-        int mapSize = obj.GetLength(0);
-        chunkSize = mapSize;
-        GameObject chunk = Instantiate(_chunkPrefab, new Vector3(start.x + mapSize / 2, start.y + mapSize / 2), Quaternion.identity).gameObject;
-        ChunkController cT = chunk.GetComponent<ChunkController>();
-        cT.chunkH = new ChunkItem[obj.GetLength(0), obj.GetLength(1)];
-        chunk.transform.localScale = new Vector3(mapSize, mapSize, 1);
-        Texture2D colorTexture = new(mapSize, mapSize);
-        Color[] chunkColors = new Color[mapSize * mapSize];
-        for (int y = 0; y < mapSize; y++) {
-            for (int x = 0; x < mapSize; x++) {
-                float h = obj[x, y];
-                for (int i = 0; i < _biome.terrainTypes.Length; i++) {
-                    if (_biome.terrainTypes[i].h >= h) {
-                        float minH = i == 0 ? 0f : _biome.terrainTypes[i - 1].h;
-                        float maxH = _biome.terrainTypes[i].h;
-                        float localH = Mathf.InverseLerp(minH, maxH, h);
-                        chunkColors[y * mapSize + x] = _biome.terrainTypes[i].gradient.Evaluate(localH);
-                        cT.chunkH[x, y].h = h;
-                        cT.chunkH[x, y].name = _biome.terrainTypes[i].name;
-                        break;
 
-                    }
-                }
-
-            }
-        }
-
-        colorTexture.wrapMode = TextureWrapMode.Clamp;
-        colorTexture.filterMode = FilterMode.Point;
-        colorTexture.SetPixels(chunkColors);
-        colorTexture.Apply();
-
-
-        (chunk.GetComponent<MeshRenderer>().material = new Material(_sourceMaterial)).mainTexture = colorTexture;
-
-        // chunks[start.x / chunkSize, start.y / chunkSize] = chunk.transform;
-        chunk.transform.parent = chunkHolder.transform;
-    }
 }
 
 

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using MyUtils.Structs;
 using TMPro;
+using Unity.Android.Gradle.Manifest;
+using UnityEditor;
 using UnityEngine;
 
 public class UI_Handler : MonoBehaviour {
@@ -19,13 +21,13 @@ public class UI_Handler : MonoBehaviour {
     public bool useMultipleLayer;
     private WorldGeneration _worldGenerator;
     private int index = 0;
-    public bool render3d;
     private List<UI_LayerHandler> layers = new();
     void Start() {
         _worldGenerator = WorldGeneration._instance;
         if (useMultipleLayer) CreateNewLayer();
         NextLayer();
     }
+
 
 
     public void GenerateWorld() {
@@ -41,6 +43,18 @@ public class UI_Handler : MonoBehaviour {
         _worldGenerator.GenerateChunks(setting, seed, chunkSize);
     }
     public void GenerateWorldMultipleLayer() {
+        NoiseSettingData nD = GetNoiseData();
+        _worldGenerator.GenerateChunks(nD.settings, nD.seed, nD.chunkSize);
+    }
+    public NoiseSettingData GetNoiseData() {
+        NoiseSettingData data = new() {
+            settings = GetWeightedNoiseArray(),
+            seed = uint.Parse(seedText.text),
+            chunkSize = int.Parse(chunkMapSizeText.text),
+        };
+        return data;
+    }
+    public WeightedNoiseSetting[] GetWeightedNoiseArray() {
         WeightedNoiseSetting[] wS = new WeightedNoiseSetting[layers.Count];
         for (int i = 0; i < wS.Length; i++) {
             wS[i].noiseSetting = new NoiseSetting() {
@@ -49,19 +63,20 @@ public class UI_Handler : MonoBehaviour {
                 octaves = int.Parse(layers[i].octavesText.text),
                 persistance = float.Parse(layers[i].persistanceText.text.Replace(',', '.'), System.Globalization.CultureInfo.InvariantCulture),
                 lacunarity = float.Parse(layers[i].lacunarityText.text.Replace(',', '.'), System.Globalization.CultureInfo.InvariantCulture)
-
             };
             wS[i].weight = float.Parse(layers[i].weightText.text.Replace(',', '.'), System.Globalization.CultureInfo.InvariantCulture);
         }
-        NoiseSetting setting = new() {
-        };
-        uint seed = uint.Parse(seedText.text);
-        int chunkSize = int.Parse(chunkMapSizeText.text);
-        if (render3d) MeshGenerator3D._instance.GenerateMesh(wS, seed, chunkSize);
-        else _worldGenerator.GenerateChunks(wS, seed, chunkSize);
+        return wS;
     }
 
+    public void SaveCurrentSetting() {
+        NoiseSettingData data = GetNoiseData();
+        string jsonData = JsonUtility.ToJson(data);
+        
+    }
+    public void LoadSetting() {
 
+    }
     public void CreateNewLayer() {
         UI_LayerHandler l = Instantiate(layerPrefab, layerHandler).GetComponent<UI_LayerHandler>();
         layers.Add(l);
@@ -77,11 +92,11 @@ public class UI_Handler : MonoBehaviour {
     public void PreviousLayer() {
         layers[index].gameObject.SetActive(false);
         index--;
-        if (index <= 0) index = layers.Count - 1;
+        if (index < 0) index = layers.Count - 1;
         layers[index].gameObject.SetActive(true);
     }
     public void DestroyWorld() {
         _worldGenerator.DestroyWorld();
     }
-    // public void 
+
 }

@@ -13,7 +13,6 @@ public class NoiseGeneration : MonoBehaviour {
     public static NoiseGeneration _instance;
     public static uint seed = 768754;
     public Action<float[,], Vector2Int> _onNoiseGenerationCompleat;
-    public Action<float[,], Vector2Int> _onPartOfNoiseGenerationCompleat;
 
     void Awake() {
         _instance = this;
@@ -38,7 +37,7 @@ public class NoiseGeneration : MonoBehaviour {
     private IEnumerator GenerateNoiseCoroutine(NoiseSetting nS, AnimationCurve heightCurve, Vector2Int offset) {
         NativeArray<float> _noiseMapResult = new(nS.mapSize * nS.mapSize, Allocator.TempJob);
 
-        GenerateEntireNoiseMapJob noiseGenJob = new() {
+        GenerateNoiseMapJob noiseGenJob = new() {
             result = _noiseMapResult,
             seed = seed,
             nS = nS,
@@ -67,7 +66,7 @@ public class NoiseGeneration : MonoBehaviour {
 
         NativeArray<float> _noiseMapResult = new(nS.mapSize * nS.mapSize, Allocator.TempJob);
         NativeArray<float> _falloffMapResult = new(nS.mapSize * nS.mapSize, Allocator.TempJob);
-        GenerateEntireNoiseMapJob noiseGenJob = new() {
+        GenerateNoiseMapJob noiseGenJob = new() {
             result = _noiseMapResult,
             seed = seed,
             nS = nS,
@@ -107,7 +106,7 @@ public class NoiseGeneration : MonoBehaviour {
             if (w.weight == 0) continue;
             NativeArray<float> _noiseMapResult = new(w.noiseSetting.mapSize * w.noiseSetting.mapSize, Allocator.TempJob);
 
-            GenerateEntireNoiseMapJob noiseGenJob = new() {
+            GenerateNoiseMapJob noiseGenJob = new() {
                 result = _noiseMapResult,
                 seed = seed,
                 nS = w.noiseSetting,
@@ -128,7 +127,6 @@ public class NoiseGeneration : MonoBehaviour {
             }
 
             _noiseMapResult.Dispose();
-            _onPartOfNoiseGenerationCompleat?.Invoke(finalResult, offset);
         }
         _onNoiseGenerationCompleat?.Invoke(finalResult, offset);
 
@@ -139,7 +137,7 @@ public class NoiseGeneration : MonoBehaviour {
         return Mathf.InverseLerp(0, allWeight, v);
     }
     [BurstCompile]
-    public struct GenerateEntireNoiseMapJob : IJob {
+    public struct GenerateNoiseMapJob : IJob {
 
         public NativeArray<float> result;
         public NoiseSetting nS;

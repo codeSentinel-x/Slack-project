@@ -36,7 +36,12 @@ namespace MyUtils.Structs {
         public float h;
     }
 
+    public struct BiomeType {
+        public string name;
+        public float temperature;
+        public BiomeSO biomeSO;
 
 
+    }
 
 }
