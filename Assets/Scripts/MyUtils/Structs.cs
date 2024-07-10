@@ -28,6 +28,7 @@ namespace MyUtils.Structs {
         public Gradient gradient;
         public float h;
         public string name;
+        public bool isWalkable;
     }
 
     [Serializable]
@@ -39,6 +40,7 @@ namespace MyUtils.Structs {
     public struct ChunkItem {
         public string name;
         public float h;
+        public bool isWalkable;
     }
 
     public struct BiomeType {

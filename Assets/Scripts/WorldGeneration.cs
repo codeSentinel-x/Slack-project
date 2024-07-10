@@ -79,6 +79,7 @@ public class WorldGeneration : MonoBehaviour {
                         chunkColors[y * chunkSize + x] = _biome.terrainTypes[i].gradient.Evaluate(localH);
                         cT.chunkH[x, y].h = h;
                         cT.chunkH[x, y].name = _biome.terrainTypes[i].name;
+                        cT.chunkH[x, y].isWalkable = _biome.terrainTypes[i].isWalkable;
                         break;
                     }
                 }
