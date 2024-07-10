@@ -60,7 +60,7 @@ public class UI_Handler : MonoBehaviour {
         MultipleLayerNoiseSetting mLNS = new() {
             weightedNoiseSettings = new WeightedNoiseSetting[layers.Count],
             chunkSize = int.Parse(chunkSizeText.text),
-
+            chunkCount = int.Parse(chunkCountText.text),
         };
         for (int i = 0; i < mLNS.weightedNoiseSettings.Length; i++) {
             mLNS.weightedNoiseSettings[i].noiseSetting = new NoiseSetting() {

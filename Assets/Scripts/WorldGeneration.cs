@@ -7,29 +7,17 @@ using Unity.VisualScripting;
 using UnityEngine;
 
 public class WorldGeneration : MonoBehaviour {
-
-    /*public enum WorldGenerationMode {
-        Normal,
-        ChunkAsSquareWithTextureNormal,
-    }*/
     public static WorldGeneration _instance;
+    public static MultipleLayerNoiseSetting currentSettings;
     public static int chunkSize;
-    public NoiseSetting _noiseSetting;
-    //public WorldGenerationMode _mode;
-    public FalloffSetting _falloffSetting;
-    public BiomeSO _biome;
-    public int _sizeCount;
-    public bool _applyFalloff;
-    public bool _changeSeed;
-    // public Transform _prefab;
+
+    [SerializeField] private BiomeSO _biome;
     public Transform _chunkPrefab;
     public Material _sourceMaterial;
-    // public AnimationCurve defaultCurve;
-    public Transform[,] chunks;
+    public Dictionary<Vector2Int, GameObject> chunks = new();
     private NoiseGeneration noiseGen;
     public GameObject chunkHolder;
-    // public WeightedNoiseSetting[] ws;
-    // public bool genWs;
+
 
     void Awake() {
         _instance = this;
@@ -39,91 +27,38 @@ public class WorldGeneration : MonoBehaviour {
         noiseGen._onNoiseGenerationCompleat += GenerateChunk;
     }
 
-
-    /*public void GenerateChunks() {
-        if (chunkHolder == null) chunkHolder = new("Chunk holder");
-        else {
-            Destroy(chunkHolder);
-            chunkHolder = new("Chunk holder");
-        }
-        chunks = new Transform[chunkSize, chunkSize];
-
-        if (_changeSeed) NoiseGeneration.RefreshSeed();
-        if (genWs) {
-            for (int i = 0; i < _sizeCount; i++) {
-                for (int j = 0; j < _sizeCount; j++) {
-                    noiseGen.GenerateNoise(ws, new Vector2Int(i * ws[0].noiseSetting.mapSize, j * ws[0].noiseSetting.mapSize));
-                }
-            }
-        }
-        else {
-            for (int i = 0; i < _sizeCount; i++) {
-                for (int j = 0; j < _sizeCount; j++) {
-                    noiseGen.GenerateNoise(_noiseSetting, defaultCurve, new Vector2Int(i * _noiseSetting.mapSize, j * _noiseSetting.mapSize));
-                }
-            }
-        }
-
-
-    }*/
-    /*public void GenerateChunks(NoiseSetting nS, uint seed, int chunkSize) {
-        if (chunkHolder == null) chunkHolder = new("Chunk holder");
-        else {
-            Destroy(chunkHolder);
-            chunkHolder = new("Chunk holder");
-        }
-        chunks = new Transform[chunkSize, chunkSize];
-
-        NoiseGeneration.seed = seed;
-        for (int i = 0; i < chunkSize; i++) {
-            for (int j = 0; j < chunkSize; j++) {
-                noiseGen.GenerateNoise(nS, defaultCurve, new Vector2Int(i * nS.mapSize, j * nS.mapSize));
-            }
-        }
-    }*/
     public void GenerateChunks(MultipleLayerNoiseSetting mLNS, uint seed) {
         if (chunkHolder == null) chunkHolder = new("Chunk holder");
         else {
             Destroy(chunkHolder);
             chunkHolder = new("Chunk holder");
         }
-        chunks = new Transform[mLNS.chunkSize, mLNS.chunkSize];
+
+        // chunks = new Transform[mLNS.chunkSize, mLNS.chunkSize];
 
         NoiseGeneration.seed = seed;
-        for (int i = 0; i < mLNS.chunkSize; i++) {
-            for (int j = 0; j < mLNS.chunkSize; j++) {
-                noiseGen.GenerateNoise(mLNS, new Vector2Int(i * mLNS.chunkCount, j * mLNS.chunkCount));
+        currentSettings = mLNS;
+        for (int i = 0; i < mLNS.chunkCount; i++) {
+            for (int j = 0; j < mLNS.chunkCount; j++) {
+                noiseGen.GenerateNoise(mLNS, new Vector2Int(i * mLNS.chunkSize, j * mLNS.chunkSize));
             }
         }
+
     }
+    public void GenerateChunkAt() {
+
+    }
+    public void DestroyChunkAt() {
+
+    }
+
     public void DestroyWorld() {
         if (chunkHolder != null) Destroy(chunkHolder);
     }
     private void GenerateChunk(float[,] obj, Vector2Int start) {
         if (chunkHolder == null) return;
-        /*if (_mode == WorldGenerationMode.Normal) {
-            GameObject chunkHolder = new(start.ToString());
-            chunkHolder.transform.parent = this.chunkHolder.transform;
-            for (int x = 0; x < obj.GetLength(0); x++) {
-                for (int y = 0; y < obj.GetLength(1); y++) {
-                    Transform t = Instantiate(_prefab, start + new Vector2(x, y), Quaternion.identity);
-                    SpriteRenderer sprR = t.GetComponent<SpriteRenderer>();
-                    t.parent = chunkHolder.transform;
-                    float h = obj[x, y];
-                    for (int i = 0; i < _biome.terrainTypes.Length; i++) {
-                        if (_biome.terrainTypes[i].h >= h) {
-                            float minH = i == 0 ? 0f : _biome.terrainTypes[i - 1].h;
-                            float maxH = i == _biome.terrainTypes.Length - 1 ? 1 : _biome.terrainTypes[i + 1].h;
-                            float localH = Mathf.InverseLerp(minH, maxH, h);
-                            sprR.color = _biome.terrainTypes[i].gradient.Evaluate(localH);
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-        else {*/
-        chunkSize = obj.GetLength(0);;
+
+        chunkSize = obj.GetLength(0); ;
         GameObject chunk = Instantiate(_chunkPrefab, new Vector3(start.x + chunkSize / 2, start.y + chunkSize / 2), Quaternion.identity).gameObject;
         ChunkController cT = chunk.GetComponent<ChunkController>();
         cT.chunkH = new ChunkItem[obj.GetLength(0), obj.GetLength(1)];
@@ -157,9 +92,9 @@ public class WorldGeneration : MonoBehaviour {
 
         (chunk.GetComponent<MeshRenderer>().material = new Material(_sourceMaterial)).mainTexture = colorTexture;
 
-        chunks[start.x / chunkSize, start.y / chunkSize] = chunk.transform;
+        chunks.Add(start, chunk);
         chunk.transform.parent = chunkHolder.transform;
-        //}
+
     }
 
 }
