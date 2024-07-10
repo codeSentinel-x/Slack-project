@@ -13,7 +13,8 @@ public class WorldGeneratorEditor : Editor {
             //Maybe later
         }
         if (GUILayout.Button("Regenerate chunks")) {
-            worldGen.GenerateChunks();
+            // worldGen.GenerateChunks();
+            Debug.Log("Nuh uh");
         }
     }
 

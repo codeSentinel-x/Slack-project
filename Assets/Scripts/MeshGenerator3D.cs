@@ -7,7 +7,7 @@ using UnityEngine;
 public class MeshGenerator3D : MonoBehaviour {
 
     
-    public static MeshGenerator3D _instance;
+    /*public static MeshGenerator3D _instance;
     public NoiseGeneration noiseGeneration;
     public WeightedNoiseSetting[] ws;
     public AnimationCurve hCurve;
@@ -120,6 +120,6 @@ public class MeshData {
         };
         mesh.RecalculateNormals();
         return mesh;
-    }
+    }*/
 
 }

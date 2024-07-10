@@ -29,13 +29,12 @@ public class UI_SaveSystem : MonoBehaviour {
     }
     public void CreateMenu() {
         foreach (string name in SaveSystem.GetAllFileNameFromDirectory(SaveSystem.NOISE_SETTING_DEFAULT_SAVE_PATH)) {
-            Debug.Log('s');
             Instantiate(LoadMenuPrefab, savesHolder).GetComponent<UI_SavePanel>().Setup(name);
         }
     }
     public void SaveSetting() {
         UI_Handler._instance.SaveCurrentSetting(saveNameInput.text);
-        Debug.Log(SaveSystem.PERSISTANCE_DATA_PATH + " + " + SaveSystem.NOISE_SETTING_DEFAULT_SAVE_PATH);
+        // Debug.Log(SaveSystem.PERSISTANCE_DATA_PATH + " + " + SaveSystem.NOISE_SETTING_DEFAULT_SAVE_PATH);
     }
 
 }

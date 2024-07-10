@@ -18,22 +18,22 @@ public class NoiseGeneration : MonoBehaviour {
         _instance = this;
     }
     public static void RefreshSeed() {
-        seed = (uint)UnityEngine.Random.Range(1, 1000000);
+        seed = (uint)UnityEngine.Random.Range(uint.MinValue, uint.MaxValue);
     }
 
-    public void GenerateNoise(NoiseSetting nS, AnimationCurve aC, Vector2Int offset = default) {
+    /*public void GenerateNoise(NoiseSetting nS, AnimationCurve aC, Vector2Int offset = default) {
         if (offset == default) offset = Vector2Int.zero;
         StartCoroutine(GenerateNoiseCoroutine(nS, aC, offset)); //Without falloff
     }
     public void GenerateNoise(NoiseSetting nS, FalloffSetting fS, AnimationCurve aC, Vector2Int offset = default) {
         if (offset == default) offset = Vector2Int.zero;
         StartCoroutine(GenerateNoiseCoroutine(nS, fS, aC, offset)); //With falloff
-    }
-    public void GenerateNoise(WeightedNoiseSetting[] ws, Vector2Int offset = default) {
+    }*/
+    public void GenerateNoise(MultipleLayerNoiseSetting mLNS, Vector2Int offset = default) {
         if (offset == default) offset = Vector2Int.zero;
-        StartCoroutine(GenerateMultipleNoise(ws, offset));
+        StartCoroutine(GenerateMultipleNoise(mLNS, offset));
     }
-
+    /*
     private IEnumerator GenerateNoiseCoroutine(NoiseSetting nS, AnimationCurve heightCurve, Vector2Int offset) {
         NativeArray<float> _noiseMapResult = new(nS.mapSize * nS.mapSize, Allocator.TempJob);
 
@@ -99,12 +99,12 @@ public class NoiseGeneration : MonoBehaviour {
         _falloffMapResult.Dispose();
         _onNoiseGenerationCompleat?.Invoke(generatedResult, offset);
     }
-
-    private IEnumerator GenerateMultipleNoise(WeightedNoiseSetting[] weightedNoiseSettings, Vector2Int offset) {
-        float[,] finalResult = new float[weightedNoiseSettings[0].noiseSetting.mapSize, weightedNoiseSettings[0].noiseSetting.mapSize];
-        foreach (WeightedNoiseSetting w in weightedNoiseSettings) {
+    */
+    private IEnumerator GenerateMultipleNoise(MultipleLayerNoiseSetting mLNS, Vector2Int offset) {
+        float[,] finalResult = new float[mLNS.chunkSize, mLNS.chunkSize];
+        foreach (WeightedNoiseSetting w in mLNS.weightedNoiseSettings) {
             if (w.weight == 0) continue;
-            NativeArray<float> _noiseMapResult = new(w.noiseSetting.mapSize * w.noiseSetting.mapSize, Allocator.TempJob);
+            NativeArray<float> _noiseMapResult = new(mLNS.chunkSize * mLNS.chunkSize, Allocator.TempJob);
 
             GenerateNoiseMapJob noiseGenJob = new() {
                 result = _noiseMapResult,
@@ -122,7 +122,7 @@ public class NoiseGeneration : MonoBehaviour {
             }
             for (int x = 0; x < finalResult.GetLength(0); x++) {
                 for (int y = 0; y < finalResult.GetLength(1); y++) {
-                    finalResult[x, y] += _noiseMapResult[x + w.noiseSetting.mapSize * y] * GetNormalizedWeight(weightedNoiseSettings, w.weight);
+                    finalResult[x, y] += _noiseMapResult[x + mLNS.chunkSize * y] * GetNormalizedWeight(mLNS, w.weight);
                 }
             }
 
@@ -131,21 +131,22 @@ public class NoiseGeneration : MonoBehaviour {
         _onNoiseGenerationCompleat?.Invoke(finalResult, offset);
 
     }
-    private float GetNormalizedWeight(WeightedNoiseSetting[] ws, float v) {
+    private float GetNormalizedWeight(MultipleLayerNoiseSetting mLNS, float v) {
         float allWeight = 0f;
-        foreach (WeightedNoiseSetting w in ws) allWeight += w.weight;
+        foreach (WeightedNoiseSetting w in mLNS.weightedNoiseSettings) allWeight += w.weight;
         return Mathf.InverseLerp(0, allWeight, v);
     }
     [BurstCompile]
     public struct GenerateNoiseMapJob : IJob {
 
+        public int mapSize;
         public NativeArray<float> result;
         public NoiseSetting nS;
         public uint seed;
         public float2 offset;
         public void Execute() {
             Unity.Mathematics.Random rng = new(seed);
-            NativeArray<float2> octaveOffset = new(nS.mapSize * nS.mapSize, Allocator.Temp);
+            NativeArray<float2> octaveOffset = new(mapSize * mapSize, Allocator.Temp);
 
             float maxPossibleH = 0f;
             float amplitude = 1f;
@@ -163,16 +164,16 @@ public class NoiseGeneration : MonoBehaviour {
             float maxNoiseH = float.MinValue;
             float minNoiseH = float.MaxValue;
 
-            for (int y = 0; y < nS.mapSize; y++) {
-                for (int x = 0; x < nS.mapSize; x++) {
+            for (int y = 0; y < mapSize; y++) {
+                for (int x = 0; x < mapSize; x++) {
                     amplitude = 1f;
                     frequency = 1f;
                     float noiseH = 0f;
 
                     for (int i = 0; i < nS.octaves; i++) {
 
-                        float2 sample = new((x - (nS.mapSize / 2) + octaveOffset[i].x) / nS.scale * frequency,
-                                            (y - (nS.mapSize / 2) + octaveOffset[i].y) / nS.scale * frequency);
+                        float2 sample = new((x - (mapSize / 2) + octaveOffset[i].x) / nS.scale * frequency,
+                                            (y - (mapSize / 2) + octaveOffset[i].y) / nS.scale * frequency);
 
                         float perlinValue = Mathf.PerlinNoise(sample.x, sample.y) * 2 - 1;
                         noiseH += perlinValue * amplitude;
@@ -184,10 +185,10 @@ public class NoiseGeneration : MonoBehaviour {
                     if (noiseH > maxNoiseH) maxNoiseH = noiseH;
                     else if (noiseH < minNoiseH) minNoiseH = noiseH;
 
-                    result[x + y * nS.mapSize] = noiseH;
+                    result[x + y * mapSize] = noiseH;
 
-                    float normalizedHeight = (result[x + y * nS.mapSize] + 1) / (maxPossibleH / 0.9f);
-                    result[x + y * nS.mapSize] = Mathf.Clamp(normalizedHeight, 0, int.MaxValue);
+                    float normalizedHeight = (result[x + y * mapSize] + 1) / (maxPossibleH / 0.9f);
+                    result[x + y * mapSize] = Mathf.Clamp(normalizedHeight, 0, int.MaxValue);
                 }
             }
             // for (int y = 0; y < nS.mapSize; y++) {

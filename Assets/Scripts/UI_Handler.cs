@@ -9,13 +9,13 @@ using UnityEngine;
 public class UI_Handler : MonoBehaviour {
 
     public static UI_Handler _instance;
-    public TMP_InputField mapSizeText;
-    public TMP_InputField scaleText;
-    public TMP_InputField octavesText;
-    public TMP_InputField persistanceText;
-    public TMP_InputField lacunarityText;
+    public TMP_InputField chunkSizeText;
+    // public TMP_InputField scaleText;
+    // public TMP_InputField octavesText;
+    // public TMP_InputField persistanceText;
+    // public TMP_InputField lacunarityText;
     public TMP_InputField seedText;
-    public TMP_InputField chunkMapSizeText;
+    public TMP_InputField chunkCountText;
     public RectTransform layerHandler;
     public GameObject layerPrefab;
     public bool useMultipleLayer;
@@ -32,44 +32,46 @@ public class UI_Handler : MonoBehaviour {
     }
 
 
-
+    /*
     public void GenerateWorld() {
         NoiseSetting setting = new() {
-            mapSize = int.Parse(mapSizeText.text),
             scale = float.Parse(scaleText.text.Replace(',', '.'), System.Globalization.CultureInfo.InvariantCulture),
             octaves = int.Parse(octavesText.text),
             persistance = float.Parse(persistanceText.text.Replace(',', '.'), System.Globalization.CultureInfo.InvariantCulture),
             lacunarity = float.Parse(lacunarityText.text.Replace(',', '.'), System.Globalization.CultureInfo.InvariantCulture)
         };
+        int mapSize = int.Parse(chunkSizeText.text);
         uint seed = uint.Parse(seedText.text);
-        int chunkSize = int.Parse(chunkMapSizeText.text);
-        _worldGenerator.GenerateChunks(setting, seed, chunkSize);
-    }
+        int chunkSize = int.Parse(chunkCountText.text);
+        // _worldGenerator.GenerateChunks(setting, seed, chunkSize, mapSize);
+    }*/
     public void GenerateWorldMultipleLayer() {
         NoiseSettingData nD = GetNoiseData();
-        _worldGenerator.GenerateChunks(nD.settings, nD.seed, nD.chunkSize);
+        _worldGenerator.GenerateChunks(nD.settings, nD.seed);
     }
     public NoiseSettingData GetNoiseData() {
         NoiseSettingData data = new() {
-            settings = GetWeightedNoiseArray(),
+            settings = GetMultipleNoiseSettingArray(),
             seed = uint.Parse(seedText.text),
-            chunkSize = int.Parse(chunkMapSizeText.text),
         };
         return data;
     }
-    public WeightedNoiseSetting[] GetWeightedNoiseArray() {
-        WeightedNoiseSetting[] wS = new WeightedNoiseSetting[layers.Count];
-        for (int i = 0; i < wS.Length; i++) {
-            wS[i].noiseSetting = new NoiseSetting() {
-                mapSize = int.Parse(mapSizeText.text),
+    public MultipleLayerNoiseSetting GetMultipleNoiseSettingArray() {
+        MultipleLayerNoiseSetting mLNS = new() {
+            weightedNoiseSettings = new WeightedNoiseSetting[layers.Count],
+            chunkSize = int.Parse(chunkSizeText.text),
+
+        };
+        for (int i = 0; i < mLNS.weightedNoiseSettings.Length; i++) {
+            mLNS.weightedNoiseSettings[i].noiseSetting = new NoiseSetting() {
                 scale = float.Parse(layers[i].scaleText.text.Replace(',', '.'), System.Globalization.CultureInfo.InvariantCulture),
                 octaves = int.Parse(layers[i].octavesText.text),
                 persistance = float.Parse(layers[i].persistanceText.text.Replace(',', '.'), System.Globalization.CultureInfo.InvariantCulture),
                 lacunarity = float.Parse(layers[i].lacunarityText.text.Replace(',', '.'), System.Globalization.CultureInfo.InvariantCulture)
             };
-            wS[i].weight = float.Parse(layers[i].weightText.text.Replace(',', '.'), System.Globalization.CultureInfo.InvariantCulture);
+            mLNS.weightedNoiseSettings[i].weight = float.Parse(layers[i].weightText.text.Replace(',', '.'), System.Globalization.CultureInfo.InvariantCulture);
         }
-        return wS;
+        return mLNS;
     }
 
     public void SaveCurrentSetting(string name) {
@@ -78,12 +80,23 @@ public class UI_Handler : MonoBehaviour {
     public void LoadSetting(string name) {
 
         NoiseSettingData loadedData = SaveSystem.Load<NoiseSettingData>(SaveSystem.NOISE_SETTING_DEFAULT_SAVE_PATH, name);
+
+        seedText.text = loadedData.seed.ToString();
+        seedText.onDeselect.Invoke(seedText.text);
+        chunkCountText.text = loadedData.settings.chunkCount.ToString();
+        chunkCountText.onDeselect.Invoke(chunkCountText.text);
+        chunkSizeText.text = loadedData.settings.chunkCount.ToString();
+        chunkSizeText.onDeselect.Invoke(chunkSizeText.text);
+
         layers.ForEach((x) => Destroy(x.gameObject));
         layers.Clear();
         layers = new();
-        foreach (var w in loadedData.settings) {
+
+        foreach (var w in loadedData.settings.weightedNoiseSettings) {
             CreateNewLayer(w.noiseSetting.scale, w.noiseSetting.octaves, w.noiseSetting.persistance, w.noiseSetting.lacunarity, w.weight);
         }
+
+        index = 0;
         layers[0].gameObject.SetActive(true);
 
     }
@@ -96,8 +109,10 @@ public class UI_Handler : MonoBehaviour {
     public void CreateNewLayer(float scale, int octaves, float persistance, float lacunarity, float weight) {
         UI_LayerHandler l = Instantiate(layerPrefab, layerHandler).GetComponent<UI_LayerHandler>();
         layers.Add(l);
-        l.gameObject.SetActive(false);
+        l.gameObject.SetActive(true);
         l.Setup(layers.Count - 1, scale, octaves, persistance, lacunarity, weight);
+        layers[index].gameObject.SetActive(false);
+        index = layers.Count - 1;
     }
     public void NextLayer() {
         layers[index].gameObject.SetActive(false);

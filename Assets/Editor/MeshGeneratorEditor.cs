@@ -13,7 +13,7 @@ public class MeshGeneratorEditor : Editor {
             //Maybe later
         }
         if (GUILayout.Button("Generate")) {
-            meshGen.GenerateMesh();
+            // meshGen.GenerateMesh();
         }
     }
 

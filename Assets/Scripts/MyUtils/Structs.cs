@@ -5,7 +5,6 @@ namespace MyUtils.Structs {
 
     [Serializable]
     public struct NoiseSetting {
-        public int mapSize;
         public float scale;
         public int octaves;
         public float persistance;
@@ -17,6 +16,12 @@ namespace MyUtils.Structs {
     public struct WeightedNoiseSetting {
         public NoiseSetting noiseSetting;
         public float weight;
+    }
+    [Serializable]
+    public struct MultipleLayerNoiseSetting {
+        public WeightedNoiseSetting[] weightedNoiseSettings;
+        public int chunkSize;
+        public int chunkCount;
     }
     [Serializable]
     public struct TerrainType {

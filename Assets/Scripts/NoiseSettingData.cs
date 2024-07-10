@@ -6,8 +6,6 @@ using UnityEngine;
 
 [Serializable]
 public class NoiseSettingData {
-    public WeightedNoiseSetting[] settings;
+    public MultipleLayerNoiseSetting settings;
     public uint seed;
-    public int chunkSize;
-    public int amount;
 }

@@ -26,7 +26,7 @@ public class UI_LayerHandler : MonoBehaviour {
         lacunarityText.text = lacunarity.ToString();
         weightText.text = weight.ToString();
         foreach (var t in GetComponentsInChildren<InputScrollUpdate>()) {
-            t.inputField.onValueChanged.Invoke(t.inputField.text);
+            t.inputField.onDeselect.Invoke(t.inputField.text);
         }
     }
 }
