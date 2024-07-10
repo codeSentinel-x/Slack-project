@@ -12,7 +12,7 @@ public class UI_SavePanel : MonoBehaviour {
     public void Setup(string name) {
         saveName.text = name;
         deleteButton.onClick.AddListener(() => {
-            SaveSystem.DeleteSave("NoiseSettings", name);
+            SaveSystem.DeleteSave(SaveSystem.NOISE_SETTING_DEFAULT_SAVE_PATH, name);
             UI_SaveSystem._instance.gameObject.SetActive(false);
         });
         loadButton.onClick.AddListener(() => {

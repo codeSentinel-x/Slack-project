@@ -16,9 +16,9 @@ public class UI_SaveSystem : MonoBehaviour {
     void Awake() {
         _instance = this;
     }
-    void Start() {
-        CreateMenu();
-    }
+    // void Start() {
+    //     CreateMenu();
+    // }
     public void Refresh() {
         foreach (var t in savesHolder.GetComponentsInChildren<Transform>()) {
             if (t.gameObject == null) continue;
@@ -28,15 +28,14 @@ public class UI_SaveSystem : MonoBehaviour {
         CreateMenu();
     }
     public void CreateMenu() {
-        foreach (var s in Directory.GetFiles("NoiseSettings", "*", SearchOption.TopDirectoryOnly)) {
-            if (s.EndsWith(".meta")) continue;
-            string name = s.TrimStart("NoiseSettings/".ToArray<Char>());
-            name = name.TrimEnd(new char[4] { '.', 'b', 'a', 'k' });
+        foreach (string name in SaveSystem.GetAllFileNameFromDirectory(SaveSystem.NOISE_SETTING_DEFAULT_SAVE_PATH)) {
+            Debug.Log('s');
             Instantiate(LoadMenuPrefab, savesHolder).GetComponent<UI_SavePanel>().Setup(name);
         }
     }
     public void SaveSetting() {
         UI_Handler._instance.SaveCurrentSetting(saveNameInput.text);
+        Debug.Log(SaveSystem.PERSISTANCE_DATA_PATH + " + " + SaveSystem.NOISE_SETTING_DEFAULT_SAVE_PATH);
     }
 
 }

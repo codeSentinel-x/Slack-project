@@ -4,9 +4,6 @@ using System.IO;
 using System.Runtime.InteropServices;
 using MyUtils.Structs;
 using TMPro;
-using Unity.Android.Gradle.Manifest;
-using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
 
 public class UI_Handler : MonoBehaviour {
@@ -25,7 +22,7 @@ public class UI_Handler : MonoBehaviour {
     private WorldGeneration _worldGenerator;
     private int index = 0;
     private List<UI_LayerHandler> layers = new();
-    void Awake(){
+    void Awake() {
         _instance = this;
     }
     void Start() {
@@ -76,11 +73,11 @@ public class UI_Handler : MonoBehaviour {
     }
 
     public void SaveCurrentSetting(string name) {
-        SaveSystem.Save<NoiseSettingData>("NoiseSettings", name, GetNoiseData());
+        SaveSystem.Save<NoiseSettingData>(SaveSystem.NOISE_SETTING_DEFAULT_SAVE_PATH, name, GetNoiseData());
     }
     public void LoadSetting(string name) {
 
-        NoiseSettingData loadedData = SaveSystem.Load<NoiseSettingData>("NoiseSettings", name);
+        NoiseSettingData loadedData = SaveSystem.Load<NoiseSettingData>(SaveSystem.NOISE_SETTING_DEFAULT_SAVE_PATH, name);
         layers.ForEach((x) => Destroy(x.gameObject));
         layers.Clear();
         layers = new();
