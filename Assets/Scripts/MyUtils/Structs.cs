@@ -50,5 +50,18 @@ namespace MyUtils.Structs {
 
 
     }
+    //TODO move this to Classes.cs 
+    public class PathFindingCellItem {
+        public int _x;
+        public int _y;
+        public ChunkItem _cell;
+        public PathFindingCellItem _previous;
+        public int _gCost;
+        public int _hCost;
+        public int _fCost;
+        public void CalculateFCost() {
+            _fCost = _hCost + _gCost;
+        }
+    }
 
 }
