@@ -15,9 +15,10 @@ public class WorldGeneration : MonoBehaviour {
     public Transform _chunkPrefab;
     public Material _sourceMaterial;
     public Dictionary<Vector2Int, GameObject> chunks = new();
+    public Dictionary<Vector2Int, GameObject> oldChunks = new();
     private NoiseGeneration noiseGen;
     public GameObject chunkHolder;
-
+    public Action<int> OnNoiseSettingChange;
 
     void Awake() {
         _instance = this;
@@ -35,18 +36,19 @@ public class WorldGeneration : MonoBehaviour {
         }
 
         // chunks = new Transform[mLNS.chunkSize, mLNS.chunkSize];
-
+        chunkSize = mLNS.chunkSize;
         NoiseGeneration.seed = seed;
         currentSettings = mLNS;
-        for (int i = 0; i < mLNS.chunkCount; i++) {
+        OnNoiseSettingChange?.Invoke(mLNS.chunkCount);
+        /*for (int i = 0; i < mLNS.chunkCount; i++) {
             for (int j = 0; j < mLNS.chunkCount; j++) {
                 noiseGen.GenerateNoise(mLNS, new Vector2Int(i * mLNS.chunkSize, j * mLNS.chunkSize));
             }
-        }
+        }*/
 
     }
-    public void GenerateChunkAt() {
-
+    public void GenerateChunkAt(Vector2Int offset) {
+        noiseGen.GenerateNoise(currentSettings, offset * chunkSize);
     }
     public void DestroyChunkAt() {
 
@@ -92,7 +94,8 @@ public class WorldGeneration : MonoBehaviour {
 
         (chunk.GetComponent<MeshRenderer>().material = new Material(_sourceMaterial)).mainTexture = colorTexture;
 
-        chunks.Add(start, chunk);
+        if (!chunks.ContainsKey(start)) chunks.Add(start, chunk);
+        else chunks[start] = chunk;
         chunk.transform.parent = chunkHolder.transform;
 
     }

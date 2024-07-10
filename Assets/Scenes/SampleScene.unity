@@ -3333,7 +3333,7 @@ MonoBehaviour:
   m_MinValue: 2
   m_MaxValue: 100
   m_WholeNumbers: 1
-  m_Value: 5
+  m_Value: 10
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -3650,7 +3650,7 @@ MonoBehaviour:
   m_CaretColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_CustomCaretColor: 0
   m_SelectionColor: {r: 0.65882355, g: 0.80784315, b: 1, a: 0.7529412}
-  m_Text: 10
+  m_Text: 1
   m_CaretBlinkRate: 0.85
   m_CaretWidth: 1
   m_ReadOnly: 0
@@ -4637,12 +4637,24 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1830010325}
   m_Direction: 0
   m_MinValue: 1
-  m_MaxValue: 100
+  m_MaxValue: 10
   m_WholeNumbers: 1
-  m_Value: 5
+  m_Value: 1
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1250761712}
+        m_TargetAssemblyTypeName: ChunkSystem, Assembly-CSharp
+        m_MethodName: ChangeRenderDist
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1154006899
 GameObject:
   m_ObjectHideFlags: 0
@@ -4761,7 +4773,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "10\u200B"
+  m_text: "1\u200B"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -4999,7 +5011,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Amount :'
+  m_text: 'Render dist :'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -5087,7 +5099,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1250761711}
-  - component: {fileID: 1250761710}
+  - component: {fileID: 1250761712}
   m_Layer: 0
   m_Name: ChunkController
   m_TagString: Untagged
@@ -5095,18 +5107,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1250761710
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1250761709}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b6958c8add0baff0a9cf8cf1d0c959f8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &1250761711
 Transform:
   m_ObjectHideFlags: 0
@@ -5122,6 +5122,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1250761712
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1250761709}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f73785b866ea47d0abed537fc26c3475, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lastChunkPosition: {x: 0, y: 0}
+  chunkRenderDistance: 1
 --- !u!1 &1253490442
 GameObject:
   m_ObjectHideFlags: 0
