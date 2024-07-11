@@ -95,8 +95,10 @@ public class WorldGeneration : MonoBehaviour {
 
         (chunk.GetComponent<MeshRenderer>().material = new Material(_sourceMaterial)).mainTexture = colorTexture;
 
-        if (!chunks.ContainsKey(start)) chunks.Add(start, chunk);
-        else chunks[start] = chunk;
+        if (!chunks.TryAdd(start / chunkSize, chunk)) {
+            chunks[start / chunkSize] = chunk;
+        }
+
         chunk.transform.parent = chunkHolder.transform;
 
     }

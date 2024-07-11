@@ -23,25 +23,24 @@ public class PathFinding {
         this.chunkSize = chunkSize;
     }
 
-    public PathFindingCellItem[,] GetCellsInRange(Vector2Int startPos, Vector2Int endPos, int viewRange, Dictionary<Vector2Int, GameObject> allChunks, int chunkSize) {
-
-        PathFindingCellItem[,] result = new PathFindingCellItem[viewRange * viewRange + 1, viewRange * viewRange + 1];
+    public PathFindingCellItem[,] GetCellsInRange(Vector2Int startPos, Vector2Int endPos) {
+        PathFindingCellItem[,] result = new PathFindingCellItem[2 * viewRange + 1, 2 * viewRange + 1];
         int cellPosX, cellPosY;
-        int chunkPosX, chunkPosY;
         for (int i = -viewRange; i <= viewRange; i++) {
             for (int j = -viewRange; j <= viewRange; j++) {
 
-                chunkPosX = Mathf.FloorToInt((startPos.x + i) / WorldGeneration.chunkSize);
-                chunkPosY = Mathf.FloorToInt((startPos.y + j) / WorldGeneration.chunkSize);
+                int chunkPosY = Mathf.FloorToInt((startPos.y + j) / chunkSize);
+                int chunkPosX = Mathf.FloorToInt((startPos.x + i) / chunkSize);
+                Debug.Log("Start pos = " + startPos.ToString() + "chunk size =" + chunkSize);
+                cellPosX = Mathf.FloorToInt(startPos.x - chunkPosX * chunkSize);
+                cellPosY = Mathf.FloorToInt(startPos.y - chunkPosY * chunkSize);
 
-                cellPosX = Mathf.FloorToInt(startPos.x - chunkPosX * WorldGeneration.chunkSize);
-                cellPosY = Mathf.FloorToInt(startPos.y - chunkPosY * WorldGeneration.chunkSize);
-
-                if (chunkPosX < 0 || chunkPosY < 0 || cellPosY < 0 || cellPosX < 0) {
+                if (chunkPosX < 0 || chunkPosY < 0) {
                     result[viewRange + i, viewRange + j] = null;
                     continue;
                 }
                 Vector2Int chunkPos = new(chunkPosX, chunkPosY);
+                Debug.Log("chunkPos = " + chunkPos);
                 if (allChunks.TryGetValue(chunkPos, out GameObject chunk)) {
                     if (chunk.TryGetComponent<ChunkController>(out var chunkController)) {
                         result[viewRange + i, viewRange + j] = new PathFindingCellItem() {
@@ -63,8 +62,7 @@ public class PathFinding {
         return result;
     }
     public List<PathFindingCellItem> FindPath(Vector2Int startPos, Vector2Int endPos) {
-        //this code block make errors because result[x + viewRange] is not equal result[x]
-        _gridOfCellItem = GetCellsInRange(startPos, endPos, viewRange, allChunks, chunkSize);
+        _gridOfCellItem = GetCellsInRange(startPos, endPos);
         PathFindingCellItem start = _gridOfCellItem[viewRange, viewRange];
         PathFindingCellItem end;
         try {
@@ -160,8 +158,8 @@ public class PathFinding {
     }
 
     private int CalculateDistance(PathFindingCellItem a, PathFindingCellItem b) {
-        int xDist = Mathf.Abs(a._x - b._x);
-        int yDist = Mathf.Abs(a._y - b._y);
+        int xDist = Mathf.Abs(a._worldPos.x - b._worldPos.x);
+        int yDist = Mathf.Abs(a._worldPos.y - b._worldPos.y);
         int remain = Mathf.Abs(xDist - yDist);
         return DIAGONAL_COST * Mathf.Min(xDist, yDist) + STRAIGHT_COST * remain;
     }

@@ -27,7 +27,8 @@ public class WorldController : MonoBehaviour {
                 y = Mathf.FloorToInt(vector.y / WorldGeneration.chunkSize),
             };
             Debug.Log(chunkPos.ToString());
-            WorldGeneration._instance.chunks.TryGetValue(chunkPos, out GameObject chunk);
+            GameObject chunk = WorldGeneration._instance.chunks[chunkPos];
+            // Debug.Log(chunk.transform.position.ToString());
             Texture2D texture = (Texture2D)chunk.GetComponent<MeshRenderer>().material.mainTexture;
             Color c = texture.GetPixel(Mathf.FloorToInt(vector.x - chunkPos.x * WorldGeneration.chunkSize), Mathf.FloorToInt(vector.y - chunkPos.y * WorldGeneration.chunkSize));
             string name = chunk.GetComponent<ChunkController>().chunkH[Mathf.FloorToInt(vector.x - chunkPos.x * WorldGeneration.chunkSize), Mathf.FloorToInt(vector.y - chunkPos.y * WorldGeneration.chunkSize)].name;
