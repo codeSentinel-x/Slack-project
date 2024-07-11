@@ -154,8 +154,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -7.6625366, y: -56}
-  m_SizeDelta: {x: 800, y: 240.5135}
+  m_AnchoredPosition: {x: -7.6625366, y: -73.75301}
+  m_SizeDelta: {x: 800, y: 276.0195}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &362083626
 MonoBehaviour:
@@ -568,8 +568,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -7.6625366, y: 212}
-  m_SizeDelta: {x: 600, y: 180}
+  m_AnchoredPosition: {x: -26.18742, y: 212}
+  m_SizeDelta: {x: 680.2745, y: 180}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1121610152
 MonoBehaviour:
@@ -666,13 +666,15 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'This is only preview of my project.
+  m_text: 'This is #2 preview of my project.
 
     It''s simple procedurall world
     generator created with Unity Job System and perlin noise. You can generate your
-    own noise map just clicking on gear in the right corner of screen and then generate.
-    If you want you can also try your own settings. Chunk size define width and height
-    of each chunk, amount define amount of chunks. Good luck! '
+    own noise map just clicking on gear in the left corner of screen and then generate
+    button. You can add multiple noise layer, change size etc. I also added chunk
+    render system and pathfinding you can test it by clicking on any tile of generated
+    map. Unit by default would not walk on any kind of water or rock! It may be laggy
+    but it''s only preview! Good luck! '
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -786,7 +788,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 701.9, y: 387.07}
+  m_SizeDelta: {x: 700, y: 387.07}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1256294424
 MonoBehaviour:
@@ -810,7 +812,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Scrap Game
 
-    --PREVIEW--'
+    --PREVIEW #2--'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

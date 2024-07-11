@@ -18,6 +18,7 @@ public class ChunkSystem : MonoBehaviour {
     }
     public void ChangeRenderDist(float v) {
         chunkRenderDistance = (int)v;
+        GenerateChunkInRange();
     }
 
     void Update() {
