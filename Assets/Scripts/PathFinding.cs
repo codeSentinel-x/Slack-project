@@ -16,7 +16,6 @@ public class PathFinding {
         _gridOfCellItem = GetCellsInRange(startPos, viewRange, allChunks, chunkSize);
     }
 
-    //This function won't work because I should take position from world origin not current chunk
     public PathFindingCellItem[,] GetCellsInRange(Vector2Int startPos, int viewRange, Dictionary<Vector2Int, GameObject> allChunks, int chunkSize) {
         PathFindingCellItem[,] result = new PathFindingCellItem[viewRange * viewRange + 1, viewRange * viewRange + 1];
 
@@ -24,36 +23,26 @@ public class PathFinding {
             x = Mathf.FloorToInt(startPos.x / chunkSize),
             y = Mathf.FloorToInt(startPos.y / chunkSize),
         };
-        int inChunkPosX, inChunkPosY;
+        int cellPosX, cellPosY;
         int chunkPosX, chunkPosY;
         for (int i = -viewRange; i <= viewRange; i++) {
             for (int j = -viewRange; j <= viewRange; j++) {
-                inChunkPosX = startPos.x + i;
-                inChunkPosY = startPos.y + j;
-                chunkPosX = currentChunk.x;
-                chunkPosY = currentChunk.y;
-                if (inChunkPosX > 0) {
-                    chunkPosX -= Mathf.CeilToInt((float)Mathf.Abs(inChunkPosX) / chunkSize);
-                    inChunkPosX += Mathf.Abs(chunkPosX * chunkSize);
-                }
-                else {
-                    chunkPosX += Mathf.CeilToInt((float)Mathf.Abs(inChunkPosX) / chunkSize);
-                    inChunkPosX -= Mathf.Abs(chunkPosX * chunkSize);
-                }
-                if (inChunkPosY > 0) {
-                    chunkPosY -= Mathf.CeilToInt((float)Mathf.Abs(inChunkPosY) / chunkSize);
-                    inChunkPosY += Mathf.Abs(chunkPosY * chunkSize);
-                }
-                else {
-                    chunkPosY += Mathf.CeilToInt((float)Mathf.Abs(inChunkPosY) / chunkSize);
-                    inChunkPosY -= Mathf.Abs(chunkPosX * chunkSize);
-                }
 
+                chunkPosX = Mathf.FloorToInt((startPos.x - i) / WorldGeneration.chunkSize);
+                chunkPosY = Mathf.FloorToInt((startPos.y - j) / WorldGeneration.chunkSize);
+
+                cellPosX = Mathf.FloorToInt(startPos.x - chunkPosX * WorldGeneration.chunkSize);
+                cellPosY = Mathf.FloorToInt(startPos.y - chunkPosY * WorldGeneration.chunkSize);
+
+                if (chunkPosX < 0 || chunkPosY < 0 || cellPosY < 0 || cellPosX < 0) {
+                    result[viewRange + i, viewRange + j] = null;
+                    continue;
+                }
                 Vector2Int chunkPos = new(chunkPosX, chunkPosY);
                 if (allChunks.TryGetValue(chunkPos, out GameObject chunk)) {
                     if (chunk.TryGetComponent<ChunkController>(out var chunkController)) {
-                        result[i, j] = new PathFindingCellItem() {
-                            _cell = chunkController.chunkH[inChunkPosX, inChunkPosY],
+                        result[viewRange + i, viewRange + j] = new PathFindingCellItem() {
+                            _cell = chunkController.chunkH[cellPosX, cellPosY],
                             _x = chunkPosX,
                             _y = chunkPosY
                         };
@@ -65,6 +54,7 @@ public class PathFinding {
         return result;
     }
     public List<PathFindingCellItem> FindPath(Vector2Int startPos, Vector2Int endPos) {
+        //this code block make errors because result[x + viewRange] is not equal result[x]
         PathFindingCellItem start = _gridOfCellItem[startPos.x, startPos.y];
         PathFindingCellItem end;
         try {
@@ -74,12 +64,14 @@ public class PathFinding {
             Debug.Log("cell cant be reached, out o view");
             return null;
         }
+        //end
 
         _openList = new() { start };
         _closedList = new();
 
         for (int i = 0; i < _gridOfCellItem.GetLength(0); i++) {
             for (int j = 0; j < _gridOfCellItem.GetLength(0); j++) {
+                if (_gridOfCellItem[i, j] == null) continue;
                 PathFindingCellItem cellItem = _gridOfCellItem[i, j];
                 cellItem._gCost = int.MaxValue;
                 cellItem._previous = null;

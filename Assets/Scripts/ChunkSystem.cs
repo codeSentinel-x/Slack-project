@@ -19,7 +19,7 @@ public class ChunkSystem : MonoBehaviour {
     }
 
     void Update() {
-        transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        // transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         Vector2Int currentChunkPosition = new(Mathf.FloorToInt(transform.position.x / WorldGeneration.chunkSize), Mathf.FloorToInt(transform.position.y / WorldGeneration.chunkSize));
         if (currentChunkPosition.x < 0 || currentChunkPosition.y < 0) return;
         if (currentChunkPosition != lastChunkPosition) {

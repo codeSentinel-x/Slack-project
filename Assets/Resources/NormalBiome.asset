@@ -45,6 +45,7 @@ MonoBehaviour:
       m_NumAlphaKeys: 2
     h: 0.1
     name: Deep Water
+    isWalkable: 0
   - gradient:
       serializedVersion: 2
       key0: {r: 0, g: 0.60784316, b: 1, a: 1}
@@ -77,6 +78,7 @@ MonoBehaviour:
       m_NumAlphaKeys: 2
     h: 0.2
     name: Water
+    isWalkable: 0
   - gradient:
       serializedVersion: 2
       key0: {r: 0.1254902, g: 0.8980392, b: 1, a: 1}
@@ -109,6 +111,7 @@ MonoBehaviour:
       m_NumAlphaKeys: 2
     h: 0.3
     name: Coast
+    isWalkable: 1
   - gradient:
       serializedVersion: 2
       key0: {r: 1, g: 0.7607843, b: 0.12156863, a: 1}
@@ -141,6 +144,7 @@ MonoBehaviour:
       m_NumAlphaKeys: 2
     h: 0.4
     name: Beach
+    isWalkable: 1
   - gradient:
       serializedVersion: 2
       key0: {r: 0.13333334, g: 1, b: 0, a: 1}
@@ -173,6 +177,7 @@ MonoBehaviour:
       m_NumAlphaKeys: 2
     h: 0.5
     name: Grass
+    isWalkable: 1
   - gradient:
       serializedVersion: 2
       key0: {r: 0.11372549, g: 0.83137256, b: 0, a: 1}
@@ -205,6 +210,7 @@ MonoBehaviour:
       m_NumAlphaKeys: 2
     h: 0.6
     name: Grass1
+    isWalkable: 1
   - gradient:
       serializedVersion: 2
       key0: {r: 0.09803922, g: 0.7058824, b: 0, a: 1}
@@ -237,6 +243,7 @@ MonoBehaviour:
       m_NumAlphaKeys: 2
     h: 0.7
     name: Grass2
+    isWalkable: 1
   - gradient:
       serializedVersion: 2
       key0: {r: 0.078431375, g: 0.5764706, b: 0, a: 1}
@@ -269,6 +276,7 @@ MonoBehaviour:
       m_NumAlphaKeys: 2
     h: 0.8
     name: Hill
+    isWalkable: 1
   - gradient:
       serializedVersion: 2
       key0: {r: 0.50980395, g: 0.50980395, b: 0.50980395, a: 1}
@@ -301,6 +309,7 @@ MonoBehaviour:
       m_NumAlphaKeys: 2
     h: 0.9
     name: Hill1
+    isWalkable: 0
   - gradient:
       serializedVersion: 2
       key0: {r: 0.32941177, g: 0.3254902, b: 0.3254902, a: 1}
@@ -333,3 +342,4 @@ MonoBehaviour:
       m_NumAlphaKeys: 2
     h: 1
     name: Mountain
+    isWalkable: 0
