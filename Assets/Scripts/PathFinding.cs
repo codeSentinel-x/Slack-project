@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using MyUtils.Structs;
@@ -11,25 +12,27 @@ public class PathFinding {
     public List<PathFindingCellItem> _openList;
     public List<PathFindingCellItem> _closedList;
     public PathFindingCellItem[,] _gridOfCellItem;
+    public Dictionary<Vector2Int, GameObject> allChunks;
+    public int chunkSize;
+    public int viewRange;
 
-    public PathFinding(Vector2Int startPos, int viewRange, Dictionary<Vector2Int, GameObject> allChunks, int chunkSize) {
-        _gridOfCellItem = GetCellsInRange(startPos, viewRange, allChunks, chunkSize);
+    public Vector2Int endInArrayPos;
+    public PathFinding(int viewRange, Dictionary<Vector2Int, GameObject> allChunks, int chunkSize) {
+        this.viewRange = viewRange;
+        this.allChunks = allChunks;
+        this.chunkSize = chunkSize;
     }
 
-    public PathFindingCellItem[,] GetCellsInRange(Vector2Int startPos, int viewRange, Dictionary<Vector2Int, GameObject> allChunks, int chunkSize) {
-        PathFindingCellItem[,] result = new PathFindingCellItem[viewRange * viewRange + 1, viewRange * viewRange + 1];
+    public PathFindingCellItem[,] GetCellsInRange(Vector2Int startPos, Vector2Int endPos, int viewRange, Dictionary<Vector2Int, GameObject> allChunks, int chunkSize) {
 
-        Vector2Int currentChunk = new() {
-            x = Mathf.FloorToInt(startPos.x / chunkSize),
-            y = Mathf.FloorToInt(startPos.y / chunkSize),
-        };
+        PathFindingCellItem[,] result = new PathFindingCellItem[viewRange * viewRange + 1, viewRange * viewRange + 1];
         int cellPosX, cellPosY;
         int chunkPosX, chunkPosY;
         for (int i = -viewRange; i <= viewRange; i++) {
             for (int j = -viewRange; j <= viewRange; j++) {
 
-                chunkPosX = Mathf.FloorToInt((startPos.x - i) / WorldGeneration.chunkSize);
-                chunkPosY = Mathf.FloorToInt((startPos.y - j) / WorldGeneration.chunkSize);
+                chunkPosX = Mathf.FloorToInt((startPos.x + i) / WorldGeneration.chunkSize);
+                chunkPosY = Mathf.FloorToInt((startPos.y + j) / WorldGeneration.chunkSize);
 
                 cellPosX = Mathf.FloorToInt(startPos.x - chunkPosX * WorldGeneration.chunkSize);
                 cellPosY = Mathf.FloorToInt(startPos.y - chunkPosY * WorldGeneration.chunkSize);
@@ -43,11 +46,17 @@ public class PathFinding {
                     if (chunk.TryGetComponent<ChunkController>(out var chunkController)) {
                         result[viewRange + i, viewRange + j] = new PathFindingCellItem() {
                             _cell = chunkController.chunkH[cellPosX, cellPosY],
-                            _x = chunkPosX,
-                            _y = chunkPosY
+                            _x = viewRange + i,
+                            _y = viewRange + j,
+                            _worldPos = new(startPos.x + i, startPos.y + j)
                         };
+                        Debug.Log(chunkController.chunkH[cellPosX, cellPosY].isWalkable);
+
                     }
+
+                    if (startPos.x + i == endPos.x && endPos.y == startPos.y + j) endInArrayPos = new Vector2Int(viewRange + i, viewRange + j);
                 }
+
             }
 
         }
@@ -55,10 +64,11 @@ public class PathFinding {
     }
     public List<PathFindingCellItem> FindPath(Vector2Int startPos, Vector2Int endPos) {
         //this code block make errors because result[x + viewRange] is not equal result[x]
-        PathFindingCellItem start = _gridOfCellItem[startPos.x, startPos.y];
+        _gridOfCellItem = GetCellsInRange(startPos, endPos, viewRange, allChunks, chunkSize);
+        PathFindingCellItem start = _gridOfCellItem[viewRange, viewRange];
         PathFindingCellItem end;
         try {
-            end = _gridOfCellItem[endPos.x, endPos.y];
+            end = _gridOfCellItem[endInArrayPos.x, endInArrayPos.y];
         }
         catch {
             Debug.Log("cell cant be reached, out o view");
@@ -93,7 +103,9 @@ public class PathFinding {
             _closedList.Add(current);
 
             foreach (PathFindingCellItem cell in GetNeighborList(current)) {
+                if (cell == null) continue;
                 if (_closedList.Contains(cell)) continue;
+
                 if (!cell._cell.isWalkable) {
                     _closedList.Add(cell);
                     continue;

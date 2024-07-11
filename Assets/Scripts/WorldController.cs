@@ -26,18 +26,19 @@ public class WorldController : MonoBehaviour {
                 x = Mathf.FloorToInt(vector.x / WorldGeneration.chunkSize),
                 y = Mathf.FloorToInt(vector.y / WorldGeneration.chunkSize),
             };
+            Debug.Log(chunkPos.ToString());
             WorldGeneration._instance.chunks.TryGetValue(chunkPos, out GameObject chunk);
             Texture2D texture = (Texture2D)chunk.GetComponent<MeshRenderer>().material.mainTexture;
             Color c = texture.GetPixel(Mathf.FloorToInt(vector.x - chunkPos.x * WorldGeneration.chunkSize), Mathf.FloorToInt(vector.y - chunkPos.y * WorldGeneration.chunkSize));
             string name = chunk.GetComponent<ChunkController>().chunkH[Mathf.FloorToInt(vector.x - chunkPos.x * WorldGeneration.chunkSize), Mathf.FloorToInt(vector.y - chunkPos.y * WorldGeneration.chunkSize)].name;
 
             // imageDisplay.color = c;
-        posDisplay.text = new Vector2Int(Mathf.FloorToInt(vector.x), Mathf.FloorToInt(vector.y)).ToString();
+            posDisplay.text = new Vector2Int(Mathf.FloorToInt(vector.x), Mathf.FloorToInt(vector.y)).ToString();
             nameDisplay.text = name;
         }
-        catch {
+        catch (SystemException e) {
             debugDisplay.SetActive(false);
-            Debug.Log("No tile selected");
+            Debug.Log("No tile selected\nError: " + e);
         }
 
     }

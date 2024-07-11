@@ -50,10 +50,10 @@ public class ChunkSystem : MonoBehaviour {
         foreach (var c in WorldGeneration._instance.oldChunks) {
             if (!chunksInRange.Contains(c.Key)) {
                 Destroy(c.Value);
-                Debug.Log("Destroying");
+                // Debug.Log("Destroying");
             }
             else {
-                WorldGeneration._instance.chunks.Add(c.Key, c.Value);
+                WorldGeneration._instance.chunks[c.Key] =  c.Value;
             }
         }
         foreach (var i in chunksInRange) {

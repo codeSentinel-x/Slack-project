@@ -54,6 +54,7 @@ namespace MyUtils.Structs {
     public class PathFindingCellItem {
         public int _x;
         public int _y;
+        public Vector2Int _worldPos;
         public ChunkItem _cell;
         public PathFindingCellItem _previous;
         public int _gCost;
