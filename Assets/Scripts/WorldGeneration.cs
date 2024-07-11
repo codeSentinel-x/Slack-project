@@ -40,11 +40,7 @@ public class WorldGeneration : MonoBehaviour {
         NoiseGeneration.seed = seed;
         currentSettings = mLNS;
         OnNoiseSettingChange?.Invoke(mLNS.chunkCount);
-        /*for (int i = 0; i < mLNS.chunkCount; i++) {
-            for (int j = 0; j < mLNS.chunkCount; j++) {
-                noiseGen.GenerateNoise(mLNS, new Vector2Int(i * mLNS.chunkSize, j * mLNS.chunkSize));
-            }
-        }*/
+
 
     }
     public void GenerateChunkAt(Vector2Int offset) {

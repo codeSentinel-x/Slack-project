@@ -24,36 +24,46 @@ public class PathFinding {
     }
 
     public PathFindingCellItem[,] GetCellsInRange(Vector2Int startPos, Vector2Int endPos) {
-        PathFindingCellItem[,] result = new PathFindingCellItem[2 * viewRange + 1, 2 * viewRange + 1];
-        int cellPosX, cellPosY;
+        PathFindingCellItem[,] result = new PathFindingCellItem[(2 * viewRange) + 1, (2 * viewRange) + 1];
+        Debug.Log("X = " + result.GetLength(0) + "|| Y = " + result.GetLength(1));
         for (int i = -viewRange; i <= viewRange; i++) {
             for (int j = -viewRange; j <= viewRange; j++) {
 
                 int chunkPosY = Mathf.FloorToInt((startPos.y + j) / chunkSize);
                 int chunkPosX = Mathf.FloorToInt((startPos.x + i) / chunkSize);
-                Debug.Log("Start pos = " + startPos.ToString() + "chunk size =" + chunkSize);
-                cellPosX = Mathf.FloorToInt(startPos.x - chunkPosX * chunkSize);
-                cellPosY = Mathf.FloorToInt(startPos.y - chunkPosY * chunkSize);
 
                 if (chunkPosX < 0 || chunkPosY < 0) {
                     result[viewRange + i, viewRange + j] = null;
                     continue;
                 }
+
+                int cellPosX = (startPos.x + i) % chunkSize;
+                int cellPosY = (startPos.y + j) % chunkSize;
                 Vector2Int chunkPos = new(chunkPosX, chunkPosY);
-                Debug.Log("chunkPos = " + chunkPos);
-                if (allChunks.TryGetValue(chunkPos, out GameObject chunk)) {
-                    if (chunk.TryGetComponent<ChunkController>(out var chunkController)) {
-                        result[viewRange + i, viewRange + j] = new PathFindingCellItem() {
-                            _cell = chunkController.chunkH[cellPosX, cellPosY],
-                            _x = viewRange + i,
-                            _y = viewRange + j,
-                            _worldPos = new(startPos.x + i, startPos.y + j)
-                        };
-                        Debug.Log(chunkController.chunkH[cellPosX, cellPosY].isWalkable);
 
+                try {
+
+                    if (allChunks.TryGetValue(chunkPos, out GameObject chunk)) {
+                        if (chunk.TryGetComponent<ChunkController>(out var chunkController)) {
+                            if (cellPosX >= 0 && cellPosX < chunkSize && cellPosY >= 0 && cellPosY < chunkSize) {
+                                result[viewRange + i, viewRange + j] = new PathFindingCellItem() {
+                                    _cell = chunkController.chunkH[cellPosX, cellPosY],
+                                    _x = viewRange + i,
+                                    _y = viewRange + j,
+                                    _worldPos = new Vector2Int(startPos.x + i, startPos.y + j)
+                                };
+                            }
+                            else {
+                                result[viewRange + i, viewRange + j] = null;
+                            }
+
+                        }
+
+                        if (startPos.x + i == endPos.x && endPos.y == startPos.y + j) endInArrayPos = new Vector2Int(viewRange + i, viewRange + j);
                     }
-
-                    if (startPos.x + i == endPos.x && endPos.y == startPos.y + j) endInArrayPos = new Vector2Int(viewRange + i, viewRange + j);
+                }
+                catch (SystemException e) {
+                    Debug.Log("viewRange = " + viewRange + ", j = " + j + ", i = " + i + '\n' + "Error: " + e);
                 }
 
             }

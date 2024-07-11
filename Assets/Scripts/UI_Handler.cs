@@ -85,7 +85,7 @@ public class UI_Handler : MonoBehaviour {
         seedText.onDeselect.Invoke(seedText.text);
         chunkCountText.text = loadedData.settings.chunkCount.ToString();
         chunkCountText.onDeselect.Invoke(chunkCountText.text);
-        chunkSizeText.text = loadedData.settings.chunkCount.ToString();
+        chunkSizeText.text = loadedData.settings.chunkSize.ToString();
         chunkSizeText.onDeselect.Invoke(chunkSizeText.text);
 
         layers.ForEach((x) => Destroy(x.gameObject));
@@ -110,9 +110,11 @@ public class UI_Handler : MonoBehaviour {
         UI_LayerHandler l = Instantiate(layerPrefab, layerHandler).GetComponent<UI_LayerHandler>();
         layers.Add(l);
         l.gameObject.SetActive(true);
-        l.Setup(layers.Count - 1, scale, octaves, persistance, lacunarity, weight);
         layers[index].gameObject.SetActive(false);
+        l.Setup(layers.Count - 1, scale, octaves, persistance, lacunarity, weight);
         index = layers.Count - 1;
+        layers[index].gameObject.SetActive(false);
+
     }
     public void NextLayer() {
         layers[index].gameObject.SetActive(false);

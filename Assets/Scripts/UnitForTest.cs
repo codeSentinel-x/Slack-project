@@ -8,6 +8,7 @@ public class UnitForTest : MonoBehaviour {
     public float speed;
     int index;
     public List<Vector3> transforms;
+
     void Start() {
         MouseController._instance.OnMouseClick += FindCell;
     }
@@ -21,8 +22,13 @@ public class UnitForTest : MonoBehaviour {
         }
     }
 
+    public void ChangeSpeed(float v) {
+        speed = v;
+    }
+
     private void FindCell(Vector2 vector) {
         Vector2Int startPos = new(Mathf.FloorToInt(transform.position.x), Mathf.FloorToInt(transform.position.y));
+        viewRange = (int)Vector2.Distance(startPos, vector) + 5;
         PathFinding pathF = new(viewRange, WorldGeneration._instance.chunks, WorldGeneration.chunkSize);
         var path = pathF.FindPath(startPos, new Vector2Int(Mathf.FloorToInt(vector.x), Mathf.FloorToInt(vector.y)));
         if (path == null) {

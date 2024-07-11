@@ -6,11 +6,13 @@ public class ChunkSystem : MonoBehaviour {
 
     public Vector2Int lastChunkPosition;
     public int chunkRenderDistance;
+    public Transform spriteRenderer;
+
     void Start() {
         // MouseController._instance.OnMouseClick += (x) => transform.position = x;
         WorldGeneration._instance.OnNoiseSettingChange += (x) => {
             chunkRenderDistance = x;
-            GenerateChunkInRange();
+            GenerateChunkInRange(true);
         };
 
     }
@@ -32,7 +34,7 @@ public class ChunkSystem : MonoBehaviour {
         Debug.Log("CurrentChunk: " + lastChunkPosition);
         GenerateChunkInRange();
     }
-    public void GenerateChunkInRange() {
+    public void GenerateChunkInRange(bool doNotLookForOld = false) {
         List<Vector2Int> chunksInRange = new();
         Vector2Int chunkPos;
         for (int i = -chunkRenderDistance; i <= chunkRenderDistance; i++) {
@@ -44,17 +46,24 @@ public class ChunkSystem : MonoBehaviour {
             }
         }
 
-        WorldGeneration._instance.oldChunks = WorldGeneration._instance.chunks;
-        WorldGeneration._instance.chunks = new();
+        if (!doNotLookForOld) {
 
-        foreach (var c in WorldGeneration._instance.oldChunks) {
-            if (!chunksInRange.Contains(c.Key)) {
-                Destroy(c.Value);
-                // Debug.Log("Destroying");
+            WorldGeneration._instance.oldChunks = WorldGeneration._instance.chunks;
+            WorldGeneration._instance.chunks = new();
+
+            foreach (var c in WorldGeneration._instance.oldChunks) {
+                if (!chunksInRange.Contains(c.Key)) {
+                    Destroy(c.Value);
+                    // Debug.Log("Destroying");
+                }
+                else {
+                    WorldGeneration._instance.chunks[c.Key] = c.Value;
+                }
             }
-            else {
-                WorldGeneration._instance.chunks[c.Key] =  c.Value;
-            }
+        }
+        else {
+            WorldGeneration._instance.chunks = new();
+            spriteRenderer.transform.localPosition = WorldGeneration.currentSettings.chunkSize % 2 == 0 ? new(0.5f, 0.5f, 0) : new(0, 0, 0);
         }
         foreach (var i in chunksInRange) {
             if (!WorldGeneration._instance.chunks.ContainsKey(i)) {

@@ -14,7 +14,7 @@ public class NoiseGeneration : MonoBehaviour {
     public static uint seed = 768754;
     public Action<float[,], Vector2Int> _onNoiseGenerationCompleat;
 
-   
+
     void Awake() {
         _instance = this;
     }
@@ -23,16 +23,16 @@ public class NoiseGeneration : MonoBehaviour {
         seed = (uint)UnityEngine.Random.Range(uint.MinValue, uint.MaxValue);
     }
 
-    
+
     public void GenerateNoise(MultipleLayerNoiseSetting mLNS, Vector2Int offset = default) {
         if (offset == default) offset = Vector2Int.zero;
         StartCoroutine(GenerateMultipleNoise(mLNS, offset));
     }
-    
+
     private IEnumerator GenerateMultipleNoise(MultipleLayerNoiseSetting mLNS, Vector2Int offset) {
-        
+
         float[,] finalResult = new float[mLNS.chunkSize, mLNS.chunkSize];
-        
+
         foreach (WeightedNoiseSetting w in mLNS.weightedNoiseSettings) {
             if (w.weight == 0) continue;
             NativeArray<float> _noiseMapResult = new(mLNS.chunkSize * mLNS.chunkSize, Allocator.TempJob);
@@ -49,9 +49,6 @@ public class NoiseGeneration : MonoBehaviour {
 
             _noiseJobH.Complete();
 
-            while (!_noiseJobH.IsCompleted) {
-                yield return new WaitForSeconds(0.5f);
-            }
             for (int x = 0; x < finalResult.GetLength(0); x++) {
                 for (int y = 0; y < finalResult.GetLength(1); y++) {
                     finalResult[x, y] += _noiseMapResult[x + mLNS.chunkSize * y] * GetNormalizedWeight(mLNS, w.weight);
@@ -60,8 +57,9 @@ public class NoiseGeneration : MonoBehaviour {
 
             _noiseMapResult.Dispose();
         }
-        
+
         _onNoiseGenerationCompleat?.Invoke(finalResult, offset);
+        yield return null;
 
     }
     private float GetNormalizedWeight(MultipleLayerNoiseSetting mLNS, float v) {
