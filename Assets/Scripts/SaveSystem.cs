@@ -1,8 +1,6 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using UnityEngine;
 
 public static class SaveSystem {
@@ -12,12 +10,17 @@ public static class SaveSystem {
 
     public static void Save<T>(string path, string name, T data, string ext = ".json") {
         path = Path.Combine(PERSISTANCE_DATA_PATH, path);
-        if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-        string fullPath = Path.Combine(path, name + ext);
-        string jsonData = JsonUtility.ToJson(data);
-        using FileStream stream = new(fullPath, FileMode.Create);
-        using StreamWriter writer = new(stream);
-        writer.Write(jsonData);
+        try {
+            if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+            string fullPath = Path.Combine(path, name + ext);
+            string jsonData = JsonUtility.ToJson(data);
+            using FileStream stream = new(fullPath, FileMode.Create);
+            using StreamWriter writer = new(stream);
+            writer.Write(jsonData);
+        }
+        catch (SystemException e) {
+            Debug.LogError("Error while trying to save file: " + name + "\nError: " + e);
+        }
 
     }
     public static List<string> GetAllFileNameFromDirectory(string path, string ext = ".json") {
@@ -33,7 +36,7 @@ public static class SaveSystem {
             }
         }
         catch (SystemException e) {
-            Debug.Log("Fetching directory failed. Reason: " + e);
+            Debug.Log("Fetching directory failed. \nError:: " + e);
         }
 
         return result;
@@ -55,7 +58,7 @@ public static class SaveSystem {
             }
         }
         catch (SystemException e) {
-            Debug.Log("Error while loading data \nReason:" + e);
+            Debug.Log("Loading data failed \nError:" + e);
         }
         return loadedData;
     }
@@ -67,7 +70,7 @@ public static class SaveSystem {
             }
         }
         catch (SystemException e) {
-            Debug.Log("Error while trying to delete file. \nReason: " + e);
+            Debug.Log("Deleting file failed. \nError: " + e);
         }
     }
 }

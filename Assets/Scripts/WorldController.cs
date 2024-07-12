@@ -1,9 +1,6 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class WorldController : MonoBehaviour {
 
@@ -12,9 +9,10 @@ public class WorldController : MonoBehaviour {
     public TextMeshProUGUI posDisplay;
     // public Image imageDisplay;
     private MouseController mouseController;
-    void Start() {
+
+    private void Start() {
         mouseController = MouseController._instance;
-        mouseController.OnMouseClick += GetClickedCell;
+        mouseController.OnMouseClickLeft += GetClickedCell;
     }
 
 
@@ -31,7 +29,7 @@ public class WorldController : MonoBehaviour {
             // Debug.Log(chunk.transform.position.ToString());
             Texture2D texture = (Texture2D)chunk.GetComponent<MeshRenderer>().material.mainTexture;
             Color c = texture.GetPixel(Mathf.FloorToInt(vector.x - chunkPos.x * WorldGeneration.chunkSize), Mathf.FloorToInt(vector.y - chunkPos.y * WorldGeneration.chunkSize));
-            string name = chunk.GetComponent<ChunkController>().chunkH[Mathf.FloorToInt(vector.x - chunkPos.x * WorldGeneration.chunkSize), Mathf.FloorToInt(vector.y - chunkPos.y * WorldGeneration.chunkSize)].name;
+            string name = chunk.GetComponent<ChunkController>()._chunks[Mathf.FloorToInt(vector.x - chunkPos.x * WorldGeneration.chunkSize), Mathf.FloorToInt(vector.y - chunkPos.y * WorldGeneration.chunkSize)]._terrainTypeName;
 
             // imageDisplay.color = c;
             posDisplay.text = new Vector2Int(Mathf.FloorToInt(vector.x), Mathf.FloorToInt(vector.y)).ToString();

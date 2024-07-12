@@ -1,9 +1,6 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Data;
 using MyUtils.Structs;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class WorldGeneration : MonoBehaviour {
@@ -20,10 +17,11 @@ public class WorldGeneration : MonoBehaviour {
     public GameObject chunkHolder;
     public Action<int> OnNoiseSettingChange;
 
-    void Awake() {
+    private void Awake() {
         _instance = this;
     }
-    void Start() {
+
+    private void Start() {
         noiseGen = NoiseGeneration._instance;
         noiseGen._onNoiseGenerationCompleat += GenerateChunk;
     }
@@ -36,10 +34,10 @@ public class WorldGeneration : MonoBehaviour {
         }
 
         // chunks = new Transform[mLNS.chunkSize, mLNS.chunkSize];
-        chunkSize = mLNS.chunkSize;
-        NoiseGeneration.seed = seed;
+        chunkSize = mLNS._chunkSize;
+        NoiseGeneration._seed = seed;
         currentSettings = mLNS;
-        OnNoiseSettingChange?.Invoke(mLNS.chunkCount);
+        OnNoiseSettingChange?.Invoke(mLNS._chunkCount);
 
 
     }
@@ -59,7 +57,7 @@ public class WorldGeneration : MonoBehaviour {
         chunkSize = obj.GetLength(0); ;
         GameObject chunk = Instantiate(_chunkPrefab, new Vector3(start.x + chunkSize / 2, start.y + chunkSize / 2), Quaternion.identity).gameObject;
         ChunkController cT = chunk.GetComponent<ChunkController>();
-        cT.chunkH = new ChunkItem[obj.GetLength(0), obj.GetLength(1)];
+        cT._chunks = new ChunkItem[obj.GetLength(0), obj.GetLength(1)];
         chunk.transform.localScale = new Vector3(chunkSize, chunkSize, 1);
         Texture2D colorTexture = new(chunkSize, chunkSize);
         Color[] chunkColors = new Color[chunkSize * chunkSize];
@@ -67,15 +65,15 @@ public class WorldGeneration : MonoBehaviour {
             for (int x = 0; x < chunkSize; x++) {
                 float h = obj[x, y];
                 h = Mathf.Clamp01(h);
-                for (int i = 0; i < _biome.terrainTypes.Length; i++) {
-                    if (_biome.terrainTypes[i].h >= h) {
-                        float minH = i == 0 ? 0f : _biome.terrainTypes[i - 1].h;
-                        float maxH = _biome.terrainTypes[i].h;
+                for (int i = 0; i < _biome._terrainTypes.Length; i++) {
+                    if (_biome._terrainTypes[i]._h >= h) {
+                        float minH = i == 0 ? 0f : _biome._terrainTypes[i - 1]._h;
+                        float maxH = _biome._terrainTypes[i]._h;
                         float localH = Mathf.InverseLerp(minH, maxH, h);
-                        chunkColors[y * chunkSize + x] = _biome.terrainTypes[i].gradient.Evaluate(localH);
-                        cT.chunkH[x, y].h = h;
-                        cT.chunkH[x, y].name = _biome.terrainTypes[i].name;
-                        cT.chunkH[x, y].isWalkable = _biome.terrainTypes[i].isWalkable;
+                        chunkColors[y * chunkSize + x] = _biome._terrainTypes[i]._gradient.Evaluate(localH);
+                        cT._chunks[x, y]._cellH = h;
+                        cT._chunks[x, y]._terrainTypeName = _biome._terrainTypes[i]._cellName;
+                        cT._chunks[x, y]._isWalkable = _biome._terrainTypes[i]._isWalkable;
                         break;
                     }
                 }

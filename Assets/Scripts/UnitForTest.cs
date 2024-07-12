@@ -1,19 +1,17 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class UnitForTest : MonoBehaviour {
     public int viewRange;
     public float speed;
-    int index;
+    private int index;
     public List<Vector3> transforms;
 
-    void Start() {
-        MouseController._instance.OnMouseClick += FindCell;
+    private void Start() {
+        MouseController._instance.OnMouseClickLeft += FindCell;
     }
 
-    void Update() {
+    private void Update() {
         transforms ??= new();
         if (index >= transforms.Count) return;
         if (transforms.Count > 0) {

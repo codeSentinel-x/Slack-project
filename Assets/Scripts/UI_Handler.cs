@@ -1,7 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using System.Runtime.InteropServices;
+using MyUtils.Classes;
 using MyUtils.Structs;
 using TMPro;
 using UnityEngine;
@@ -9,67 +7,52 @@ using UnityEngine;
 public class UI_Handler : MonoBehaviour {
 
     public static UI_Handler _instance;
-    public TMP_InputField chunkSizeText;
-    // public TMP_InputField scaleText;
-    // public TMP_InputField octavesText;
-    // public TMP_InputField persistanceText;
-    // public TMP_InputField lacunarityText;
-    public TMP_InputField seedText;
-    public TMP_InputField chunkCountText;
-    public RectTransform layerHandler;
-    public GameObject layerPrefab;
-    public bool useMultipleLayer;
+    public TMP_InputField _chunkSizeText;
+    public TMP_InputField _seedText;
+    public TMP_InputField _chunkCountText;
+    public RectTransform _layerHandler;
+    public GameObject _layerPrefab;
+    public bool _useMultipleLayer;
     private WorldGeneration _worldGenerator;
-    private int index = 0;
-    private List<UI_LayerHandler> layers = new();
-    void Awake() {
+    private int _index = 0;
+    private List<UI_LayerHandler> _layers = new();
+
+    private void Awake() {
         _instance = this;
     }
-    void Start() {
+
+    private void Start() {
         _worldGenerator = WorldGeneration._instance;
-        if (useMultipleLayer) CreateNewLayer();
+        if (_useMultipleLayer) CreateNewLayer();
         NextLayer();
     }
 
 
-    /*
-    public void GenerateWorld() {
-        NoiseSetting setting = new() {
-            scale = float.Parse(scaleText.text.Replace(',', '.'), System.Globalization.CultureInfo.InvariantCulture),
-            octaves = int.Parse(octavesText.text),
-            persistance = float.Parse(persistanceText.text.Replace(',', '.'), System.Globalization.CultureInfo.InvariantCulture),
-            lacunarity = float.Parse(lacunarityText.text.Replace(',', '.'), System.Globalization.CultureInfo.InvariantCulture)
-        };
-        int mapSize = int.Parse(chunkSizeText.text);
-        uint seed = uint.Parse(seedText.text);
-        int chunkSize = int.Parse(chunkCountText.text);
-        // _worldGenerator.GenerateChunks(setting, seed, chunkSize, mapSize);
-    }*/
     public void GenerateWorldMultipleLayer() {
         NoiseSettingData nD = GetNoiseData();
-        _worldGenerator.GenerateChunks(nD.settings, nD.seed);
+        _worldGenerator.GenerateChunks(nD._settings, nD._seed);
     }
     public NoiseSettingData GetNoiseData() {
         NoiseSettingData data = new() {
-            settings = GetMultipleNoiseSettingArray(),
-            seed = uint.Parse(seedText.text),
+            _settings = GetMultipleNoiseSettingArray(),
+            _seed = uint.Parse(_seedText.text),
         };
         return data;
     }
     public MultipleLayerNoiseSetting GetMultipleNoiseSettingArray() {
         MultipleLayerNoiseSetting mLNS = new() {
-            weightedNoiseSettings = new WeightedNoiseSetting[layers.Count],
-            chunkSize = int.Parse(chunkSizeText.text),
-            chunkCount = int.Parse(chunkCountText.text),
+            _weightedNoiseSettings = new WeightedNoiseSetting[_layers.Count],
+            _chunkSize = int.Parse(_chunkSizeText.text),
+            _chunkCount = int.Parse(_chunkCountText.text),
         };
-        for (int i = 0; i < mLNS.weightedNoiseSettings.Length; i++) {
-            mLNS.weightedNoiseSettings[i].noiseSetting = new NoiseSetting() {
-                scale = float.Parse(layers[i].scaleText.text.Replace(',', '.'), System.Globalization.CultureInfo.InvariantCulture),
-                octaves = int.Parse(layers[i].octavesText.text),
-                persistance = float.Parse(layers[i].persistanceText.text.Replace(',', '.'), System.Globalization.CultureInfo.InvariantCulture),
-                lacunarity = float.Parse(layers[i].lacunarityText.text.Replace(',', '.'), System.Globalization.CultureInfo.InvariantCulture)
+        for (int i = 0; i < mLNS._weightedNoiseSettings.Length; i++) {
+            mLNS._weightedNoiseSettings[i]._noiseSetting = new NoiseLayerSetting() {
+                _scale = float.Parse(_layers[i]._scaleText.text.Replace(',', '.'), System.Globalization.CultureInfo.InvariantCulture),
+                _octaves = int.Parse(_layers[i]._octavesText.text),
+                _persistance = float.Parse(_layers[i]._persistanceText.text.Replace(',', '.'), System.Globalization.CultureInfo.InvariantCulture),
+                _lacunarity = float.Parse(_layers[i]._lacunarityText.text.Replace(',', '.'), System.Globalization.CultureInfo.InvariantCulture)
             };
-            mLNS.weightedNoiseSettings[i].weight = float.Parse(layers[i].weightText.text.Replace(',', '.'), System.Globalization.CultureInfo.InvariantCulture);
+            mLNS._weightedNoiseSettings[i]._weight = float.Parse(_layers[i]._weightText.text.Replace(',', '.'), System.Globalization.CultureInfo.InvariantCulture);
         }
         return mLNS;
     }
@@ -81,52 +64,52 @@ public class UI_Handler : MonoBehaviour {
 
         NoiseSettingData loadedData = SaveSystem.Load<NoiseSettingData>(SaveSystem.NOISE_SETTING_DEFAULT_SAVE_PATH, name);
 
-        seedText.text = loadedData.seed.ToString();
-        seedText.onDeselect.Invoke(seedText.text);
-        chunkCountText.text = loadedData.settings.chunkCount.ToString();
-        chunkCountText.onDeselect.Invoke(chunkCountText.text);
-        chunkSizeText.text = loadedData.settings.chunkSize.ToString();
-        chunkSizeText.onDeselect.Invoke(chunkSizeText.text);
+        _seedText.text = loadedData._seed.ToString();
+        _seedText.onDeselect.Invoke(_seedText.text);
+        _chunkCountText.text = loadedData._settings._chunkCount.ToString();
+        _chunkCountText.onDeselect.Invoke(_chunkCountText.text);
+        _chunkSizeText.text = loadedData._settings._chunkSize.ToString();
+        _chunkSizeText.onDeselect.Invoke(_chunkSizeText.text);
 
-        layers.ForEach((x) => Destroy(x.gameObject));
-        layers.Clear();
-        layers = new();
+        _layers.ForEach((x) => Destroy(x.gameObject));
+        _layers.Clear();
+        _layers = new();
 
-        foreach (var w in loadedData.settings.weightedNoiseSettings) {
-            CreateNewLayer(w.noiseSetting.scale, w.noiseSetting.octaves, w.noiseSetting.persistance, w.noiseSetting.lacunarity, w.weight);
+        foreach (var w in loadedData._settings._weightedNoiseSettings) {
+            CreateNewLayer(w._noiseSetting._scale, w._noiseSetting._octaves, w._noiseSetting._persistance, w._noiseSetting._lacunarity, w._weight);
         }
 
-        index = 0;
-        layers[0].gameObject.SetActive(true);
+        _index = 0;
+        _layers[0].gameObject.SetActive(true);
 
     }
     public void CreateNewLayer() {
-        UI_LayerHandler l = Instantiate(layerPrefab, layerHandler).GetComponent<UI_LayerHandler>();
-        layers.Add(l);
+        UI_LayerHandler l = Instantiate(_layerPrefab, _layerHandler).GetComponent<UI_LayerHandler>();
+        _layers.Add(l);
         l.gameObject.SetActive(false);
-        l.Setup(layers.Count - 1);
+        l.Setup(_layers.Count - 1);
     }
     public void CreateNewLayer(float scale, int octaves, float persistance, float lacunarity, float weight) {
-        UI_LayerHandler l = Instantiate(layerPrefab, layerHandler).GetComponent<UI_LayerHandler>();
-        layers.Add(l);
+        UI_LayerHandler l = Instantiate(_layerPrefab, _layerHandler).GetComponent<UI_LayerHandler>();
+        _layers.Add(l);
         l.gameObject.SetActive(true);
-        layers[index].gameObject.SetActive(false);
-        l.Setup(layers.Count - 1, scale, octaves, persistance, lacunarity, weight);
-        index = layers.Count - 1;
-        layers[index].gameObject.SetActive(false);
+        _layers[_index].gameObject.SetActive(false);
+        l.Setup(_layers.Count - 1, scale, octaves, persistance, lacunarity, weight);
+        _index = _layers.Count - 1;
+        _layers[_index].gameObject.SetActive(false);
 
     }
     public void NextLayer() {
-        layers[index].gameObject.SetActive(false);
-        index++;
-        if (index >= layers.Count) index = 0;
-        layers[index].gameObject.SetActive(true);
+        _layers[_index].gameObject.SetActive(false);
+        _index++;
+        if (_index >= _layers.Count) _index = 0;
+        _layers[_index].gameObject.SetActive(true);
     }
     public void PreviousLayer() {
-        layers[index].gameObject.SetActive(false);
-        index--;
-        if (index < 0) index = layers.Count - 1;
-        layers[index].gameObject.SetActive(true);
+        _layers[_index].gameObject.SetActive(false);
+        _index--;
+        if (_index < 0) _index = _layers.Count - 1;
+        _layers[_index].gameObject.SetActive(true);
     }
     public void DestroyWorld() {
         _worldGenerator.DestroyWorld();

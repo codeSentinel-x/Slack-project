@@ -1,8 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -11,9 +6,10 @@ public class UI_SaveSystem : MonoBehaviour {
     public RectTransform savesHolder;
     public GameObject LoadMenuPrefab;
     public TMP_InputField saveNameInput;
+
     // public TextMeshProUGUI 
 
-    void Awake() {
+    private void Awake() {
         _instance = this;
     }
     // void Start() {

@@ -4,65 +4,53 @@ using UnityEngine;
 namespace MyUtils.Structs {
 
     [Serializable]
-    public struct NoiseSetting {
-        public float scale;
-        public int octaves;
-        public float persistance;
-        public float lacunarity;
+    public struct NoiseLayerSetting {
+        public float _scale;
+        public int _octaves;
+        public float _persistance;
+        public float _lacunarity;
 
 
     }
     [Serializable]
     public struct WeightedNoiseSetting {
-        public NoiseSetting noiseSetting;
-        public float weight;
+        public NoiseLayerSetting _noiseSetting;
+        public float _weight;
     }
     [Serializable]
     public struct MultipleLayerNoiseSetting {
-        public WeightedNoiseSetting[] weightedNoiseSettings;
-        public int chunkSize;
-        public int chunkCount;
+        public WeightedNoiseSetting[] _weightedNoiseSettings;
+        public int _chunkSize;
+        public int _chunkCount;
     }
     [Serializable]
     public struct TerrainType {
-        public Gradient gradient;
-        public float h;
-        public string name;
-        public bool isWalkable;
+        public Gradient _gradient;
+        public float _h;
+        public string _cellName;
+        public bool _isWalkable;
     }
 
     [Serializable]
     public struct FalloffSetting {
-        public float a;
-        public float b;
+        public float _multiplierA;
+        public float _multiplierB;
     }
     [Serializable]
     public struct ChunkItem {
-        public string name;
-        public float h;
-        public bool isWalkable;
+        public string _terrainTypeName;
+        public float _cellH;
+        public bool _isWalkable;
     }
 
+    [Serializable]
     public struct BiomeType {
-        public string name;
-        public float temperature;
-        public BiomeSO biomeSO;
+        public string _biomeName;
+        public float _minTemperature;
+        public BiomeSO _baseBiomeSO;
 
 
     }
-    //TODO move this to Classes.cs 
-    public class PathFindingCellItem {
-        public int _x;
-        public int _y;
-        public Vector2Int _worldPos;
-        public ChunkItem _cell;
-        public PathFindingCellItem _previous;
-        public int _gCost;
-        public int _hCost;
-        public int _fCost;
-        public void CalculateFCost() {
-            _fCost = _hCost + _gCost;
-        }
-    }
+
 
 }

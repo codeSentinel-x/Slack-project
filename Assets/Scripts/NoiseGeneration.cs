@@ -6,22 +6,23 @@ using Unity.Collections;
 using System;
 using Unity.Burst;
 using Unity.Mathematics;
-using Unity.VisualScripting;
-using System.ComponentModel;
 
 public class NoiseGeneration : MonoBehaviour {
+    #region static fields: 
     public static NoiseGeneration _instance;
-    public static uint seed = 768754;
-    public Action<float[,], Vector2Int> _onNoiseGenerationCompleat;
+    public static Action<float[,], Vector2Int> _onNoiseGenerationCompleat;
+    public static uint _seed = 768754;
+
+    public static void GenerateRandomSeed() {
+        _seed = (uint)UnityEngine.Random.Range(uint.MinValue, uint.MaxValue);
+    }
+    #endregion
 
 
-    void Awake() {
+    private void Awake() {
         _instance = this;
     }
 
-    public static void RandomSeed() {
-        seed = (uint)UnityEngine.Random.Range(uint.MinValue, uint.MaxValue);
-    }
 
 
     public void GenerateNoise(MultipleLayerNoiseSetting mLNS, Vector2Int offset = default) {
@@ -31,18 +32,18 @@ public class NoiseGeneration : MonoBehaviour {
 
     private IEnumerator GenerateMultipleNoise(MultipleLayerNoiseSetting mLNS, Vector2Int offset) {
 
-        float[,] finalResult = new float[mLNS.chunkSize, mLNS.chunkSize];
+        float[,] finalResult = new float[mLNS._chunkSize, mLNS._chunkSize];
 
-        foreach (WeightedNoiseSetting w in mLNS.weightedNoiseSettings) {
-            if (w.weight == 0) continue;
-            NativeArray<float> _noiseMapResult = new(mLNS.chunkSize * mLNS.chunkSize, Allocator.TempJob);
+        foreach (WeightedNoiseSetting w in mLNS._weightedNoiseSettings) {
+            if (w._weight == 0) continue;
+            NativeArray<float> _noiseMapResult = new(mLNS._chunkSize * mLNS._chunkSize, Allocator.TempJob);
 
             GenerateNoiseMapJob noiseGenJob = new() {
                 result = _noiseMapResult,
-                seed = seed,
-                nS = w.noiseSetting,
+                seed = _seed,
+                nS = w._noiseSetting,
                 offset = new(offset.x, offset.y),
-                mapSize = mLNS.chunkSize
+                mapSize = mLNS._chunkSize
             };
 
             JobHandle _noiseJobH = noiseGenJob.Schedule();
@@ -51,7 +52,7 @@ public class NoiseGeneration : MonoBehaviour {
 
             for (int x = 0; x < finalResult.GetLength(0); x++) {
                 for (int y = 0; y < finalResult.GetLength(1); y++) {
-                    finalResult[x, y] += _noiseMapResult[x + mLNS.chunkSize * y] * GetNormalizedWeight(mLNS, w.weight);
+                    finalResult[x, y] += _noiseMapResult[x + mLNS._chunkSize * y] * GetNormalizedWeight(mLNS, w._weight);
                 }
             }
 
@@ -64,7 +65,7 @@ public class NoiseGeneration : MonoBehaviour {
     }
     private float GetNormalizedWeight(MultipleLayerNoiseSetting mLNS, float v) {
         float allWeight = 0f;
-        foreach (WeightedNoiseSetting w in mLNS.weightedNoiseSettings) allWeight += w.weight;
+        foreach (WeightedNoiseSetting w in mLNS._weightedNoiseSettings) allWeight += w._weight;
         return Mathf.InverseLerp(0, allWeight, v);
     }
     [BurstCompile]
@@ -72,7 +73,7 @@ public class NoiseGeneration : MonoBehaviour {
 
         public int mapSize;
         public NativeArray<float> result;
-        public NoiseSetting nS;
+        public NoiseLayerSetting nS;
         public uint seed;
         public float2 offset;
         public void Execute() {
@@ -83,12 +84,12 @@ public class NoiseGeneration : MonoBehaviour {
             float amplitude = 1f;
             float frequency = 1f;
 
-            for (int i = 0; i < nS.octaves; i++) {
+            for (int i = 0; i < nS._octaves; i++) {
                 float x = rng.NextInt(-100000, 100000) + offset.x;
                 float y = rng.NextInt(-100000, 100000) + offset.y;
 
                 maxPossibleH += amplitude;
-                amplitude *= nS.persistance;
+                amplitude *= nS._persistance;
                 octaveOffset[i] = new float2(x, y);
             }
 
@@ -101,16 +102,16 @@ public class NoiseGeneration : MonoBehaviour {
                     frequency = 1f;
                     float noiseH = 0f;
 
-                    for (int i = 0; i < nS.octaves; i++) {
+                    for (int i = 0; i < nS._octaves; i++) {
 
-                        float2 sample = new((x - (mapSize / 2) + octaveOffset[i].x) / nS.scale * frequency,
-                                            (y - (mapSize / 2) + octaveOffset[i].y) / nS.scale * frequency);
+                        float2 sample = new((x - (mapSize / 2) + octaveOffset[i].x) / nS._scale * frequency,
+                                            (y - (mapSize / 2) + octaveOffset[i].y) / nS._scale * frequency);
 
                         float perlinValue = Mathf.PerlinNoise(sample.x, sample.y) * 2 - 1;
                         noiseH += perlinValue * amplitude;
 
-                        amplitude *= nS.persistance;
-                        frequency *= nS.lacunarity;
+                        amplitude *= nS._persistance;
+                        frequency *= nS._lacunarity;
                     }
 
                     if (noiseH > maxNoiseH) maxNoiseH = noiseH;

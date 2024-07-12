@@ -1,16 +1,13 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class InputScrollUpdate : MonoBehaviour {
+public class UI_InputSliderSync : MonoBehaviour {
     public TMP_InputField inputField;
-    public Slider slider;
-    public bool isUint;
+    [SerializeField] private Slider slider;
+    [SerializeField] private bool isUint;
 
-    void Awake() {
+    private void Awake() {
         slider.onValueChanged.AddListener((x) => {
             if (slider.wholeNumbers) {
                 inputField.text = x.ToString();
@@ -20,8 +17,6 @@ public class InputScrollUpdate : MonoBehaviour {
             }
         });
         inputField.onDeselect.AddListener((x) => {
-
-
             if (isUint) {
                 slider.value = uint.Parse(x);
             }
@@ -31,9 +26,6 @@ public class InputScrollUpdate : MonoBehaviour {
             else {
                 slider.value = float.Parse(x.Replace(',', '.'), System.Globalization.CultureInfo.InvariantCulture);
             }
-
-            // slider.onValueChanged.Invoke(slider.value);
-
         });
 
     }

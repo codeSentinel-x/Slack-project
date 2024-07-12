@@ -1,11 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using MyUtils.Structs;
 using UnityEngine;
 
 
 
-[CreateAssetMenu(menuName = "Slack project/BiomeSO")]
+[CreateAssetMenu(menuName = "ScriptableObjects/BiomeSO")]
 public class BiomeSO : ScriptableObject {
-    public TerrainType[] terrainTypes;
+    public TerrainType[] _terrainTypes;
 }

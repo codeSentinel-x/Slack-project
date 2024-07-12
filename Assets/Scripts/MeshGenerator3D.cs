@@ -1,9 +1,6 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using MyUtils.Structs;
 using UnityEngine;
 
+//Unused for now
 public class MeshGenerator3D : MonoBehaviour {
 
     
