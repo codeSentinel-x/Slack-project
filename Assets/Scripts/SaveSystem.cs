@@ -29,9 +29,7 @@ public static class SaveSystem {
         if (!Directory.Exists(fullPath)) Directory.CreateDirectory(fullPath);
         try {
             foreach (var s in Directory.GetFiles(fullPath, "*" + ext, SearchOption.TopDirectoryOnly)) {
-                // if (!s.EndsWith(ext)) continue;
-                string name = Path.GetFileNameWithoutExtension(s);//.TrimStart("fullPath".ToArray<Char>());
-                // name = name.TrimEnd(ext.ToArray<Char>());
+                string name = Path.GetFileNameWithoutExtension(s);
                 result.Add(name);
             }
         }

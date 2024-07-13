@@ -10,7 +10,7 @@ public class ChunkSystem : MonoBehaviour {
 
     private void Start() {
         // MouseController._instance.OnMouseClick += (x) => transform.position = x;
-        WorldGeneration._instance.OnNoiseSettingChange += (x) => {
+        WorldGeneration._instance._OnNoiseSettingChange += (x) => {
             _chunkRenderDistance = x;
             GenerateChunkInRange(true);
         };
@@ -49,24 +49,24 @@ public class ChunkSystem : MonoBehaviour {
 
         if (!doNotLookForOld) {
 
-            WorldGeneration._instance.oldChunks = WorldGeneration._instance.chunks;
-            WorldGeneration._instance.chunks = new();
+            WorldGeneration._instance._oldChunksDict = WorldGeneration._instance._currentChunksDict;
+            WorldGeneration._instance._currentChunksDict = new();
 
-            foreach (var c in WorldGeneration._instance.oldChunks) {
+            foreach (var c in WorldGeneration._instance._oldChunksDict) {
                 if (!chunksInRange.Contains(c.Key)) {
                     Destroy(c.Value);
                 }
                 else {
-                    WorldGeneration._instance.chunks[c.Key] = c.Value;
+                    WorldGeneration._instance._currentChunksDict[c.Key] = c.Value;
                 }
             }
         }
         else {
-            WorldGeneration._instance.chunks = new();
+            WorldGeneration._instance._currentChunksDict = new();
             _spriteRenderer.transform.localPosition = WorldGeneration.currentSettings._chunkSize % 2 == 0 ? new(0.5f, 0.5f, 0) : new(0, 0, 0);
         }
         foreach (var i in chunksInRange) {
-            if (!WorldGeneration._instance.chunks.ContainsKey(i)) {
+            if (!WorldGeneration._instance._currentChunksDict.ContainsKey(i)) {
                 WorldGeneration._instance.GenerateChunkAt(i);
             }
         }

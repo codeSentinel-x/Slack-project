@@ -4,39 +4,34 @@ using UnityEngine;
 
 public class WorldController : MonoBehaviour {
 
-    public GameObject debugDisplay;
-    public TextMeshProUGUI nameDisplay;
-    public TextMeshProUGUI posDisplay;
-    // public Image imageDisplay;
-    private MouseController mouseController;
+    [SerializeField] private GameObject _debugDisplay;
+    [SerializeField] private TextMeshProUGUI _nameDisplay;
+    [SerializeField] private TextMeshProUGUI _posDisplay;
+
 
     private void Start() {
-        mouseController = MouseController._instance;
-        mouseController.OnMouseClickLeft += GetClickedCell;
+
+        MouseController._OnMouseClickLeft += GetClickedCell;
     }
 
 
     private void GetClickedCell(Vector2 vector) {
-        // Debug.Log("pos = " + vector.ToString());
         try {
-            debugDisplay.SetActive(true);
+            _debugDisplay.SetActive(true);
             Vector2Int chunkPos = new() {
                 x = Mathf.FloorToInt(vector.x / WorldGeneration.chunkSize),
                 y = Mathf.FloorToInt(vector.y / WorldGeneration.chunkSize),
             };
             Debug.Log(chunkPos.ToString());
-            GameObject chunk = WorldGeneration._instance.chunks[chunkPos];
-            // Debug.Log(chunk.transform.position.ToString());
+            GameObject chunk = WorldGeneration._instance._currentChunksDict[chunkPos];
             Texture2D texture = (Texture2D)chunk.GetComponent<MeshRenderer>().material.mainTexture;
             Color c = texture.GetPixel(Mathf.FloorToInt(vector.x - chunkPos.x * WorldGeneration.chunkSize), Mathf.FloorToInt(vector.y - chunkPos.y * WorldGeneration.chunkSize));
             string name = chunk.GetComponent<ChunkController>()._chunks[Mathf.FloorToInt(vector.x - chunkPos.x * WorldGeneration.chunkSize), Mathf.FloorToInt(vector.y - chunkPos.y * WorldGeneration.chunkSize)]._terrainTypeName;
-
-            // imageDisplay.color = c;
-            posDisplay.text = new Vector2Int(Mathf.FloorToInt(vector.x), Mathf.FloorToInt(vector.y)).ToString();
-            nameDisplay.text = name;
+            _posDisplay.text = new Vector2Int(Mathf.FloorToInt(vector.x), Mathf.FloorToInt(vector.y)).ToString();
+            _nameDisplay.text = name;
         }
         catch (SystemException e) {
-            debugDisplay.SetActive(false);
+            _debugDisplay.SetActive(false);
             Debug.Log("No tile selected\nError: " + e);
         }
 
@@ -46,8 +41,6 @@ public class WorldController : MonoBehaviour {
         float gLerp = Mathf.InverseLerp(a.g, b.g, value.g);
         float bLerp = Mathf.InverseLerp(a.b, b.b, value.b);
         float aLerp = Mathf.InverseLerp(a.a, b.a, value.a);
-
-        // Average the interpolations
         return (rLerp + gLerp + bLerp + aLerp) / 4f;
     }
 

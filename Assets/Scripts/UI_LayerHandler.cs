@@ -23,7 +23,7 @@ public class UI_LayerHandler : MonoBehaviour {
         _lacunarityText.text = lacunarity.ToString();
         _weightText.text = weight.ToString();
         foreach (var t in GetComponentsInChildren<UI_InputSliderSync>()) {
-            t.inputField.onDeselect.Invoke(t.inputField.text);
+            t._inputField.onDeselect.Invoke(t._inputField.text);
         }
     }
 }

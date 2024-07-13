@@ -3,17 +3,17 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class UI_SavePanel : MonoBehaviour {
-    public Button deleteButton;
-    public Button loadButton;
-    public TextMeshProUGUI saveName;
+    [SerializeField] private Button _deleteButton;
+    [SerializeField] private Button _loadButton;
+    [SerializeField] private TextMeshProUGUI _saveName;
 
     public void Setup(string name) {
-        saveName.text = name;
-        deleteButton.onClick.AddListener(() => {
+        _saveName.text = name;
+        _deleteButton.onClick.AddListener(() => {
             SaveSystem.DeleteSave(SaveSystem.NOISE_SETTING_DEFAULT_SAVE_PATH, name);
             UI_SaveSystem._instance.Refresh();
         });
-        loadButton.onClick.AddListener(() => {
+        _loadButton.onClick.AddListener(() => {
             UI_Handler._instance.LoadSetting(name);
             GetComponentInParent<UI_SaveSystem>().Refresh();
         });

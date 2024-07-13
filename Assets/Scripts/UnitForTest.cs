@@ -2,13 +2,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class UnitForTest : MonoBehaviour {
-    public int viewRange;
-    public float speed;
+    [SerializeField] private int viewRange;
+    [SerializeField] private float speed;
     private int index;
-    public List<Vector3> transforms;
+    private List<Vector3> transforms;
 
     private void Start() {
-        MouseController._instance.OnMouseClickLeft += FindCell;
+        MouseController._OnMouseClickLeft += FindCell;
     }
 
     private void Update() {
@@ -27,7 +27,7 @@ public class UnitForTest : MonoBehaviour {
     private void FindCell(Vector2 vector) {
         Vector2Int startPos = new(Mathf.FloorToInt(transform.position.x), Mathf.FloorToInt(transform.position.y));
         viewRange = (int)Vector2.Distance(startPos, vector) + 5;
-        PathFinding pathF = new(viewRange, WorldGeneration._instance.chunks, WorldGeneration.chunkSize);
+        PathFinding pathF = new(viewRange, WorldGeneration._instance._currentChunksDict, WorldGeneration.chunkSize);
         var path = pathF.FindPath(startPos, new Vector2Int(Mathf.FloorToInt(vector.x), Mathf.FloorToInt(vector.y)));
         if (path == null) {
             Debug.Log("No way");

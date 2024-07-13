@@ -7,12 +7,12 @@ using UnityEngine;
 public class UI_Handler : MonoBehaviour {
 
     public static UI_Handler _instance;
-    public TMP_InputField _chunkSizeText;
-    public TMP_InputField _seedText;
-    public TMP_InputField _chunkCountText;
-    public RectTransform _layerHandler;
-    public GameObject _layerPrefab;
-    public bool _useMultipleLayer;
+    [SerializeField] private TMP_InputField _chunkSizeText;
+    [SerializeField] private TMP_InputField _seedText;
+    [SerializeField] private TMP_InputField _chunkCountText;
+    [SerializeField] private RectTransform _layerHandler;
+    [SerializeField] private GameObject _layerPrefab;
+
     private WorldGeneration _worldGenerator;
     private int _index = 0;
     private List<UI_LayerHandler> _layers = new();
@@ -23,7 +23,7 @@ public class UI_Handler : MonoBehaviour {
 
     private void Start() {
         _worldGenerator = WorldGeneration._instance;
-        if (_useMultipleLayer) CreateNewLayer();
+        CreateNewLayer();
         NextLayer();
     }
 

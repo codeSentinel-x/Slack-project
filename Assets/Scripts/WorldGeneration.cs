@@ -4,55 +4,60 @@ using MyUtils.Structs;
 using UnityEngine;
 
 public class WorldGeneration : MonoBehaviour {
+
+
     public static WorldGeneration _instance;
     public static MultipleLayerNoiseSetting currentSettings;
     public static int chunkSize;
+    public Dictionary<Vector2Int, GameObject> _currentChunksDict = new();
+    public Dictionary<Vector2Int, GameObject> _oldChunksDict = new();
 
+    [SerializeField] private NoiseLayerSetting _humidityNoiseSettings;
+    [SerializeField] private NoiseLayerSetting _temperatureNoiseSettings;
+    
     [SerializeField] private BiomeSO _biome;
-    public Transform _chunkPrefab;
-    public Material _sourceMaterial;
-    public Dictionary<Vector2Int, GameObject> chunks = new();
-    public Dictionary<Vector2Int, GameObject> oldChunks = new();
-    private NoiseGeneration noiseGen;
-    public GameObject chunkHolder;
-    public Action<int> OnNoiseSettingChange;
+    [SerializeField] private Transform _chunkPrefab;
+    [SerializeField] private Material _sourceMaterial;
+    private GameObject _chunkHolder;
+    private NoiseGeneration _noiseGen;
+    public Action<int> _OnNoiseSettingChange;
 
     private void Awake() {
         _instance = this;
     }
 
     private void Start() {
-        noiseGen = NoiseGeneration._instance;
-        noiseGen._onNoiseGenerationCompleat += GenerateChunk;
+        _noiseGen = NoiseGeneration._instance;
+        NoiseGeneration._onNoiseGenerationCompleat += GenerateChunk;
     }
 
     public void GenerateChunks(MultipleLayerNoiseSetting mLNS, uint seed) {
-        if (chunkHolder == null) chunkHolder = new("Chunk holder");
+        if (_chunkHolder == null) _chunkHolder = new("Chunk holder");
         else {
-            Destroy(chunkHolder);
-            chunkHolder = new("Chunk holder");
+            Destroy(_chunkHolder);
+            _chunkHolder = new("Chunk holder");
         }
 
         // chunks = new Transform[mLNS.chunkSize, mLNS.chunkSize];
         chunkSize = mLNS._chunkSize;
         NoiseGeneration._seed = seed;
         currentSettings = mLNS;
-        OnNoiseSettingChange?.Invoke(mLNS._chunkCount);
+        _OnNoiseSettingChange?.Invoke(mLNS._chunkCount);
 
 
     }
     public void GenerateChunkAt(Vector2Int offset) {
-        noiseGen.GenerateNoise(currentSettings, offset * chunkSize);
+        _noiseGen.GenerateNoise(currentSettings, offset * chunkSize);
     }
     public void DestroyChunkAt() {
 
     }
 
     public void DestroyWorld() {
-        if (chunkHolder != null) Destroy(chunkHolder);
+        if (_chunkHolder != null) Destroy(_chunkHolder);
     }
     private void GenerateChunk(float[,] obj, Vector2Int start) {
-        if (chunkHolder == null) return;
+        if (_chunkHolder == null) return;
 
         chunkSize = obj.GetLength(0); ;
         GameObject chunk = Instantiate(_chunkPrefab, new Vector3(start.x + chunkSize / 2, start.y + chunkSize / 2), Quaternion.identity).gameObject;
@@ -89,11 +94,11 @@ public class WorldGeneration : MonoBehaviour {
 
         (chunk.GetComponent<MeshRenderer>().material = new Material(_sourceMaterial)).mainTexture = colorTexture;
 
-        if (!chunks.TryAdd(start / chunkSize, chunk)) {
-            chunks[start / chunkSize] = chunk;
+        if (!_currentChunksDict.TryAdd(start / chunkSize, chunk)) {
+            _currentChunksDict[start / chunkSize] = chunk;
         }
 
-        chunk.transform.parent = chunkHolder.transform;
+        chunk.transform.parent = _chunkHolder.transform;
 
     }
 

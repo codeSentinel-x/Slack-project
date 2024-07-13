@@ -14,8 +14,8 @@ public class PathFinding {
     public Dictionary<Vector2Int, GameObject> _allChunks;
     public int _chunkSize;
     public int _viewRange;
+    public Vector2Int _endInArrayPos;
 
-    public Vector2Int endInArrayPos;
     public PathFinding(int viewRange, Dictionary<Vector2Int, GameObject> allChunks, int chunkSize) {
         _viewRange = viewRange;
         _allChunks = allChunks;
@@ -58,7 +58,7 @@ public class PathFinding {
 
                         }
 
-                        if (startPos.x + i == endPos.x && endPos.y == startPos.y + j) endInArrayPos = new Vector2Int(_viewRange + i, _viewRange + j);
+                        if (startPos.x + i == endPos.x && endPos.y == startPos.y + j) _endInArrayPos = new Vector2Int(_viewRange + i, _viewRange + j);
                     }
                 }
                 catch (SystemException e) {
@@ -75,7 +75,7 @@ public class PathFinding {
         PathFindingCellItem start = _gridOfCellItem[_viewRange, _viewRange];
         PathFindingCellItem end;
         try {
-            end = _gridOfCellItem[endInArrayPos.x, endInArrayPos.y];
+            end = _gridOfCellItem[_endInArrayPos.x, _endInArrayPos.y];
         }
         catch {
             Debug.Log("cell cant be reached, out o view");

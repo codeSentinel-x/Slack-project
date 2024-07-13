@@ -95,12 +95,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab2c53036277287ad9a2841b4d8d3a17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  layerIdText: {fileID: 8549848363976744781}
-  scaleText: {fileID: 4984143170036837592}
-  octavesText: {fileID: 1126111483166955608}
-  persistanceText: {fileID: 826699980919920796}
-  lacunarityText: {fileID: 1611720103353842818}
-  weightText: {fileID: 524136869159647447}
+  _layerIdText: {fileID: 8549848363976744781}
+  _scaleText: {fileID: 4984143170036837592}
+  _octavesText: {fileID: 1126111483166955608}
+  _persistanceText: {fileID: 826699980919920796}
+  _lacunarityText: {fileID: 1611720103353842818}
+  _weightText: {fileID: 524136869159647447}
 --- !u!1 &468628936132848145
 GameObject:
   m_ObjectHideFlags: 0
@@ -685,9 +685,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb3764ae113a0b00aafac6d64070958e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inputField: {fileID: 1611720103353842818}
-  slider: {fileID: 1547984928688165265}
-  isUint: 0
+  _inputField: {fileID: 1611720103353842818}
+  _slider: {fileID: 1547984928688165265}
+  _isUint: 0
 --- !u!1 &1280279957664302578
 GameObject:
   m_ObjectHideFlags: 0
@@ -925,9 +925,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb3764ae113a0b00aafac6d64070958e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inputField: {fileID: 826699980919920796}
-  slider: {fileID: 6947461864371528724}
-  isUint: 0
+  _inputField: {fileID: 826699980919920796}
+  _slider: {fileID: 6947461864371528724}
+  _isUint: 0
 --- !u!1 &2398074375145378901
 GameObject:
   m_ObjectHideFlags: 0
@@ -1508,9 +1508,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb3764ae113a0b00aafac6d64070958e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inputField: {fileID: 4984143170036837592}
-  slider: {fileID: 2931648608243661586}
-  isUint: 0
+  _inputField: {fileID: 4984143170036837592}
+  _slider: {fileID: 2931648608243661586}
+  _isUint: 0
 --- !u!1 &2851411814226411451
 GameObject:
   m_ObjectHideFlags: 0
@@ -1739,9 +1739,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb3764ae113a0b00aafac6d64070958e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inputField: {fileID: 1126111483166955608}
-  slider: {fileID: 8528313441137472399}
-  isUint: 0
+  _inputField: {fileID: 1126111483166955608}
+  _slider: {fileID: 8528313441137472399}
+  _isUint: 0
 --- !u!1 &3472744055374240358
 GameObject:
   m_ObjectHideFlags: 0
@@ -3903,9 +3903,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb3764ae113a0b00aafac6d64070958e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inputField: {fileID: 524136869159647447}
-  slider: {fileID: 2051126912457288591}
-  isUint: 0
+  _inputField: {fileID: 524136869159647447}
+  _slider: {fileID: 2051126912457288591}
+  _isUint: 0
 --- !u!1 &6500012136996162428
 GameObject:
   m_ObjectHideFlags: 0
