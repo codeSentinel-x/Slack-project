@@ -121,7 +121,12 @@ public class NoiseGeneration : MonoBehaviour {
             humidityGenJob.Schedule()
         };
         JobHandle.CompleteAll(allJobs);
-        
+        for (int x = 0; x < finalResult.GetLength(1); x++) {
+            for (int y = 0; y < finalResult.GetLength(2); y++) {
+                finalResult[1, x, y] += temperatureResult[x + mLNS._chunkSize * y];
+                finalResult[2, x, y] += humidityResult[x + mLNS._chunkSize * y];
+            }
+        }
 
         _onAdvanceNoiseMapGenerationCompleat?.Invoke(finalResult, offset);
         yield return null;

@@ -48,8 +48,17 @@ namespace MyUtils.Structs {
         public string _biomeName;
         public float _minTemperature;
         public BiomeSO _baseBiomeSO;
-
-
+    }
+    
+    public enum Biomes{
+        Desert,
+        Jungle,
+        Savanna,
+        Tundra,
+        Taiga,
+        Grassland,
+        Swamp,
+        Forest
     }
 
 

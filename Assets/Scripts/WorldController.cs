@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 
 public class WorldController : MonoBehaviour {
-
+    
     [SerializeField] private GameObject _debugDisplay;
     [SerializeField] private TextMeshProUGUI _nameDisplay;
     [SerializeField] private TextMeshProUGUI _posDisplay;

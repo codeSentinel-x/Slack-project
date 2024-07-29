@@ -7689,7 +7689,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b80d2a5a408c78109855cd46d55834f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _biome: {fileID: 11400000, guid: 4e83740854a640cceafeec15f161d54b, type: 2}
+  _humidityNoiseSettings:
+    _scale: 0
+    _octaves: 0
+    _persistance: 0
+    _lacunarity: 0
+  _temperatureNoiseSettings:
+    _scale: 0
+    _octaves: 0
+    _persistance: 0
+    _lacunarity: 0
+  biomeAsset:
+    DesertSO: {fileID: 11400000, guid: 0b725715d71398bf299ecd5fa1ed387e, type: 2}
+    JungleSO: {fileID: 0}
+    SavannaSO: {fileID: 0}
+    TundraSO: {fileID: 0}
+    TaigaSO: {fileID: 0}
+    GrasslandSO: {fileID: 11400000, guid: 4e83740854a640cceafeec15f161d54b, type: 2}
+    SwampSO: {fileID: 0}
+    ForestSO: {fileID: 0}
+  _biome: {fileID: 11400000, guid: 0b725715d71398bf299ecd5fa1ed387e, type: 2}
   _chunkPrefab: {fileID: 6767066938474356729, guid: 96bdeeecd7391b3febf364efe6b23e9c, type: 3}
   _sourceMaterial: {fileID: 2100000, guid: b7dd32907d9cd80d8a75b689e0506dbb, type: 2}
 --- !u!4 &1710238900

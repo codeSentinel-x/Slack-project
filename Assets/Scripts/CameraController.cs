@@ -9,7 +9,7 @@ public class CameraController : MonoBehaviour {
     private Camera _camera;
     private float _scrollAmount;
 
-    private void Awake() {
+    private void Awake() { 
         _camera = GetComponent<Camera>();
     }
 
@@ -23,7 +23,7 @@ public class CameraController : MonoBehaviour {
         _dir = new Vector3(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
         _scrollAmount = Input.mouseScrollDelta.y;
     }
-    public void ChangeSpeed(float v) {
-        _speed = v;
+    public void ChangeSpeed(float value) {
+        _speed = value;
     }
 }
