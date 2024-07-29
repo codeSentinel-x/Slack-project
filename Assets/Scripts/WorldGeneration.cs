@@ -8,21 +8,21 @@ public class WorldGeneration : MonoBehaviour {
 
 
     public static WorldGeneration _instance;
-    public static MultipleLayerNoiseSetting currentSettings;
+    public static MultipleLayerNoiseSetting _currentSettings;
     public static int chunkSize;
     public Dictionary<Vector2Int, GameObject> _currentChunksDict = new();
     public Dictionary<Vector2Int, GameObject> _oldChunksDict = new();
 
     [SerializeField] private NoiseLayerSetting _humidityNoiseSettings;
     [SerializeField] private NoiseLayerSetting _temperatureNoiseSettings;
-    [SerializeField] private BiomeAssets biomeAsset;
+    [SerializeField] private BiomeAssets _biomeAsset;
     [SerializeField] private BiomeSO _biome;
     [SerializeField] private Transform _chunkPrefab;
     [SerializeField] private Material _sourceMaterial;
     private GameObject _chunkHolder;
     private NoiseGeneration _noiseGen;
 
-    public Action<int> _OnNoiseSettingChange;
+    public Action<int, bool> _OnNoiseSettingChange;
 
     private void Awake() {
         _instance = this;
@@ -40,7 +40,7 @@ public class WorldGeneration : MonoBehaviour {
         chunkSize = obj.GetLength(1); ;
         GameObject chunk = Instantiate(_chunkPrefab, new Vector3(start.x + chunkSize / 2, start.y + chunkSize / 2), Quaternion.identity).gameObject;
         ChunkController cT = chunk.GetComponent<ChunkController>();
-        cT._chunks = new ChunkItem[obj.GetLength(0), obj.GetLength(1)];
+        cT._chunks = new ChunkItem[obj.GetLength(1), obj.GetLength(2)];
         chunk.transform.localScale = new Vector3(chunkSize, chunkSize, 1);
         Texture2D colorTexture = new(chunkSize, chunkSize);
         Color[] chunkColors = new Color[chunkSize * chunkSize];
@@ -49,7 +49,7 @@ public class WorldGeneration : MonoBehaviour {
             for (int x = 0; x < chunkSize; x++) {
                 float h = obj[0, x, y];
                 h = Mathf.Clamp01(h);
-                biome = biomeAsset.GetBiomeSO(obj[1, x, y], obj[2, x, y]);
+                biome = _biomeAsset.GetBiomeSO(obj[1, x, y], obj[2, x, y]);
                 for (int i = 0; i < biome._terrainTypes.Length; i++) {
                     if (biome._terrainTypes[i]._h >= h) {
                         float minH = i == 0 ? 0f : biome._terrainTypes[i - 1]._h;
@@ -92,13 +92,32 @@ public class WorldGeneration : MonoBehaviour {
         // chunks = new Transform[mLNS.chunkSize, mLNS.chunkSize];
         chunkSize = mLNS._chunkSize;
         NoiseGeneration._seed = seed;
-        currentSettings = mLNS;
-        _OnNoiseSettingChange?.Invoke(mLNS._chunkCount);
+        _currentSettings = mLNS;
+        _OnNoiseSettingChange?.Invoke(mLNS._chunkCount, false);
+
+
+    }
+    public void GenerateAdvancedChunks(MultipleLayerNoiseSetting mLNS, uint seed) {
+        if (_chunkHolder == null) _chunkHolder = new("Chunk holder");
+        else {
+            Destroy(_chunkHolder);
+            _chunkHolder = new("Chunk holder");
+        }
+
+        // chunks = new Transform[mLNS.chunkSize, mLNS.chunkSize];
+        chunkSize = mLNS._chunkSize;
+        NoiseGeneration._seed = seed;
+        _currentSettings = mLNS;
+        _OnNoiseSettingChange?.Invoke(mLNS._chunkCount, true);
 
 
     }
     public void GenerateChunkAt(Vector2Int offset) {
-        _noiseGen.GenerateNoise(currentSettings, offset * chunkSize);
+        _noiseGen.GenerateNoise(_currentSettings, offset * chunkSize);
+    }
+
+    public void GenerateAdvancedChunkAt(Vector2Int offset) {
+        _noiseGen.GenerateNoise(_currentSettings, _temperatureNoiseSettings, _humidityNoiseSettings, offset * chunkSize);
     }
     public void DestroyChunkAt() {
 
@@ -110,7 +129,7 @@ public class WorldGeneration : MonoBehaviour {
     private void GenerateChunk(float[,] obj, Vector2Int start) {
         if (_chunkHolder == null) return;
 
-        chunkSize = obj.GetLength(0); 
+        chunkSize = obj.GetLength(0);
         GameObject chunk = Instantiate(_chunkPrefab, new Vector3(start.x + chunkSize / 2, start.y + chunkSize / 2), Quaternion.identity).gameObject;
         ChunkController cT = chunk.GetComponent<ChunkController>();
         cT._chunks = new ChunkItem[obj.GetLength(0), obj.GetLength(1)];

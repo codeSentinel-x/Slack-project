@@ -32,6 +32,10 @@ public class UI_Handler : MonoBehaviour {
         NoiseSettingData nD = GetNoiseData();
         _worldGenerator.GenerateChunks(nD._settings, nD._seed);
     }
+    public void GenerateAdvanceWorldMultipleLayer() {
+        NoiseSettingData nD = GetNoiseData();
+        _worldGenerator.GenerateAdvancedChunks(nD._settings, nD._seed);
+    }
     public NoiseSettingData GetNoiseData() {
         NoiseSettingData data = new() {
             _settings = GetMultipleNoiseSettingArray(),

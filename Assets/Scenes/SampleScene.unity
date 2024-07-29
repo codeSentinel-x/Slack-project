@@ -3891,7 +3891,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 178887482}
         m_TargetAssemblyTypeName: UI_Handler, Assembly-CSharp
-        m_MethodName: GenerateWorldMultipleLayer
+        m_MethodName: GenerateAdvanceWorldMultipleLayer
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -7690,25 +7690,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _humidityNoiseSettings:
-    _scale: 0
-    _octaves: 0
-    _persistance: 0
-    _lacunarity: 0
+    _scale: 220
+    _octaves: 3
+    _persistance: 0.4
+    _lacunarity: 1.9
   _temperatureNoiseSettings:
-    _scale: 0
-    _octaves: 0
-    _persistance: 0
-    _lacunarity: 0
-  biomeAsset:
+    _scale: 260
+    _octaves: 4
+    _persistance: 0.6
+    _lacunarity: 2.1
+  _biomeAsset:
     DesertSO: {fileID: 11400000, guid: 0b725715d71398bf299ecd5fa1ed387e, type: 2}
-    JungleSO: {fileID: 0}
-    SavannaSO: {fileID: 0}
-    TundraSO: {fileID: 0}
-    TaigaSO: {fileID: 0}
+    JungleSO: {fileID: 11400000, guid: e9c7f119aaa02e7e3be679773440c6d3, type: 2}
+    SavannaSO: {fileID: 11400000, guid: 5a05e148cbc59f153bdfb8abbee81ec9, type: 2}
+    TundraSO: {fileID: 11400000, guid: 9298946544003ed29bce18a9c9eba1f5, type: 2}
+    TaigaSO: {fileID: 11400000, guid: 48b68eeafee4afb32b150d96da999066, type: 2}
     GrasslandSO: {fileID: 11400000, guid: 4e83740854a640cceafeec15f161d54b, type: 2}
-    SwampSO: {fileID: 0}
-    ForestSO: {fileID: 0}
-  _biome: {fileID: 11400000, guid: 0b725715d71398bf299ecd5fa1ed387e, type: 2}
+    SwampSO: {fileID: 11400000, guid: 897764390ce79c45a98a80db9e4bf9bc, type: 2}
+    ForestSO: {fileID: 11400000, guid: 39636e43800bb2f65aa65857195f07ce, type: 2}
+  _biome: {fileID: 11400000, guid: 48b68eeafee4afb32b150d96da999066, type: 2}
   _chunkPrefab: {fileID: 6767066938474356729, guid: 96bdeeecd7391b3febf364efe6b23e9c, type: 3}
   _sourceMaterial: {fileID: 2100000, guid: b7dd32907d9cd80d8a75b689e0506dbb, type: 2}
 --- !u!4 &1710238900

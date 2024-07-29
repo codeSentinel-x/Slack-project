@@ -6,7 +6,6 @@ using Unity.Collections;
 using System;
 using Unity.Burst;
 using Unity.Mathematics;
-using System.Collections.Generic;
 
 public class NoiseGeneration : MonoBehaviour {
     #region static fields: 
