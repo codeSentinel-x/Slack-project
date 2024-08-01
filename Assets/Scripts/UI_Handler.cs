@@ -35,12 +35,13 @@ public class UI_Handler : MonoBehaviour {
     }
     public void GenerateAdvanceWorldMultipleLayer() {
         NoiseSettingData nD = GetNoiseData();
-        _worldGenerator.GenerateAdvancedChunks(nD._settings, nD._seed);
+        _worldGenerator.GenerateAdvancedChunks(nD);
     }
     public NoiseSettingData GetNoiseData() {
         NoiseSettingData data = new() {
             _settings = GetMultipleNoiseSettingArray(),
-            _temperatureNoise =
+            _temperatureNoise = _tempNoiseLayer.GetSettings(),
+            _humidityNoise = _humidityNoiseLayer.GetSettings(),
             _seed = uint.Parse(_seedText.text),
         };
         return data;
@@ -53,7 +54,7 @@ public class UI_Handler : MonoBehaviour {
         };
         for (int i = 0; i < mLNS._weightedNoiseSettings.Length; i++) {
             mLNS._weightedNoiseSettings[i]._noiseSetting = _layers[i].GetSettings();
-            mLNS._weightedNoiseSettings[i]._weight = float.Parse(_layers[i]._weightText.text.Replace(',', '.'), System.Globalization.CultureInfo.InvariantCulture);
+            mLNS._weightedNoiseSettings[i]._weight = _layers[i].GetWeight();
         }
         return mLNS;
     }
@@ -75,9 +76,10 @@ public class UI_Handler : MonoBehaviour {
         _layers.ForEach((x) => Destroy(x.gameObject));
         _layers.Clear();
         _layers = new();
-
+        _tempNoiseLayer.Setup(loadedData._temperatureNoise, 1);
+        _humidityNoiseLayer.Setup(loadedData._humidityNoise, 1);
         foreach (var w in loadedData._settings._weightedNoiseSettings) {
-            CreateNewLayer(w._noiseSetting._scale, w._noiseSetting._octaves, w._noiseSetting._persistance, w._noiseSetting._lacunarity, w._weight);
+            CreateNewLayer(w);
         }
 
         _index = 0;
@@ -90,12 +92,12 @@ public class UI_Handler : MonoBehaviour {
         l.gameObject.SetActive(false);
         l.Setup(_layers.Count - 1);
     }
-    public void CreateNewLayer(float scale, int octaves, float persistance, float lacunarity, float weight) {
+    public void CreateNewLayer(WeightedNoiseSetting wSettings) {
         UI_LayerHandler l = Instantiate(_layerPrefab, _layerHandler).GetComponent<UI_LayerHandler>();
         _layers.Add(l);
         l.gameObject.SetActive(true);
         _layers[_index].gameObject.SetActive(false);
-        l.Setup(_layers.Count - 1, scale, octaves, persistance, lacunarity, weight);
+        l.Setup(_layers.Count - 1, wSettings._noiseSetting, wSettings._weight);
         _index = _layers.Count - 1;
         _layers[_index].gameObject.SetActive(false);
 

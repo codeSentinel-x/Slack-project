@@ -97,21 +97,22 @@ public class WorldGeneration : MonoBehaviour {
 
 
     }
-    public void GenerateAdvancedChunks(MultipleLayerNoiseSetting mLNS, uint seed) {
+    public void GenerateAdvancedChunks(NoiseSettingData data) {
         if (_chunkHolder == null) _chunkHolder = new("Chunk holder");
         else {
             Destroy(_chunkHolder);
             _chunkHolder = new("Chunk holder");
         }
-
-        // chunks = new Transform[mLNS.chunkSize, mLNS.chunkSize];
-        chunkSize = mLNS._chunkSize;
-        NoiseGeneration._seed = seed;
-        _currentSettings = mLNS;
-        _OnNoiseSettingChange?.Invoke(mLNS._chunkCount, true);
+        chunkSize = data._settings._chunkSize;
+        NoiseGeneration._seed = data._seed;
+        _currentSettings = data._settings;
+        _temperatureNoiseSettings = data._temperatureNoise;
+        _humidityNoiseSettings = data._humidityNoise;
+        _OnNoiseSettingChange?.Invoke(data._settings._chunkCount, true);
 
 
     }
+
     public void GenerateChunkAt(Vector2Int offset) {
         _noiseGen.GenerateNoise(_currentSettings, offset * chunkSize);
     }

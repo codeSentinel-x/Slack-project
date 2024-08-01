@@ -16,12 +16,15 @@ public class UI_LayerHandler : MonoBehaviour {
     }
 
 
-    public void Setup(int id, float scale, int octaves, float persistance, float lacunarity, float weight) {
+    public void Setup(int id, NoiseLayerSetting s, float weight) {
         _layerIdText.text = id.ToString();
-        _scaleText.text = scale.ToString();
-        _octavesText.text = octaves.ToString();
-        _persistanceText.text = persistance.ToString();
-        _lacunarityText.text = lacunarity.ToString();
+        Setup(s, weight);
+    }
+    public void Setup(NoiseLayerSetting s, float weight) {
+        _scaleText.text = s._scale.ToString();
+        _octavesText.text = s._octaves.ToString();
+        _persistanceText.text = s._persistance.ToString();
+        _lacunarityText.text = s._lacunarity.ToString();
         _weightText.text = weight.ToString();
         foreach (var t in GetComponentsInChildren<UI_InputSliderSync>()) {
             t._inputField.onDeselect.Invoke(t._inputField.text);
@@ -34,5 +37,8 @@ public class UI_LayerHandler : MonoBehaviour {
             _persistance = float.Parse(_persistanceText.text.Replace(',', '.'), System.Globalization.CultureInfo.InvariantCulture),
             _lacunarity = float.Parse(_lacunarityText.text.Replace(',', '.'), System.Globalization.CultureInfo.InvariantCulture)
         };
+    }
+    public float GetWeight() {
+        return float.Parse(_weightText.text.Replace(',', '.'), System.Globalization.CultureInfo.InvariantCulture);
     }
 }
