@@ -1,3 +1,4 @@
+using MyUtils.Structs;
 using TMPro;
 using UnityEngine;
 
@@ -25,5 +26,13 @@ public class UI_LayerHandler : MonoBehaviour {
         foreach (var t in GetComponentsInChildren<UI_InputSliderSync>()) {
             t._inputField.onDeselect.Invoke(t._inputField.text);
         }
+    }
+    public NoiseLayerSetting GetSettings() {
+        return new NoiseLayerSetting() {
+            _scale = float.Parse(_scaleText.text.Replace(',', '.'), System.Globalization.CultureInfo.InvariantCulture),
+            _octaves = int.Parse(_octavesText.text),
+            _persistance = float.Parse(_persistanceText.text.Replace(',', '.'), System.Globalization.CultureInfo.InvariantCulture),
+            _lacunarity = float.Parse(_lacunarityText.text.Replace(',', '.'), System.Globalization.CultureInfo.InvariantCulture)
+        };
     }
 }

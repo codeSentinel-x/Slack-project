@@ -7,6 +7,8 @@ namespace MyUtils.Classes {
     [Serializable]
     public class NoiseSettingData {
         public MultipleLayerNoiseSetting _settings;
+        public NoiseLayerSetting _temperatureNoise;
+        public NoiseLayerSetting _humidityNoise;
         public uint _seed;
     }
 

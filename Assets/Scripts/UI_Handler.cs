@@ -12,7 +12,8 @@ public class UI_Handler : MonoBehaviour {
     [SerializeField] private TMP_InputField _chunkCountText;
     [SerializeField] private RectTransform _layerHandler;
     [SerializeField] private GameObject _layerPrefab;
-
+    [SerializeField] private UI_LayerHandler _tempNoiseLayer;
+    [SerializeField] private UI_LayerHandler _humidityNoiseLayer;
     private WorldGeneration _worldGenerator;
     private int _index = 0;
     private List<UI_LayerHandler> _layers = new();
@@ -39,6 +40,7 @@ public class UI_Handler : MonoBehaviour {
     public NoiseSettingData GetNoiseData() {
         NoiseSettingData data = new() {
             _settings = GetMultipleNoiseSettingArray(),
+            _temperatureNoise =
             _seed = uint.Parse(_seedText.text),
         };
         return data;
@@ -50,12 +52,7 @@ public class UI_Handler : MonoBehaviour {
             _chunkCount = int.Parse(_chunkCountText.text),
         };
         for (int i = 0; i < mLNS._weightedNoiseSettings.Length; i++) {
-            mLNS._weightedNoiseSettings[i]._noiseSetting = new NoiseLayerSetting() {
-                _scale = float.Parse(_layers[i]._scaleText.text.Replace(',', '.'), System.Globalization.CultureInfo.InvariantCulture),
-                _octaves = int.Parse(_layers[i]._octavesText.text),
-                _persistance = float.Parse(_layers[i]._persistanceText.text.Replace(',', '.'), System.Globalization.CultureInfo.InvariantCulture),
-                _lacunarity = float.Parse(_layers[i]._lacunarityText.text.Replace(',', '.'), System.Globalization.CultureInfo.InvariantCulture)
-            };
+            mLNS._weightedNoiseSettings[i]._noiseSetting = _layers[i].GetSettings();
             mLNS._weightedNoiseSettings[i]._weight = float.Parse(_layers[i]._weightText.text.Replace(',', '.'), System.Globalization.CultureInfo.InvariantCulture);
         }
         return mLNS;
