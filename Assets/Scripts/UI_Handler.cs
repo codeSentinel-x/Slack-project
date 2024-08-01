@@ -28,11 +28,6 @@ public class UI_Handler : MonoBehaviour {
         NextLayer();
     }
 
-
-    public void GenerateWorldMultipleLayer() {
-        NoiseSettingData nD = GetNoiseData();
-        _worldGenerator.GenerateChunks(nD._settings, nD._seed);
-    }
     public void GenerateAdvanceWorldMultipleLayer() {
         NoiseSettingData nD = GetNoiseData();
         _worldGenerator.GenerateAdvancedChunks(nD);

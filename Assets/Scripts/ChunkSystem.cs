@@ -9,10 +9,9 @@ public class ChunkSystem : MonoBehaviour {
 
     private void Start() {
         // MouseController._instance.OnMouseClick += (x) => transform.position = x;
-        WorldGeneration._instance._OnNoiseSettingChange += (x, y) => {
+        WorldGeneration._instance._OnNoiseSettingChange += (x) => {
             _chunkRenderDistance = x;
-            if (!y) GenerateChunkInRange(true);
-            else GenerateAdvancedChunkInRange(true);
+            GenerateAdvancedChunkInRange(true);
         };
 
     }
@@ -35,43 +34,6 @@ public class ChunkSystem : MonoBehaviour {
         GenerateAdvancedChunkInRange();
     }
 
-    public void GenerateChunkInRange(bool doNotLookForOld = false) {
-        List<Vector2Int> chunksInRange = new();
-        Vector2Int chunkPos;
-        for (int i = -_chunkRenderDistance; i <= _chunkRenderDistance; i++) {
-            for (int j = -_chunkRenderDistance; j <= _chunkRenderDistance; j++) {
-                chunkPos = new Vector2Int(_lastChunkPosition.x + i, _lastChunkPosition.y + j);
-                if (chunkPos.x >= 0 && chunkPos.y >= 0) {
-                    chunksInRange.Add(chunkPos);
-                }
-            }
-        }
-
-        if (!doNotLookForOld) {
-
-            WorldGeneration._instance._oldChunksDict = WorldGeneration._instance._currentChunksDict;
-            WorldGeneration._instance._currentChunksDict = new();
-
-            foreach (var c in WorldGeneration._instance._oldChunksDict) {
-                if (!chunksInRange.Contains(c.Key)) {
-                    Destroy(c.Value);
-                }
-                else {
-                    WorldGeneration._instance._currentChunksDict[c.Key] = c.Value;
-                }
-            }
-        }
-        else {
-            WorldGeneration._instance._currentChunksDict = new();
-            _spriteRenderer.transform.localPosition = WorldGeneration._currentSettings._chunkSize % 2 == 0 ? new(0.5f, 0.5f, 0) : new(0, 0, 0);
-        }
-        foreach (var i in chunksInRange) {
-            if (!WorldGeneration._instance._currentChunksDict.ContainsKey(i)) {
-                WorldGeneration._instance.GenerateChunkAt(i);
-            }
-        }
-
-    }
     public void GenerateAdvancedChunkInRange(bool doNotLookForOld = false) {
         List<Vector2Int> chunksInRange = new();
         Vector2Int chunkPos;
@@ -113,6 +75,6 @@ public class ChunkSystem : MonoBehaviour {
     //This method is for slider
     public void ChangeRenderDist(float v) {
         _chunkRenderDistance = (int)v;
-        GenerateChunkInRange();
+        GenerateAdvancedChunkInRange();
     }
 }

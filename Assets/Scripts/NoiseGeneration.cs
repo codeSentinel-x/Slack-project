@@ -10,7 +10,6 @@ using Unity.Mathematics;
 public class NoiseGeneration : MonoBehaviour {
     #region static fields: 
     public static NoiseGeneration _instance;
-    public static Action<float[,], Vector2Int> _onNoiseGenerationCompleat;
     public static Action<float[,,], Vector2Int> _onAdvanceNoiseMapGenerationCompleat;
     public static uint _seed = 768754;
 
@@ -26,52 +25,18 @@ public class NoiseGeneration : MonoBehaviour {
 
 
 
-    public void GenerateNoise(MultipleLayerNoiseSetting mLNS, Vector2Int offset = default) {
-        if (offset == default) offset = Vector2Int.zero;
-        StartCoroutine(GenerateMultipleNoise(mLNS, offset));
-    }
     public void GenerateNoise(MultipleLayerNoiseSetting mLNS, NoiseLayerSetting temperatureNoise, NoiseLayerSetting humidityNoise, Vector2Int offset = default) {
         if (offset == default) offset = Vector2Int.zero;
         StartCoroutine(GenerateAdvancedNoiseMap(mLNS, temperatureNoise, humidityNoise, offset));
     }
 
-    private IEnumerator GenerateMultipleNoise(MultipleLayerNoiseSetting mLNS, Vector2Int offset) {
 
-        float[,] finalResult = new float[mLNS._chunkSize, mLNS._chunkSize];
-
-        foreach (WeightedNoiseSetting w in mLNS._weightedNoiseSettings) {
-            if (w._weight == 0) continue;
-            NativeArray<float> _noiseMapResult = new(mLNS._chunkSize * mLNS._chunkSize, Allocator.TempJob);
-
-            GenerateNoiseMapJob noiseGenJob = new() {
-                result = _noiseMapResult,
-                seed = _seed,
-                nS = w._noiseSetting,
-                offset = new(offset.x, offset.y),
-                mapSize = mLNS._chunkSize
-            };
-
-            JobHandle _noiseJobH = noiseGenJob.Schedule();
-
-            _noiseJobH.Complete();
-
-            for (int x = 0; x < finalResult.GetLength(0); x++) {
-                for (int y = 0; y < finalResult.GetLength(1); y++) {
-                    finalResult[x, y] += _noiseMapResult[x + mLNS._chunkSize * y] * GetNormalizedWeight(mLNS, w._weight);
-                }
-            }
-
-            _noiseMapResult.Dispose();
-        }
-
-        _onNoiseGenerationCompleat?.Invoke(finalResult, offset);
-        yield return null;
-
-    }
 
     private IEnumerator GenerateAdvancedNoiseMap(MultipleLayerNoiseSetting mLNS, NoiseLayerSetting temperatureNoise, NoiseLayerSetting humidityNoise, Vector2Int offset = default) {
         float[,,] finalResult = new float[3, mLNS._chunkSize, mLNS._chunkSize];
-
+        NativeList<JobHandle> layerNoiseGeneration = new(Allocator.Temp);
+        NativeList<JobHandle> allJobs = new(Allocator.Temp);
+        NativeList<NativeArray<float>> a;
         //generate [0,x,y] - height map
         foreach (WeightedNoiseSetting w in mLNS._weightedNoiseSettings) {
             if (w._weight == 0) continue;
@@ -85,9 +50,8 @@ public class NoiseGeneration : MonoBehaviour {
                 mapSize = mLNS._chunkSize
             };
 
-            JobHandle _noiseJobH = noiseGenJob.Schedule();
+            allJobs.Add(noiseGenJob.Schedule());
 
-            _noiseJobH.Complete();
 
             for (int x = 0; x < finalResult.GetLength(1); x++) {
                 for (int y = 0; y < finalResult.GetLength(2); y++) {
@@ -97,6 +61,7 @@ public class NoiseGeneration : MonoBehaviour {
 
             _noiseMapResult.Dispose();
         }
+
         //generate [1,x,y] - temperature map  and //generate [2,x,y] - humidity map
         NativeArray<float> temperatureResult = new(mLNS._chunkSize * mLNS._chunkSize, Allocator.TempJob);
         NativeArray<float> humidityResult = new(mLNS._chunkSize * mLNS._chunkSize, Allocator.TempJob);
@@ -115,10 +80,10 @@ public class NoiseGeneration : MonoBehaviour {
             mapSize = mLNS._chunkSize
         };
 
-        NativeList<JobHandle> allJobs = new(Allocator.Temp) {
-            temperatureGenJob.Schedule(),
-            humidityGenJob.Schedule()
-        };
+
+        allJobs.Add(temperatureGenJob.Schedule());
+        allJobs.Add(humidityGenJob.Schedule());
+
         JobHandle.CompleteAll(allJobs);
         for (int x = 0; x < finalResult.GetLength(1); x++) {
             for (int y = 0; y < finalResult.GetLength(2); y++) {
@@ -127,6 +92,9 @@ public class NoiseGeneration : MonoBehaviour {
             }
         }
 
+        allJobs.Dispose();
+        temperatureResult.Dispose();
+        humidityResult.Dispose();
         _onAdvanceNoiseMapGenerationCompleat?.Invoke(finalResult, offset);
         yield return null;
     }
@@ -199,10 +167,6 @@ public class NoiseGeneration : MonoBehaviour {
 
 
     }
-
-
-
-
 
     [BurstCompile]
     public struct GenerateFalloffMapJob : IJob {

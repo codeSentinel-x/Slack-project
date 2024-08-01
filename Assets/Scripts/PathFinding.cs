@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using MyUtils.Classes;
+using Unity.Jobs;
 using UnityEngine;
 
 public class PathFinding {
@@ -180,6 +181,12 @@ public class PathFinding {
         return lowestF;
     }
 
+    public struct FinsPath : IJob {
+        
+        public void Execute() {
+            //TODO i'll do it later (maybe)
+        }
+    }
 
 
 
