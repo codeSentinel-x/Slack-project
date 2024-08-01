@@ -9,7 +9,7 @@ public class WorldGeneration : MonoBehaviour {
 
     public static WorldGeneration _instance;
     public static MultipleLayerNoiseSetting _currentSettings;
-    public static int chunkSize;
+    public static int _chunkSize;
     public Dictionary<Vector2Int, GameObject> _currentChunksDict = new();
     public Dictionary<Vector2Int, GameObject> _oldChunksDict = new();
 
@@ -35,16 +35,16 @@ public class WorldGeneration : MonoBehaviour {
     private void GenerateComplexChunk(float[,,] obj, Vector2Int start) {
         if (_chunkHolder == null) return;
 
-        chunkSize = obj.GetLength(1); ;
-        GameObject chunk = Instantiate(_chunkPrefab, new Vector3(start.x + chunkSize / 2, start.y + chunkSize / 2), Quaternion.identity).gameObject;
+        _chunkSize = obj.GetLength(1); ;
+        GameObject chunk = Instantiate(_chunkPrefab, new Vector3(start.x + _chunkSize / 2, start.y + _chunkSize / 2), Quaternion.identity).gameObject;
         ChunkController cT = chunk.GetComponent<ChunkController>();
         cT._chunks = new ChunkItem[obj.GetLength(1), obj.GetLength(2)];
-        chunk.transform.localScale = new Vector3(chunkSize, chunkSize, 1);
-        Texture2D colorTexture = new(chunkSize, chunkSize);
-        Color[] chunkColors = new Color[chunkSize * chunkSize];
+        chunk.transform.localScale = new Vector3(_chunkSize, _chunkSize, 1);
+        Texture2D colorTexture = new(_chunkSize, _chunkSize);
+        Color[] chunkColors = new Color[_chunkSize * _chunkSize];
         BiomeSO biome;
-        for (int y = 0; y < chunkSize; y++) {
-            for (int x = 0; x < chunkSize; x++) {
+        for (int y = 0; y < _chunkSize; y++) {
+            for (int x = 0; x < _chunkSize; x++) {
                 float h = obj[0, x, y];
                 h = Mathf.Clamp01(h);
                 biome = _biomeAsset.GetBiomeSO(obj[1, x, y], obj[2, x, y]);
@@ -53,7 +53,7 @@ public class WorldGeneration : MonoBehaviour {
                         float minH = i == 0 ? 0f : biome._terrainTypes[i - 1]._h;
                         float maxH = biome._terrainTypes[i]._h;
                         float localH = Mathf.InverseLerp(minH, maxH, h);
-                        chunkColors[y * chunkSize + x] = biome._terrainTypes[i]._gradient.Evaluate(localH);
+                        chunkColors[y * _chunkSize + x] = biome._terrainTypes[i]._gradient.Evaluate(localH);
                         cT._chunks[x, y]._cellH = h;
                         cT._chunks[x, y]._terrainTypeName = biome._terrainTypes[i]._cellName;
                         cT._chunks[x, y]._isWalkable = biome._terrainTypes[i]._isWalkable;
@@ -72,8 +72,8 @@ public class WorldGeneration : MonoBehaviour {
 
         (chunk.GetComponent<MeshRenderer>().material = new Material(_sourceMaterial)).mainTexture = colorTexture;
 
-        if (!_currentChunksDict.TryAdd(start / chunkSize, chunk)) {
-            _currentChunksDict[start / chunkSize] = chunk;
+        if (!_currentChunksDict.TryAdd(start / _chunkSize, chunk)) {
+            _currentChunksDict[start / _chunkSize] = chunk;
         }
 
         chunk.transform.parent = _chunkHolder.transform;
@@ -86,7 +86,7 @@ public class WorldGeneration : MonoBehaviour {
             Destroy(_chunkHolder);
             _chunkHolder = new("Chunk holder");
         }
-        chunkSize = data._settings._chunkSize;
+        _chunkSize = data._settings._chunkSize;
         NoiseGeneration._seed = data._seed;
         _currentSettings = data._settings;
         _temperatureNoiseSettings = data._temperatureNoise;
@@ -97,9 +97,9 @@ public class WorldGeneration : MonoBehaviour {
     }
 
     public void GenerateAdvancedChunkAt(Vector2Int offset) {
-        _noiseGen.GenerateNoise(_currentSettings, _temperatureNoiseSettings, _humidityNoiseSettings, offset * chunkSize);
+        _noiseGen.GenerateNoise(_currentSettings, _temperatureNoiseSettings, _humidityNoiseSettings, offset * _chunkSize);
     }
-    
+
     public void DestroyWorld() {
         if (_chunkHolder != null) Destroy(_chunkHolder);
     }

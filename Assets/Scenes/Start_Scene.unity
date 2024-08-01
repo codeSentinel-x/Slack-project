@@ -666,15 +666,28 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'This is #2 preview of my project.
+  m_text: 'This is #3 preview of my project.
 
-    It''s simple procedurall world
-    generator created with Unity Job System and perlin noise. You can generate your
-    own noise map just clicking on gear in the left corner of screen and then generate
-    button. You can add multiple noise layer, change size etc. I also added chunk
-    render system and pathfinding you can test it by clicking on any tile of generated
-    map. Unit by default would not walk on any kind of water or rock! It may be laggy
-    but it''s only preview! Good luck! '
+    What''s new:
+
+    -added temperature
+    noise
+
+    -added humidity noise
+
+    -added biome system base of this 2 noises
+
+    -updated
+    UI
+
+    -reworked noise generation to support multi threads
+
+    -added readme
+    to github page
+
+    -and other small fixes
+
+'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -812,7 +825,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Scrap Game
 
-    --PREVIEW #2--'
+    --PREVIEW #3--'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

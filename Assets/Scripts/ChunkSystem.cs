@@ -21,7 +21,7 @@ public class ChunkSystem : MonoBehaviour {
     }
 
     private void CheckForPositionUpdate() {
-        Vector2Int currentChunkPosition = new(Mathf.FloorToInt(transform.position.x / WorldGeneration.chunkSize), Mathf.FloorToInt(transform.position.y / WorldGeneration.chunkSize));
+        Vector2Int currentChunkPosition = new(Mathf.FloorToInt(transform.position.x / WorldGeneration._chunkSize), Mathf.FloorToInt(transform.position.y / WorldGeneration._chunkSize));
         if (currentChunkPosition.x < 0 || currentChunkPosition.y < 0) return;
         if (currentChunkPosition != _lastChunkPosition) {
             _lastChunkPosition = currentChunkPosition;

@@ -39,10 +39,9 @@ public class NoiseGeneration : MonoBehaviour {
         //generate [0,x,y] - height map
         foreach (WeightedNoiseSetting w in mLNS._weightedNoiseSettings) {
             if (w._weight == 0) continue;
-            NativeArray<float> _noiseMapResult = new(mLNS._chunkSize * mLNS._chunkSize, Allocator.TempJob);
             GenerateNoiseMapJob noiseGenJob = new() {
                 normalizedWeight = GetNormalizedWeight(mLNS, w._weight),
-                result = _noiseMapResult,
+                result = noiseResults,
                 seed = _seed,
                 nS = w._noiseSetting,
                 offset = new(offset.x, offset.y),
@@ -58,6 +57,7 @@ public class NoiseGeneration : MonoBehaviour {
         NativeArray<float> temperatureResult = new(mLNS._chunkSize * mLNS._chunkSize, Allocator.TempJob);
         NativeArray<float> humidityResult = new(mLNS._chunkSize * mLNS._chunkSize, Allocator.TempJob);
         GenerateNoiseMapJob temperatureGenJob = new() {
+            normalizedWeight = 1,
             result = temperatureResult,
             seed = _seed,
             nS = temperatureNoise,
@@ -65,6 +65,7 @@ public class NoiseGeneration : MonoBehaviour {
             mapSize = mLNS._chunkSize
         };
         GenerateNoiseMapJob humidityGenJob = new() {
+            normalizedWeight = 1,
             result = humidityResult,
             seed = _seed,
             nS = humidityNoise,
@@ -116,7 +117,7 @@ public class NoiseGeneration : MonoBehaviour {
             if (normalizedWeight == 0) normalizedWeight = 1;
             Unity.Mathematics.Random rng = new(seed);
             NativeArray<float2> octaveOffset = new(mapSize * mapSize, Allocator.Temp);
-
+            NativeArray<float> resultContainer = new(mapSize * mapSize, Allocator.Temp);
             float maxPossibleH = 0f;
             float amplitude = 1f;
             float frequency = 1f;
@@ -153,11 +154,11 @@ public class NoiseGeneration : MonoBehaviour {
 
                     if (noiseH > maxNoiseH) maxNoiseH = noiseH;
                     else if (noiseH < minNoiseH) minNoiseH = noiseH;
+                    resultContainer[x + y * mapSize] = noiseH;
 
-                    result[x + y * mapSize] = noiseH;
-
-                    float normalizedHeight = (result[x + y * mapSize] + 1) / (maxPossibleH / 0.9f);
-                    result[x + y * mapSize] += Mathf.Clamp(normalizedHeight, 0, int.MaxValue) * normalizedWeight;
+                    float normalizedHeight = (resultContainer[x + y * mapSize] + 1) / (maxPossibleH / 0.9f);
+                    resultContainer[x + y * mapSize] = Mathf.Clamp(normalizedHeight, 0, int.MaxValue) * normalizedWeight;
+                    result[x + y * mapSize] += resultContainer[x + y * mapSize];
                 }
             }
 

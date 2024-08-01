@@ -288,7 +288,7 @@ RectTransform:
   m_Father: {fileID: 2095496100}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0.08163265, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -1907,7 +1907,7 @@ Transform:
   m_GameObject: {fileID: 337795681}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 30, y: 30, z: -10}
+  m_LocalPosition: {x: 1000, y: 1000, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2062,7 +2062,7 @@ GameObject:
   - component: {fileID: 403106117}
   - component: {fileID: 403106116}
   m_Layer: 5
-  m_Name: Button
+  m_Name: next button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2083,10 +2083,10 @@ RectTransform:
   - {fileID: 1722602912}
   m_Father: {fileID: 516782182}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 170.5, y: -20}
+  m_SizeDelta: {x: 65, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &403106116
 MonoBehaviour:
@@ -2738,7 +2738,7 @@ GameObject:
   - component: {fileID: 516773393}
   - component: {fileID: 516773392}
   m_Layer: 5
-  m_Name: Button (1)
+  m_Name: Back button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2759,10 +2759,10 @@ RectTransform:
   - {fileID: 1502760925}
   m_Father: {fileID: 516782182}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 32.5, y: -20}
+  m_SizeDelta: {x: 65, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &516773392
 MonoBehaviour:
@@ -2958,7 +2958,7 @@ GameObject:
   - component: {fileID: 578674893}
   - component: {fileID: 578674894}
   m_Layer: 5
-  m_Name: Setting display
+  m_Name: chunk size settings
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3206,7 +3206,7 @@ MonoBehaviour:
   m_LightType: 4
   m_BlendStyleIndex: 0
   m_FalloffIntensity: 0.5
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.9433962, g: 0.8949641, b: 0.734247, a: 1}
   m_Intensity: 1
   m_LightVolumeIntensity: 1
   m_LightVolumeEnabled: 0
@@ -3270,7 +3270,7 @@ GameObject:
   - component: {fileID: 670234729}
   - component: {fileID: 670234728}
   m_Layer: 5
-  m_Name: Button (1)
+  m_Name: destroy button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3401,7 +3401,7 @@ GameObject:
   - component: {fileID: 671592376}
   - component: {fileID: 671592377}
   m_Layer: 5
-  m_Name: Setting display (6)
+  m_Name: seed settings
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3773,7 +3773,7 @@ GameObject:
   - component: {fileID: 776373216}
   - component: {fileID: 776373215}
   m_Layer: 5
-  m_Name: Button (2)
+  m_Name: temperature button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3794,10 +3794,10 @@ RectTransform:
   - {fileID: 1813230153}
   m_Father: {fileID: 516782182}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 239.5, y: -20}
+  m_SizeDelta: {x: 65, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &776373215
 MonoBehaviour:
@@ -4314,7 +4314,7 @@ GameObject:
   - component: {fileID: 788339603}
   - component: {fileID: 788339602}
   m_Layer: 5
-  m_Name: Button
+  m_Name: generate button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5059,7 +5059,7 @@ RectTransform:
   m_Father: {fileID: 422354951}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -5112,7 +5112,7 @@ GameObject:
   - component: {fileID: 1032907933}
   - component: {fileID: 1032907934}
   m_Layer: 5
-  m_Name: Setting display (1)
+  m_Name: 'render distance settings '
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5684,7 +5684,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1154006900
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6267,8 +6267,8 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1722264082}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMin: {x: 0.08163265, y: 0}
+  m_AnchorMax: {x: 0.08163265, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -6562,7 +6562,7 @@ RectTransform:
   m_Father: {fileID: 232335164}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0.000009000009, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -7204,11 +7204,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 935660706898957455, guid: e4621663b996eee4aa92e2e177a408c7, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 30
+      value: 1000
       objectReference: {fileID: 0}
     - target: {fileID: 935660706898957455, guid: e4621663b996eee4aa92e2e177a408c7, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 30
+      value: 1000
       objectReference: {fileID: 0}
     - target: {fileID: 935660706898957455, guid: e4621663b996eee4aa92e2e177a408c7, type: 3}
       propertyPath: m_LocalPosition.z
@@ -7834,7 +7834,7 @@ GameObject:
   - component: {fileID: 1660126447}
   - component: {fileID: 1660126446}
   m_Layer: 5
-  m_Name: Button (3)
+  m_Name: new button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7855,10 +7855,10 @@ RectTransform:
   - {fileID: 136212557}
   m_Father: {fileID: 516782182}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 101.5, y: -20}
+  m_SizeDelta: {x: 65, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1660126446
 MonoBehaviour:
@@ -7991,7 +7991,7 @@ GameObject:
   - component: {fileID: 1661254139}
   - component: {fileID: 1661254138}
   m_Layer: 5
-  m_Name: Button (3)
+  m_Name: load button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8320,7 +8320,7 @@ GameObject:
   - component: {fileID: 1692179339}
   - component: {fileID: 1692179338}
   m_Layer: 5
-  m_Name: Button (2)
+  m_Name: save button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8500,7 +8500,6 @@ MonoBehaviour:
     GrasslandSO: {fileID: 11400000, guid: 4e83740854a640cceafeec15f161d54b, type: 2}
     SwampSO: {fileID: 11400000, guid: 897764390ce79c45a98a80db9e4bf9bc, type: 2}
     ForestSO: {fileID: 11400000, guid: 39636e43800bb2f65aa65857195f07ce, type: 2}
-  _biome: {fileID: 11400000, guid: 48b68eeafee4afb32b150d96da999066, type: 2}
   _chunkPrefab: {fileID: 6767066938474356729, guid: 96bdeeecd7391b3febf364efe6b23e9c, type: 3}
   _sourceMaterial: {fileID: 2100000, guid: b7dd32907d9cd80d8a75b689e0506dbb, type: 2}
 --- !u!4 &1710238900
@@ -8812,8 +8811,8 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1773613439}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMin: {x: 0.000009000009, y: 0}
+  m_AnchorMax: {x: 0.000009000009, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -9923,7 +9922,7 @@ RectTransform:
   m_Father: {fileID: 618739831}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -10361,7 +10360,7 @@ GameObject:
   - component: {fileID: 2005772185}
   - component: {fileID: 2005772184}
   m_Layer: 5
-  m_Name: Button (4)
+  m_Name: humidity button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10382,10 +10381,10 @@ RectTransform:
   - {fileID: 1397811154}
   m_Father: {fileID: 516782182}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 308.5, y: -20}
+  m_SizeDelta: {x: 65, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2005772184
 MonoBehaviour:
