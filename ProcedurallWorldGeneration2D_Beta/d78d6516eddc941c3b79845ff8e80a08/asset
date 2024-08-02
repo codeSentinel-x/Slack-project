@@ -21,10 +21,11 @@ public class PathFinding {
         _allChunks = allChunks;
         _chunkSize = chunkSize;
     }
+ 
 
     private PathFindingCellItem[,] GetCellsInRange(Vector2Int startPos, Vector2Int endPos) {
         PathFindingCellItem[,] result = new PathFindingCellItem[(2 * _viewRange) + 1, (2 * _viewRange) + 1];
-        Debug.Log("X = " + result.GetLength(0) + "|| Y = " + result.GetLength(1));
+        Debug.Log("X = " + result.GetLength(0) + "|| Y = " + result.GetLength(1)); 
         for (int i = -_viewRange; i <= _viewRange; i++) {
             for (int j = -_viewRange; j <= _viewRange; j++) {
 

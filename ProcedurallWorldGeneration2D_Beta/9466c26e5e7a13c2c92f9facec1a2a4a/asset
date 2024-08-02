@@ -140,7 +140,7 @@ public static class NoiseGeneration {
                     else if (noiseH < minNoiseH) minNoiseH = noiseH;
 
                     float normalizedHeight = (noiseH + 1) / (maxPossibleH / 0.9f);
-                    result[x + y * mapSize] = Mathf.Clamp(normalizedHeight, 0, int.MaxValue) * normalizedWeight;
+                    result[x + y * mapSize] += Mathf.Clamp(normalizedHeight, 0, int.MaxValue) * normalizedWeight;
 
                 }
             }
