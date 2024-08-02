@@ -18,7 +18,7 @@ namespace MyUtils.Classes {
         public int _x;
         public int _y;
         public Vector2Int _worldPos;
-        public ChunkItem _cell;
+        public ChunkItem<int> _cell;
         public PathFindingCellItem _previous;
         public int _gCost;
         public int _hCost;

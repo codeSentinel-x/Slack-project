@@ -7,9 +7,9 @@ using UnityEngine;
 public class WorldGeneration : MonoBehaviour {
 
 
-    public static int _chunkSize;
     public static WorldGeneration _instance;
     public static MultipleLayerNoiseSetting _currentSettings;
+    public static int _chunkSize;
     public Dictionary<Vector2Int, GameObject> _currentChunksDict = new();
     public Dictionary<Vector2Int, GameObject> _oldChunksDict = new();
 
@@ -18,10 +18,7 @@ public class WorldGeneration : MonoBehaviour {
     [SerializeField] private BiomeAssets _biomeAsset;
     [SerializeField] private Transform _chunkPrefab;
     [SerializeField] private Material _sourceMaterial;
-   
-   
     private GameObject _chunkHolder;
-
     public Action<int> _OnNoiseSettingChange;
 
     private void Awake() {
@@ -38,7 +35,7 @@ public class WorldGeneration : MonoBehaviour {
         _chunkSize = obj.GetLength(1); ;
         GameObject chunk = Instantiate(_chunkPrefab, new Vector3(start.x + _chunkSize / 2, start.y + _chunkSize / 2), Quaternion.identity).gameObject;
         ChunkController cT = chunk.GetComponent<ChunkController>();
-        cT._chunks = new ChunkItem[obj.GetLength(1), obj.GetLength(2)];
+        cT._chunks = new ChunkItem<int>[obj.GetLength(1), obj.GetLength(2)];
         chunk.transform.localScale = new Vector3(_chunkSize, _chunkSize, 1);
         Texture2D colorTexture = new(_chunkSize, _chunkSize);
         Color[] chunkColors = new Color[_chunkSize * _chunkSize];
@@ -48,15 +45,15 @@ public class WorldGeneration : MonoBehaviour {
                 float h = obj[0, x, y];
                 h = Mathf.Clamp01(h);
                 biome = _biomeAsset.GetBiomeSO(obj[1, x, y], obj[2, x, y]);
-                for (int i = 0; i < biome._terrainRules.Length; i++) {
-                    if (biome._terrainRules[i]._maxHeight >= h) {
-                        float minH = i == 0 ? 0f : biome._terrainRules[i - 1]._maxHeight;
-                        float maxH = biome._terrainRules[i]._maxHeight;
+                for (int i = 0; i < biome._terrainRule.Length; i++) {
+                    if (biome._terrainRule[i]._maxHeight >= h) {
+                        float minH = i == 0 ? 0f : biome._terrainRule[i - 1]._maxHeight;
+                        float maxH = biome._terrainRule[i]._maxHeight;
                         float localH = Mathf.InverseLerp(minH, maxH, h);
-                        chunkColors[y * _chunkSize + x] = biome._terrainRules[i]._gradient.Evaluate(localH);
+                        chunkColors[y * _chunkSize + x] = biome._terrainRule[i]._gradient.Evaluate(localH);
                         cT._chunks[x, y]._cellH = h;
-                        cT._chunks[x, y]._terrainTypeName = biome._terrainRules[i]._cellName;
-                        cT._chunks[x, y]._isWalkable = biome._terrainRules[i]._isWalkable;
+                        cT._chunks[x, y]._terrainTypeName = biome._terrainRule[i]._cellName;
+                        cT._chunks[x, y]._isWalkable = biome._terrainRule[i]._isWalkable;
                         break;
                     }
                 }
@@ -97,7 +94,7 @@ public class WorldGeneration : MonoBehaviour {
     }
 
     public void GenerateAdvancedChunkAt(Vector2Int offset) {
-        NoiseGeneration.GenerateNoiseNap(_currentSettings, _temperatureNoiseSettings, _humidityNoiseSettings, offset * _chunkSize);
+        NoiseGeneration.GenerateNoiseMap(_currentSettings, _temperatureNoiseSettings, _humidityNoiseSettings, offset * _chunkSize);
     }
 
     public void DestroyWorld() {

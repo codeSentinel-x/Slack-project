@@ -7,7 +7,6 @@ public static class SaveSystem {
     public const string NOISE_SETTING_DEFAULT_SAVE_PATH = "NoiseSettings";
     public static string PERSISTANCE_DATA_PATH = Application.persistentDataPath;
 
-
     public static void Save<T>(string path, string name, T data, string ext = ".json") {
         path = Path.Combine(PERSISTANCE_DATA_PATH, path);
         try {
@@ -39,6 +38,8 @@ public static class SaveSystem {
 
         return result;
     }
+
+
     public static T Load<T>(string path, string name, string ext = ".json") {
 
         T loadedData = default;
@@ -60,6 +61,7 @@ public static class SaveSystem {
         }
         return loadedData;
     }
+
     public static void DeleteSave(string path, string name, string ext = ".json") {
         try {
             string fullPath = Path.Combine(PERSISTANCE_DATA_PATH, path, name + ext);

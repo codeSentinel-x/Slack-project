@@ -31,7 +31,7 @@ namespace MyUtils.Structs {
         RandomTexture,
     }
     [Serializable]
-    public struct TerrainRules {
+    public struct TerrainRule {
         public Gradient _gradient;
         public float _maxHeight;
         public string _cellName;
@@ -39,15 +39,11 @@ namespace MyUtils.Structs {
     }
 
     [Serializable]
-    public struct FalloffSetting {
-        public float _multiplierA;
-        public float _multiplierB;
-    }
-    [Serializable]
-    public struct ChunkItem {
+    public struct ChunkItem<T> {
         public string _terrainTypeName;
         public float _cellH;
         public bool _isWalkable;
+        public T content;
     }
 
     [Serializable]

@@ -20,7 +20,7 @@ public static class NoiseGeneration {
 
 
 
-    public static void GenerateNoiseNap(MultipleLayerNoiseSetting mLNS, NoiseLayerSetting temperatureNoise, NoiseLayerSetting humidityNoise, Vector2Int offset) {
+    public static void GenerateNoiseMap(MultipleLayerNoiseSetting mLNS, NoiseLayerSetting temperatureNoise, NoiseLayerSetting humidityNoise, Vector2Int offset) {
 
         var chunkSize = WorldGeneration._chunkSize;
         float[,,] finalResult = new float[3, chunkSize, chunkSize];
@@ -216,26 +216,5 @@ public static class NoiseGeneration {
 
     }
 
-    [BurstCompile]
-    public struct GenerateFalloffMapJob : IJob {
-        public NativeArray<float> result;
-        public int size;
-        public float a;
-        public float b;
-        public void Execute() {
-
-            for (int i = 0; i < size; i++) {
-                for (int j = 0; j < size; j++) {
-                    float x = i / (float)size * 2 - 1;
-                    float y = j / (float)size * 2 - 1;
-                    float value = Mathf.Max(Mathf.Abs(x), Mathf.Abs(y));
-                    result[i + j * size] = Evaluate(value);
-                }
-            }
-        }
-        private readonly float Evaluate(float v) {
-            return Mathf.Pow(v, a) / (Mathf.Pow(v, a) + Mathf.Pow(b - v * b, a));
-        }
-    }
 
 }
