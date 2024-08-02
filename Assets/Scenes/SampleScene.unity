@@ -7250,6 +7250,14 @@ PrefabInstance:
       propertyPath: _spriteRenderer
       value: 
       objectReference: {fileID: 778040456}
+    - target: {fileID: 1068910105809228654, guid: e4621663b996eee4aa92e2e177a408c7, type: 3}
+      propertyPath: _chunkRenderDistance
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2024333579266620171, guid: e4621663b996eee4aa92e2e177a408c7, type: 3}
+      propertyPath: _speed
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 2024333579266620171, guid: e4621663b996eee4aa92e2e177a408c7, type: 3}
       propertyPath: transforms.Array.size
       value: 1

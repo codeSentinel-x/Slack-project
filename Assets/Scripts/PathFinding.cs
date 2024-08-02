@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
 using MyUtils.Classes;
+using Unity.Burst;
+using Unity.Collections;
 using Unity.Jobs;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class PathFinding {
@@ -12,18 +15,18 @@ public class PathFinding {
     public List<PathFindingCellItem> _openList;
     public List<PathFindingCellItem> _closedList;
     public PathFindingCellItem[,] _gridOfCellItem;
-    public Dictionary<Vector2Int, GameObject> _allChunks;
+    public Dictionary<int2, GameObject> _allChunks;
     public int _chunkSize;
     public int _viewRange;
-    public Vector2Int _endInArrayPos;
+    public int2 _endInArrayPos;
 
-    public PathFinding(int viewRange, Dictionary<Vector2Int, GameObject> allChunks, int chunkSize) {
+    public PathFinding(int viewRange, Dictionary<int2, GameObject> allChunks, int chunkSize) {
         _viewRange = viewRange;
         _allChunks = allChunks;
         _chunkSize = chunkSize;
     }
 
-    private PathFindingCellItem[,] GetCellsInRange(Vector2Int startPos, Vector2Int endPos) {
+    private PathFindingCellItem[,] GetCellsInRange(int2 startPos, int2 endPos) {
         PathFindingCellItem[,] result = new PathFindingCellItem[(2 * _viewRange) + 1, (2 * _viewRange) + 1];
         Debug.Log("X = " + result.GetLength(0) + "|| Y = " + result.GetLength(1));
         for (int i = -_viewRange; i <= _viewRange; i++) {
@@ -39,7 +42,7 @@ public class PathFinding {
 
                 int cellPosX = (startPos.x + i) % _chunkSize;
                 int cellPosY = (startPos.y + j) % _chunkSize;
-                Vector2Int chunkPos = new(chunkPosX, chunkPosY);
+                int2 chunkPos = new(chunkPosX, chunkPosY);
 
                 try {
 
@@ -50,7 +53,7 @@ public class PathFinding {
                                     _cell = chunkController._chunks[cellPosX, cellPosY],
                                     _x = _viewRange + i,
                                     _y = _viewRange + j,
-                                    _worldPos = new Vector2Int(startPos.x + i, startPos.y + j)
+                                    _worldPos = new int2(startPos.x + i, startPos.y + j)
                                 };
                             }
                             else {
@@ -59,7 +62,7 @@ public class PathFinding {
 
                         }
 
-                        if (startPos.x + i == endPos.x && endPos.y == startPos.y + j) _endInArrayPos = new Vector2Int(_viewRange + i, _viewRange + j);
+                        if (startPos.x + i == endPos.x && endPos.y == startPos.y + j) _endInArrayPos = new int2(_viewRange + i, _viewRange + j);
                     }
                 }
                 catch (SystemException e) {
@@ -71,7 +74,7 @@ public class PathFinding {
         }
         return result;
     }
-    public List<PathFindingCellItem> FindPath(Vector2Int startPos, Vector2Int endPos) {
+    public List<PathFindingCellItem> FindPath(int2 startPos, int2 endPos) {
         _gridOfCellItem = GetCellsInRange(startPos, endPos);
         PathFindingCellItem start = _gridOfCellItem[_viewRange, _viewRange];
         PathFindingCellItem end;
@@ -181,11 +184,19 @@ public class PathFinding {
         return lowestF;
     }
 
+    [BurstCompile]
     public struct FinsPath : IJob {
-        
+        public NativeList<ItemForJob> openList;
+        public NativeList<ItemForJob> closeList;
         public void Execute() {
-            //TODO i'll do it later (maybe)
+
+
         }
+    }
+    public struct ItemForJob {
+        public int _fCost;
+        public int _hCost;
+        public int _gCost;
     }
 
 

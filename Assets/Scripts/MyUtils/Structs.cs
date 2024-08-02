@@ -1,4 +1,5 @@
 using System;
+using Unity.Collections;
 using UnityEngine;
 
 namespace MyUtils.Structs {
@@ -49,8 +50,8 @@ namespace MyUtils.Structs {
         public float _minTemperature;
         public BiomeSO _baseBiomeSO;
     }
-    
-    public enum Biomes{
+
+    public enum Biomes {
         Desert,
         Jungle,
         Savanna,
