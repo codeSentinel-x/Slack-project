@@ -1,5 +1,4 @@
 using System;
-using Unity.Collections;
 using UnityEngine;
 
 namespace MyUtils.Structs {
@@ -24,10 +23,17 @@ namespace MyUtils.Structs {
         public int _chunkSize;
         public int _chunkCount;
     }
+    public enum TerrainRuleAssetType {
+        SingleColor,
+        Gradient,
+        SingleTexture,
+        TextureGradient,
+        RandomTexture,
+    }
     [Serializable]
-    public struct TerrainType {
+    public struct TerrainRules {
         public Gradient _gradient;
-        public float _h;
+        public float _maxHeight;
         public string _cellName;
         public bool _isWalkable;
     }

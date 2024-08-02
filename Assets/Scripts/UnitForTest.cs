@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class UnitForTest : MonoBehaviour {
+    
     [SerializeField] private int _viewRange;
     [SerializeField] private float _speed;
     private int _index;

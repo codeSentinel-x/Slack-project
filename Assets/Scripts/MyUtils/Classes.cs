@@ -1,6 +1,5 @@
 using System;
 using MyUtils.Structs;
-using Unity.Mathematics;
 using UnityEngine;
 
 namespace MyUtils.Classes {
@@ -18,7 +17,7 @@ namespace MyUtils.Classes {
     public class PathFindingCellItem {
         public int _x;
         public int _y;
-        public int2 _worldPos;
+        public Vector2Int _worldPos;
         public ChunkItem _cell;
         public PathFindingCellItem _previous;
         public int _gCost;

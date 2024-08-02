@@ -5,5 +5,7 @@ using UnityEngine;
 
 [CreateAssetMenu(menuName = "ScriptableObjects/BiomeSO")]
 public class BiomeSO : ScriptableObject {
-    public TerrainType[] _terrainTypes;
+    public TerrainRuleAssetType terrainRuleAssetType;
+    public TerrainRules[] _terrainRules;
 }
+
