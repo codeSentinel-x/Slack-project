@@ -37,7 +37,7 @@ public class NoiseGeneration : MonoBehaviour {
         float[,,] finalResult = new float[3, mLNS._chunkSize, mLNS._chunkSize];
         NativeList<JobHandle> allJobs = new(Allocator.Temp);
         NativeArray<WeightedNoiseSetting> weightedNoiseSettings = new(mLNS._weightedNoiseSettings.Length, Allocator.TempJob);
-        NativeArray<float> noiseResults = new(weightedNoiseSettings.Length * mLNS._chunkSize * mLNS._chunkSize, Allocator.Persistent);
+        NativeArray<float> noiseResults = new(mLNS._weightedNoiseSettings.Length * mLNS._chunkSize * mLNS._chunkSize, Allocator.Persistent);
         for (int i = 0; i < mLNS._weightedNoiseSettings.Length; i++) weightedNoiseSettings[i] = mLNS._weightedNoiseSettings[i];
         //generate [0,x,y] - height map
         GenerateNoiseMapLayerJob noiseGenJob = new() {
@@ -48,7 +48,7 @@ public class NoiseGeneration : MonoBehaviour {
             mapSize = mLNS._chunkSize
         };
 
-        allJobs.Add(noiseGenJob.Schedule(weightedNoiseSettings.Length, 1));
+        allJobs.Add(noiseGenJob.Schedule(1, 1, default));
 
 
 
@@ -76,16 +76,16 @@ public class NoiseGeneration : MonoBehaviour {
 
         JobHandle.CompleteAll(allJobs);
 
-
+        // Debug.Log(weightedNoiseSettings.Length);
         for (int x = 0; x < finalResult.GetLength(1); x++) {
             for (int y = 0; y < finalResult.GetLength(2); y++) {
-                for (int i = 0; i < weightedNoiseSettings.Length; i++) finalResult[0, x, y] += noiseResults[i * (x + mLNS._chunkSize * y)];
+                for (int i = 0; i < weightedNoiseSettings.Length; i++) finalResult[0, x, y] += noiseResults[i * (mLNS._chunkSize * mLNS._chunkSize) + y * mLNS._chunkSize + x];
                 finalResult[1, x, y] = temperatureResult[x + mLNS._chunkSize * y];
                 finalResult[2, x, y] = humidityResult[x + mLNS._chunkSize * y];
             }
         }
 
-
+        weightedNoiseSettings.Dispose();
         noiseResults.Dispose();
         allJobs.Dispose();
         temperatureResult.Dispose();
@@ -146,7 +146,7 @@ public class NoiseGeneration : MonoBehaviour {
 
                     float normalizedHeight = (resultContainer[x + y * mapSize] + 1) / (maxPossibleH / 0.9f);
                     resultContainer[x + y * mapSize] = Mathf.Clamp(normalizedHeight, 0, int.MaxValue) * GetNormalizedWeight(wNS, wNS[index]._weight);
-                    result[index * (x + y * mapSize)] += resultContainer[x + y * mapSize];
+                    result[index * (mapSize * mapSize) + (y * mapSize + x)] = resultContainer[x + y * mapSize];
                 }
             }
 
