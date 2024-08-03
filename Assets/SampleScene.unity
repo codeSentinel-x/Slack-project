@@ -8473,25 +8473,17 @@ MonoBehaviour:
       _chunkSize: 10
       _chunkCount: 10
     _temperatureNoise:
-      _scale: 400
-      _octaves: 5
+      _scale: 600
+      _octaves: 7
       _persistance: 0.532
-      _lacunarity: 2
+      _lacunarity: 5
     _humidityNoise:
-      _scale: 200
-      _octaves: 4
+      _scale: 800
+      _octaves: 6
       _persistance: 0.512
       _lacunarity: 1.9
     _seed: 254574
-  _biomeAsset:
-    DesertSO: {fileID: 11400000, guid: 0b725715d71398bf299ecd5fa1ed387e, type: 2}
-    JungleSO: {fileID: 11400000, guid: e9c7f119aaa02e7e3be679773440c6d3, type: 2}
-    SavannaSO: {fileID: 11400000, guid: 5a05e148cbc59f153bdfb8abbee81ec9, type: 2}
-    TundraSO: {fileID: 11400000, guid: 9298946544003ed29bce18a9c9eba1f5, type: 2}
-    TaigaSO: {fileID: 11400000, guid: 48b68eeafee4afb32b150d96da999066, type: 2}
-    GrasslandSO: {fileID: 11400000, guid: 4e83740854a640cceafeec15f161d54b, type: 2}
-    SwampSO: {fileID: 11400000, guid: 897764390ce79c45a98a80db9e4bf9bc, type: 2}
-    ForestSO: {fileID: 11400000, guid: 39636e43800bb2f65aa65857195f07ce, type: 2}
+  _biomeAsset: {fileID: 11400000, guid: 4cc9a0124c6770095a8d26b6db834039, type: 2}
   _chunkPrefab: {fileID: 6767066938474356729, guid: 96bdeeecd7391b3febf364efe6b23e9c, type: 3}
   _sourceMaterial: {fileID: 2100000, guid: b7dd32907d9cd80d8a75b689e0506dbb, type: 2}
 --- !u!4 &1710238900

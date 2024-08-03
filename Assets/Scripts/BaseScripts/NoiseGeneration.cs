@@ -20,10 +20,6 @@ public static class NoiseGeneration {
 
 
 
-    public static void GenerateChunksParallel() {
-
-    }
-
     public static void GenerateNoiseMap(NoiseSettingData data, Vector2Int offset) {
 
         var chunkSize = WorldGeneration._chunkSize;
@@ -53,14 +49,14 @@ public static class NoiseGeneration {
         NativeArray<float> humidityResult = new(chunkSize * chunkSize, Allocator.TempJob);
         GenerateNoiseMapJob temperatureGenJob = new() {
             result = temperatureResult,
-            seed = _seed,
+            seed = _seed + (uint)data._settings._weightedNoiseSettings.Length,
             nS = data._temperatureNoise,
             offset = new(offset.x, offset.y),
             mapSize = chunkSize
         };
         GenerateNoiseMapJob humidityGenJob = new() {
             result = humidityResult,
-            seed = _seed,
+            seed = _seed + (uint)data._settings._weightedNoiseSettings.Length + 1,
             nS = data._humidityNoise,
             offset = new(offset.x, offset.y),
             mapSize = chunkSize

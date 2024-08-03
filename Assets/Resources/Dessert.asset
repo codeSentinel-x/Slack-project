@@ -45,7 +45,7 @@ MonoBehaviour:
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
     _maxHeight: 0.1
-    _cellName: WaterDeep
+    _cellName: Desert_Water1
     _isWalkable: 0
   - _gradient:
       serializedVersion: 2
@@ -78,7 +78,7 @@ MonoBehaviour:
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
     _maxHeight: 0.2
-    _cellName: WaterLow
+    _cellName: Desert_Water2
     _isWalkable: 0
   - _gradient:
       serializedVersion: 2
@@ -111,7 +111,7 @@ MonoBehaviour:
       m_NumColorKeys: 3
       m_NumAlphaKeys: 2
     _maxHeight: 0.3
-    _cellName: Sand
+    _cellName: Desert_Beach
     _isWalkable: 1
   - _gradient:
       serializedVersion: 2
@@ -144,7 +144,7 @@ MonoBehaviour:
       m_NumColorKeys: 3
       m_NumAlphaKeys: 2
     _maxHeight: 0.4
-    _cellName: Grass1
+    _cellName: Desert_Terrain1
     _isWalkable: 1
   - _gradient:
       serializedVersion: 2
@@ -177,7 +177,7 @@ MonoBehaviour:
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
     _maxHeight: 0.5
-    _cellName: Grass2
+    _cellName: Desert_Terrain2
     _isWalkable: 1
   - _gradient:
       serializedVersion: 2
@@ -210,7 +210,7 @@ MonoBehaviour:
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
     _maxHeight: 0.6
-    _cellName: Grass3
+    _cellName: Desert_Terrain3
     _isWalkable: 1
   - _gradient:
       serializedVersion: 2
@@ -243,7 +243,7 @@ MonoBehaviour:
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
     _maxHeight: 0.7
-    _cellName: Grass4
+    _cellName: Desert_Terrain4
     _isWalkable: 1
   - _gradient:
       serializedVersion: 2
@@ -276,7 +276,7 @@ MonoBehaviour:
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
     _maxHeight: 0.8
-    _cellName: Grass5
+    _cellName: Desert_Terrain5
     _isWalkable: 1
   - _gradient:
       serializedVersion: 2
@@ -309,7 +309,7 @@ MonoBehaviour:
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
     _maxHeight: 0.9
-    _cellName: Mountain1
+    _cellName: Desert_Mountain1
     _isWalkable: 0
   - _gradient:
       serializedVersion: 2
@@ -342,5 +342,5 @@ MonoBehaviour:
       m_NumColorKeys: 2
       m_NumAlphaKeys: 2
     _maxHeight: 1
-    _cellName: Mountain2
+    _cellName: Desert_Mountain2
     _isWalkable: 0

@@ -15,8 +15,9 @@ public class WorldGeneration : MonoBehaviour {
 
 
     public NoiseSettingData data;
-    [SerializeField] private BiomeAssets _biomeAsset;
+    [SerializeField] private BiomeAssetSO _biomeAsset;
     [SerializeField] private Transform _chunkPrefab;
+    
     [SerializeField] private Material _sourceMaterial;
     private GameObject _chunkHolder;
     public Action<int> _OnNoiseSettingChange;
@@ -40,20 +41,33 @@ public class WorldGeneration : MonoBehaviour {
         Texture2D colorTexture = new(_chunkSize, _chunkSize);
         Color[] chunkColors = new Color[_chunkSize * _chunkSize];
         BiomeSO biome;
+
+
         for (int y = 0; y < _chunkSize; y++) {
             for (int x = 0; x < _chunkSize; x++) {
+                
                 float h = obj[0, x, y];
                 h = Mathf.Clamp01(h);
+
+                //GET BIOME VALUE BASE ON TEMPERATURE AND HUMIDITY NOISE
                 biome = _biomeAsset.GetBiomeSO(obj[1, x, y], obj[2, x, y]);
+
                 for (int i = 0; i < biome._terrainRule.Length; i++) {
                     if (biome._terrainRule[i]._maxHeight >= h) {
+
                         float minH = i == 0 ? 0f : biome._terrainRule[i - 1]._maxHeight;
                         float maxH = biome._terrainRule[i]._maxHeight;
+
                         float localH = Mathf.InverseLerp(minH, maxH, h);
+
+                        //SET PIXEL COLOR BASE ON EVALUATED GRADIENT VALUE FROM BIOME SETTING
                         chunkColors[y * _chunkSize + x] = biome._terrainRule[i]._gradient.Evaluate(localH);
+                        
+                        //APPLY TERRAIN RULES FROM BIOME ASSET TO CHUNK ITEM
                         cT._chunks[x, y]._cellHeight = h;
                         cT._chunks[x, y]._terrainTypeName = biome._terrainRule[i]._cellName;
                         cT._chunks[x, y]._isWalkable = biome._terrainRule[i]._isWalkable;
+                        
                         break;
                     }
                 }

@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b205d18e101149ed79e91d55d91abbf9, type: 3}
+  m_Name: BiomeAssetPreview
+  m_EditorClassIdentifier: 
+  DesertSO: {fileID: 11400000, guid: 0b725715d71398bf299ecd5fa1ed387e, type: 2}
+  JungleSO: {fileID: 11400000, guid: e9c7f119aaa02e7e3be679773440c6d3, type: 2}
+  SavannaSO: {fileID: 11400000, guid: 5a05e148cbc59f153bdfb8abbee81ec9, type: 2}
+  TundraSO: {fileID: 11400000, guid: 9298946544003ed29bce18a9c9eba1f5, type: 2}
+  TaigaSO: {fileID: 11400000, guid: 48b68eeafee4afb32b150d96da999066, type: 2}
+  GrasslandSO: {fileID: 11400000, guid: 4e83740854a640cceafeec15f161d54b, type: 2}
+  SwampSO: {fileID: 11400000, guid: 897764390ce79c45a98a80db9e4bf9bc, type: 2}
+  ForestSO: {fileID: 11400000, guid: 39636e43800bb2f65aa65857195f07ce, type: 2}
