@@ -39,6 +39,7 @@ public static class NoiseGeneration {
                 offset = new(offset.x, offset.y),
                 mapSize = chunkSize
             };
+            Debug.Log(GetNormalizedWeight(data._settings._weightedNoiseSettings, w._weight));
             if (index != 0) allJobs.Add(noiseGenJob.Schedule(allJobs[index - 1]));
             else allJobs.Add(noiseGenJob.Schedule());
             index++;

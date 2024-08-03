@@ -9,13 +9,13 @@ namespace MyUtils.Classes {
         [Tooltip("Settings for multiple layers of noise.")]
         public MultipleLayerNoiseSetting _settings;
 
-        [Tooltip("")]
+        [Tooltip("Noise setting for temperature noise.")]
         public NoiseLayerSetting _temperatureNoise;
 
-        [Tooltip("")]
+        [Tooltip("Noise setting for humidity noise.")]
         public NoiseLayerSetting _humidityNoise;
 
-        [Tooltip("")]
+        [Tooltip("Seed value for all noises.")]
         public uint _seed;
     }
 
@@ -36,31 +36,31 @@ namespace MyUtils.Classes {
     }
     [Serializable]
     public class BiomeAssets {
-        
-        [Tooltip("")] 
+
+        [Tooltip("Scriptable object for desert biome settings.")]
         public BiomeSO DesertSO;
-        
-        [Tooltip("")] 
+
+        [Tooltip("Scriptable object for jungle biome settings.")]
         public BiomeSO JungleSO;
-        
-        [Tooltip("")] 
+
+        [Tooltip("Scriptable object for savanna biome settings.")]
         public BiomeSO SavannaSO;
-        
-        [Tooltip("")] 
+
+        [Tooltip("Scriptable object for tundra biome settings.")]
         public BiomeSO TundraSO;
-        
-        [Tooltip("")] 
+
+        [Tooltip("Scriptable object for taiga biome settings.")]
         public BiomeSO TaigaSO;
-        
-        [Tooltip("")] 
+
+        [Tooltip("Scriptable object for grassland biome settings.")]
         public BiomeSO GrasslandSO;
-        
-        [Tooltip("")] 
+
+        [Tooltip("Scriptable object for swamp biome settings.")]
         public BiomeSO SwampSO;
-        
-        [Tooltip("")] 
+
+        [Tooltip("Scriptable object for forest biome settings.")]
         public BiomeSO ForestSO;
-        
+
         public BiomeSO GetBiomeSO(float temp, float humidity) {
             if (temp > 0.7f) {
                 if (humidity < 0.3f) return DesertSO;

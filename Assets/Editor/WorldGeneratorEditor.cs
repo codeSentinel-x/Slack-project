@@ -10,9 +10,9 @@ public class WorldGeneratorEditor : Editor {
         if (DrawDefaultInspector()) {
             //Maybe later
         }
-        if (GUILayout.Button("Regenerate chunks")) {
+        if (GUILayout.Button("Generate world")) {
             worldGen.GenerateAdvancedChunks();
-            Debug.Log("Nuh uh");
+            // Debug.Log("Nuh uh");
         }
     }
 

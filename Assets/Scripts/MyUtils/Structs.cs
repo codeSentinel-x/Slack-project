@@ -11,6 +11,7 @@ namespace MyUtils.Structs {
         [Tooltip("Higher values add more detail.")]
         public int _octaves;
 
+        [Range(0, 1)]
         [Tooltip("Controls the amplitude of each octave.")]
         public float _persistance;
 
