@@ -1196,7 +1196,7 @@ GameObject:
   - component: {fileID: 193503178}
   - component: {fileID: 193503177}
   m_Layer: 0
-  m_Name: EventListener
+  m_Name: EventSystem
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1775,7 +1775,7 @@ GameObject:
   - component: {fileID: 337795683}
   - component: {fileID: 337795682}
   m_Layer: 0
-  m_Name: Camera
+  m_Name: MainCamera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3184,7 +3184,7 @@ GameObject:
   - component: {fileID: 619394802}
   - component: {fileID: 619394801}
   m_Layer: 0
-  m_Name: Global Light
+  m_Name: Global Light 2D
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5908,7 +5908,7 @@ GameObject:
   - component: {fileID: 1168646999}
   - component: {fileID: 1168647000}
   m_Layer: 0
-  m_Name: DebugDisplay
+  m_Name: WorldController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5922,13 +5922,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1168646998}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.4014874, y: 0.09347371, z: 0.104875326, w: 0.90502584}
-  m_LocalPosition: {x: 48, y: 5464, z: 543}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 660.3457, y: 233.34604, z: -0.47889066}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 45, y: 21, z: 22}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1168647000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7160,11 +7160,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 935660706898957455, guid: e4621663b996eee4aa92e2e177a408c7, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 999
+      value: 1000
       objectReference: {fileID: 0}
     - target: {fileID: 935660706898957455, guid: e4621663b996eee4aa92e2e177a408c7, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1001
+      value: 1000
       objectReference: {fileID: 0}
     - target: {fileID: 935660706898957455, guid: e4621663b996eee4aa92e2e177a408c7, type: 3}
       propertyPath: m_LocalPosition.z
@@ -7215,10 +7215,6 @@ PrefabInstance:
       value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 2024333579266620171, guid: e4621663b996eee4aa92e2e177a408c7, type: 3}
-      propertyPath: _viewRange
-      value: 45
-      objectReference: {fileID: 0}
-    - target: {fileID: 2024333579266620171, guid: e4621663b996eee4aa92e2e177a408c7, type: 3}
       propertyPath: transforms.Array.size
       value: 1
       objectReference: {fileID: 0}
@@ -7236,7 +7232,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8785047392317842834, guid: e4621663b996eee4aa92e2e177a408c7, type: 3}
       propertyPath: m_Name
-      value: UnitForTesting
+      value: ChunkController (1)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:

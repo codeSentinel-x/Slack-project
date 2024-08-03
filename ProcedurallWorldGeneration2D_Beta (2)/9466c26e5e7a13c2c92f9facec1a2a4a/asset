@@ -20,9 +20,6 @@ public static class NoiseGeneration {
 
 
 
-    public static void GenerateChunksParallel() {
-
-    }
 
     public static void GenerateNoiseMap(NoiseSettingData data, Vector2Int offset) {
 
@@ -66,6 +63,7 @@ public static class NoiseGeneration {
             mapSize = chunkSize
         };
 
+
         allJobs.Add(temperatureGenJob.Schedule());
         allJobs.Add(humidityGenJob.Schedule());
 
@@ -95,50 +93,6 @@ public static class NoiseGeneration {
         return Mathf.InverseLerp(0, allWeight, v);
     }
 
-
-    [BurstCompile]
-    public struct GenerateChunks : IJobParallelFor {
-        public int chunkSize;
-        public NoiseSettingData data;
-        public NativeArray<float3> chunks;
-        //todo
-        public NativeArray<float> result;
-        public void Execute(int i) {
-            NativeList<JobHandle> allJobs = new(Allocator.Temp);
-
-            NativeArray<float> noiseResults = new(chunkSize * chunkSize, Allocator.TempJob);
-            NativeArray<float> temperatureResult = new(chunkSize * chunkSize, Allocator.TempJob);
-            NativeArray<float> humidityResult = new(chunkSize * chunkSize, Allocator.TempJob);
-            GenerateNoiseMapJob temperatureGenJob = new() {
-                result = temperatureResult,
-                seed = _seed,
-                nS = data._temperatureNoise,
-                offset = new(chunks[i].x, chunks[i].y),
-                mapSize = chunkSize
-            };
-            GenerateNoiseMapJob humidityGenJob = new() {
-                result = humidityResult,
-                seed = _seed,
-                nS = data._humidityNoise,
-                offset = new(chunks[i].x, chunks[i].y),
-                mapSize = chunkSize
-            };
-            //todo
-
-            allJobs.Add(temperatureGenJob.Schedule());
-            allJobs.Add(humidityGenJob.Schedule());
-
-            JobHandle.CompleteAll(allJobs);
-            chunks[i] = noiseResults[i] + temperatureResult[i] + humidityResult[i]; //todo
-
-            noiseResults.Dispose();
-            allJobs.Dispose();
-            temperatureResult.Dispose();
-            humidityResult.Dispose();
-
-
-        }
-    }
     [BurstCompile]
     public struct GenerateNoiseMapLayerJob : IJob {
         public int mapSize;
