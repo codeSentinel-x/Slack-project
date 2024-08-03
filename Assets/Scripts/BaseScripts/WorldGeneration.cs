@@ -8,13 +8,13 @@ public class WorldGeneration : MonoBehaviour {
 
 
     public static WorldGeneration _instance;
-    public static MultipleLayerNoiseSetting _currentSettings;
+    public static NoiseSettingData _currentSettingsData;
     public static int _chunkSize;
     public Dictionary<Vector2Int, GameObject> _currentChunksDict = new();
     public Dictionary<Vector2Int, GameObject> _oldChunksDict = new();
 
-    [SerializeField] private NoiseLayerSetting _humidityNoiseSettings;
-    [SerializeField] private NoiseLayerSetting _temperatureNoiseSettings;
+
+    public NoiseSettingData data;
     [SerializeField] private BiomeAssets _biomeAsset;
     [SerializeField] private Transform _chunkPrefab;
     [SerializeField] private Material _sourceMaterial;
@@ -51,7 +51,7 @@ public class WorldGeneration : MonoBehaviour {
                         float maxH = biome._terrainRule[i]._maxHeight;
                         float localH = Mathf.InverseLerp(minH, maxH, h);
                         chunkColors[y * _chunkSize + x] = biome._terrainRule[i]._gradient.Evaluate(localH);
-                        cT._chunks[x, y]._cellH = h;
+                        cT._chunks[x, y]._cellHeight = h;
                         cT._chunks[x, y]._terrainTypeName = biome._terrainRule[i]._cellName;
                         cT._chunks[x, y]._isWalkable = biome._terrainRule[i]._isWalkable;
                         break;
@@ -85,16 +85,28 @@ public class WorldGeneration : MonoBehaviour {
         }
         _chunkSize = data._settings._chunkSize;
         NoiseGeneration._seed = data._seed;
-        _currentSettings = data._settings;
-        _temperatureNoiseSettings = data._temperatureNoise;
-        _humidityNoiseSettings = data._humidityNoise;
+        _currentSettingsData = data;
+
         _OnNoiseSettingChange?.Invoke(data._settings._chunkCount);
 
 
     }
+    public void GenerateAdvancedChunks() {
+        if (_chunkHolder == null) _chunkHolder = new("Chunk holder");
+        else {
+            Destroy(_chunkHolder);
+            _chunkHolder = new("Chunk holder");
+        }
+        _currentSettingsData = data;
+        NoiseGeneration._seed = data._seed;
+        _chunkSize = data._settings._chunkSize;
 
+        _OnNoiseSettingChange?.Invoke(data._settings._chunkCount);
+
+
+    }
     public void GenerateAdvancedChunkAt(Vector2Int offset) {
-        NoiseGeneration.GenerateNoiseMap(_currentSettings, _temperatureNoiseSettings, _humidityNoiseSettings, offset * _chunkSize);
+        NoiseGeneration.GenerateNoiseMap(_currentSettingsData, offset * _chunkSize);
     }
 
     public void DestroyWorld() {

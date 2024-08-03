@@ -11,7 +11,7 @@ public class WorldGeneratorEditor : Editor {
             //Maybe later
         }
         if (GUILayout.Button("Regenerate chunks")) {
-            // worldGen.GenerateChunks();
+            worldGen.GenerateAdvancedChunks();
             Debug.Log("Nuh uh");
         }
     }

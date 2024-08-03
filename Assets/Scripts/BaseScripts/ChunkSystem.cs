@@ -62,7 +62,7 @@ public class ChunkSystem : MonoBehaviour {
         }
         else {
             WorldGeneration._instance._currentChunksDict = new();
-            _spriteRenderer.transform.localPosition = WorldGeneration._currentSettings._chunkSize % 2 == 0 ? new(0.5f, 0.5f, 0) : new(0, 0, 0);
+            _spriteRenderer.transform.localPosition = WorldGeneration._currentSettingsData._settings._chunkSize % 2 == 0 ? new(0.5f, 0.5f, 0) : new(0, 0, 0);
         }
         foreach (var i in chunksInRange) {
             if (!WorldGeneration._instance._currentChunksDict.ContainsKey(i)) {

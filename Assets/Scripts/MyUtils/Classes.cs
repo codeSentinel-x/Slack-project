@@ -6,9 +6,16 @@ namespace MyUtils.Classes {
 
     [Serializable]
     public class NoiseSettingData {
+        [Tooltip("Settings for multiple layers of noise.")]
         public MultipleLayerNoiseSetting _settings;
+
+        [Tooltip("")]
         public NoiseLayerSetting _temperatureNoise;
+
+        [Tooltip("")]
         public NoiseLayerSetting _humidityNoise;
+
+        [Tooltip("")]
         public uint _seed;
     }
 
@@ -29,14 +36,31 @@ namespace MyUtils.Classes {
     }
     [Serializable]
     public class BiomeAssets {
+        
+        [Tooltip("")] 
         public BiomeSO DesertSO;
+        
+        [Tooltip("")] 
         public BiomeSO JungleSO;
+        
+        [Tooltip("")] 
         public BiomeSO SavannaSO;
+        
+        [Tooltip("")] 
         public BiomeSO TundraSO;
+        
+        [Tooltip("")] 
         public BiomeSO TaigaSO;
+        
+        [Tooltip("")] 
         public BiomeSO GrasslandSO;
+        
+        [Tooltip("")] 
         public BiomeSO SwampSO;
+        
+        [Tooltip("")] 
         public BiomeSO ForestSO;
+        
         public BiomeSO GetBiomeSO(float temp, float humidity) {
             if (temp > 0.7f) {
                 if (humidity < 0.3f) return DesertSO;

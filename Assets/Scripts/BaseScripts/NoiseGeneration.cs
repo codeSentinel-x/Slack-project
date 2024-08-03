@@ -5,6 +5,7 @@ using Unity.Collections;
 using System;
 using Unity.Burst;
 using Unity.Mathematics;
+using MyUtils.Classes;
 
 public static class NoiseGeneration {
     public static Action<float[,,], Vector2Int> _onAdvanceNoiseMapGenerationCompleat;
@@ -20,7 +21,7 @@ public static class NoiseGeneration {
 
 
 
-    public static void GenerateNoiseMap(MultipleLayerNoiseSetting mLNS, NoiseLayerSetting temperatureNoise, NoiseLayerSetting humidityNoise, Vector2Int offset) {
+    public static void GenerateNoiseMap(NoiseSettingData data, Vector2Int offset) {
 
         var chunkSize = WorldGeneration._chunkSize;
         float[,,] finalResult = new float[3, chunkSize, chunkSize];
@@ -29,12 +30,12 @@ public static class NoiseGeneration {
 
         //generate [0,x,y] - height map
         int index = 0;
-        foreach (var w in mLNS._weightedNoiseSettings) {
+        foreach (var w in data._settings._weightedNoiseSettings) {
             GenerateNoiseMapLayerJob noiseGenJob = new() {
                 result = noiseResults,
                 seed = _seed,
                 noiseSetting = w._noiseSetting,
-                normalizedWeight = GetNormalizedWeight(mLNS._weightedNoiseSettings, w._weight),
+                normalizedWeight = GetNormalizedWeight(data._settings._weightedNoiseSettings, w._weight),
                 offset = new(offset.x, offset.y),
                 mapSize = chunkSize
             };
@@ -49,14 +50,14 @@ public static class NoiseGeneration {
         GenerateNoiseMapJob temperatureGenJob = new() {
             result = temperatureResult,
             seed = _seed,
-            nS = temperatureNoise,
+            nS = data._temperatureNoise,
             offset = new(offset.x, offset.y),
             mapSize = chunkSize
         };
         GenerateNoiseMapJob humidityGenJob = new() {
             result = humidityResult,
             seed = _seed,
-            nS = humidityNoise,
+            nS = data._humidityNoise,
             offset = new(offset.x, offset.y),
             mapSize = chunkSize
         };
