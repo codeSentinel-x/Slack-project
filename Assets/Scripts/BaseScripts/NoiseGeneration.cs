@@ -129,7 +129,7 @@ public static class NoiseGeneration {
             allJobs.Add(humidityGenJob.Schedule());
 
             JobHandle.CompleteAll(allJobs);
-            chunks[i] = noiseResults[i] + temperatureResult[i] + humidityResult[i]; //todo
+            chunks[i] = new float3(noiseResults[i] + temperatureResult[i] + humidityResult[i]); //todo
 
             noiseResults.Dispose();
             allJobs.Dispose();

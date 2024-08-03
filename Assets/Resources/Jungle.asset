@@ -116,8 +116,8 @@ MonoBehaviour:
   - _gradient:
       serializedVersion: 2
       key0: {r: 1, g: 0.972549, b: 0, a: 1}
-      key1: {r: 0.1755708, g: 0.99607843, b: 0, a: 1}
-      key2: {r: 0.63479793, g: 1, b: 0, a: 0}
+      key1: {r: 0.16602883, g: 0.8584906, b: 0.16604401, a: 1}
+      key2: {r: 0.20925507, g: 0.745283, b: 0.059763268, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
       key4: {r: 0, g: 0, b: 0, a: 0}
       key5: {r: 0, g: 0, b: 0, a: 0}
@@ -148,8 +148,8 @@ MonoBehaviour:
     _isWalkable: 1
   - _gradient:
       serializedVersion: 2
-      key0: {r: 0.63529414, g: 1, b: 0, a: 1}
-      key1: {r: 0, g: 1, b: 0.19350243, a: 1}
+      key0: {r: 0.20784314, g: 0.74509805, b: 0.05882353, a: 1}
+      key1: {r: 0.31824365, g: 0.7075472, b: 0.21026166, a: 1}
       key2: {r: 0, g: 0, b: 0, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
       key4: {r: 0, g: 0, b: 0, a: 0}
@@ -181,8 +181,8 @@ MonoBehaviour:
     _isWalkable: 1
   - _gradient:
       serializedVersion: 2
-      key0: {r: 0, g: 1, b: 0.19215687, a: 1}
-      key1: {r: 0.10613204, g: 0.735849, b: 0, a: 1}
+      key0: {r: 0.31764707, g: 0.7058824, b: 0.21176471, a: 1}
+      key1: {r: 0.33027318, g: 0.7264151, b: 0.26383942, a: 1}
       key2: {r: 0, g: 0, b: 0, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
       key4: {r: 0, g: 0, b: 0, a: 0}
@@ -247,8 +247,8 @@ MonoBehaviour:
     _isWalkable: 1
   - _gradient:
       serializedVersion: 2
-      key0: {r: 0.105882354, g: 0.6431373, b: 0.015686275, a: 1}
-      key1: {r: 0, g: 0.4528302, b: 0.075199775, a: 1}
+      key0: {r: 0.32941177, g: 0.7254902, b: 0.2627451, a: 1}
+      key1: {r: 0.24203454, g: 0.46226418, b: 0.2784203, a: 1}
       key2: {r: 0, g: 0, b: 0, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
       key4: {r: 0, g: 0, b: 0, a: 0}
@@ -280,7 +280,7 @@ MonoBehaviour:
     _isWalkable: 1
   - _gradient:
       serializedVersion: 2
-      key0: {r: 0, g: 0.4509804, b: 0.07450981, a: 1}
+      key0: {r: 0.24313726, g: 0.4627451, b: 0.2784314, a: 1}
       key1: {r: 0.5, g: 0.5, b: 0.5, a: 1}
       key2: {r: 0.6132076, g: 0.6132076, b: 0.6132076, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
