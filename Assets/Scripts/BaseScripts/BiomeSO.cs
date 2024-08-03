@@ -5,8 +5,9 @@ using UnityEngine;
 
 [CreateAssetMenu(menuName = "ScriptableObjects/BiomeSO")]
 public class BiomeSO : ScriptableObject {
-    public TerrainRuleAssetType terrainRuleAssetType;
     public TerrainRule[] _terrainRule;
+    public float maxHumidity;
+    public float maxTemperature;
 
 }
 

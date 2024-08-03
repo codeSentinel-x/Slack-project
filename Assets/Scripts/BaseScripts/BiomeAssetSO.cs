@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 [CreateAssetMenu(menuName = "ScriptableObjects/BiomeAssetSO")]
 public class BiomeAssetSO : ScriptableObject {
+
     [Tooltip("Scriptable object for desert biome settings.")]
     public BiomeSO DesertSO;
 
@@ -28,10 +30,22 @@ public class BiomeAssetSO : ScriptableObject {
     [Tooltip("Scriptable object for forest biome settings.")]
     public BiomeSO ForestSO;
 
+
+    public BiomeSO[] biomesSO;
+    public BiomeSO GetBiomeSO2(float temp, float humidity) {
+        for (int i = 0; i < biomesSO.Length; i++) {
+            if (biomesSO[i].maxTemperature >= temp) {
+                if (biomesSO[i].maxHumidity >= humidity) {
+                    return biomesSO[i];
+                }
+            }
+        }
+        return ForestSO;
+    }
     public BiomeSO GetBiomeSO(float temp, float humidity) {
         if (temp > 0.7f) {
             if (humidity < 0.3f) return DesertSO;
-            else if (humidity > 0.7f) return JungleSO;
+            if (humidity > 0.7f) return JungleSO;
             else return SavannaSO;
         }
         else if (temp < 0.3f) {
@@ -40,7 +54,7 @@ public class BiomeAssetSO : ScriptableObject {
         }
         else {
             if (humidity < 0.3f) return GrasslandSO;
-            else if (humidity > 0.7) return SwampSO;
+            if (humidity > 0.7) return SwampSO;
             else return ForestSO;
         }
     }
