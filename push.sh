@@ -7,7 +7,7 @@ fi
 
 git add --all
 git commit -m "$1"
-git push -u origin master #> /dev/null 2>&1
+git push -u origin master #> /dev/null 2>&1 #clear output
 
 repoUrl=$(git config --get remote.origin.url)
 commitHash=$(git log -1 --pretty=format:"%H")

@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7bc931e937943ff538286b2dea91ac1f, type: 3}
   m_Name: Swamp
   m_EditorClassIdentifier: 
-  terrainRuleAssetType: 0
   _terrainRule:
   - _gradient:
       serializedVersion: 2

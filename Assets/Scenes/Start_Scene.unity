@@ -670,22 +670,10 @@ MonoBehaviour:
 
     What''s new:
 
-    -added temperature
-    noise
+    -reworked noise
+    generation for better performance
 
-    -added humidity noise
-
-    -added biome system base of this 2 noises
-
-    -updated
-    UI
-
-    -reworked noise generation to support multi threads
-
-    -added readme
-    to github page
-
-    -and other small fixes
+    -and much more background changes
 
 '
   m_isRightToLeft: 0
@@ -825,7 +813,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Scrap Game
 
-    --PREVIEW #3--'
+    --PREVIEW #4--'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
