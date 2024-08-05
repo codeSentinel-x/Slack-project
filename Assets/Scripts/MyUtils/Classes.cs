@@ -15,6 +15,8 @@ namespace MyUtils.Classes {
 
         [Tooltip("Noise setting for humidity noise.")]
         public NoiseLayerSetting _humidityNoise;
+        [Tooltip("Noise setting for environment noise.")]
+        public NoiseLayerSetting _environmentNoise;
 
         [Tooltip("Seed value for all noises.")]
         public uint _seed;
@@ -41,11 +43,15 @@ namespace MyUtils.Classes {
         public BiomeSO biome;
         public float minWorldHeight;
         public float maxWorldHeight;
+        public float minNoiseHeight;
+        public float maxNoiseHeight;
         [Range(0, 1)]
         [Tooltip("Probability of spawning, between 0 (never) and 1 (always).")]
         public float probability;
         public bool CanBeSpawned() {
-            return UnityEngine.Random.Range(0f, 1f) <= probability;
+            float random = UnityEngine.Random.Range(0f, 1f);
+            Debug.Log(random.ToString("f1"));
+            return random <= probability;
             //TODO fix this!
         }
     }

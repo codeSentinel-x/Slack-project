@@ -15,9 +15,9 @@ public class WorldGeneration : MonoBehaviour {
     public static int _chunkSize;
     public Dictionary<Vector2Int, GameObject> _currentChunksDict = new();
     public Dictionary<Vector2Int, GameObject> _oldChunksDict = new();
-    public EnvironmentRuleSO envRule;
+    public EnvironmentRuleSO _envRule;
 
-    public NoiseSettingData data;
+    public NoiseSettingData _data;
     [SerializeField] private BiomeAssetSO _biomeAsset;
     [SerializeField] private Transform _chunkPrefab;
 
@@ -31,7 +31,9 @@ public class WorldGeneration : MonoBehaviour {
 
     private void Start() {
         NoiseGeneration._onAdvanceNoiseMapGenerationCompleat += GenerateComplexChunk;
+        NoiseGeneration._onEnvironmentNoiseMapGenerationCompleat += SpawnEnvironment;
     }
+
 
     private void GenerateComplexChunk(float[,,] obj, Vector2Int start) {
         if (_chunkHolder == null) return;
@@ -95,14 +97,37 @@ public class WorldGeneration : MonoBehaviour {
         }
 
         chunk.transform.parent = _chunkHolder.transform;
-        SpawnEnvironment(cT._chunks, start, chunk);
+        NoiseGeneration.GenerateEnvironmentNoiseMap(_data, start);
+    }
+    private void SpawnEnvironment(float[,] arg1, Vector2Int startPos, ChunkItem<GameObject>[,] cArray, Vector2Int start, GameObject chunk ) {
+        //TODO this 
+        for (int x = 0; x < cArray.GetLength(0); x++) {
+            for (int y = 0; y < cArray.GetLength(1); y++) {
+                var t = cArray[x, y];
+                if (!t.isEmpty) continue;
+                foreach (var eR in _envRule.rulesSO) {
+                    foreach (var r in eR.rules) {
+                        // UnityEngine.Debug.Log(t.biomeName);
+                        // UnityEngine.Debug.Log(r.biome.name);
+                        if (t.biomeName != r.biome.name) continue;
+                        if (r.minWorldHeight < t._cellHeight && t._cellHeight < r.maxWorldHeight) {
+                            if (r.CanBeSpawned()) {
+                                if (!AreEmpty(cArray, x, y, eR.size)) continue;
+                                Instantiate(eR._prefab, new Vector3(x + start.x, start.y + y), Quaternion.identity).transform.SetParent(chunk.transform);
+                                SetEmpty(cArray, x, y, eR.size);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
     public void SpawnEnvironment(ChunkItem<GameObject>[,] cArray, Vector2Int start, GameObject chunk) {
         for (int x = 0; x < cArray.GetLength(0); x++) {
             for (int y = 0; y < cArray.GetLength(1); y++) {
                 var t = cArray[x, y];
                 if (!t.isEmpty) continue;
-                foreach (var eR in envRule.rulesSO) {
+                foreach (var eR in _envRule.rulesSO) {
                     foreach (var r in eR.rules) {
                         // UnityEngine.Debug.Log(t.biomeName);
                         // UnityEngine.Debug.Log(r.biome.name);
@@ -166,11 +191,11 @@ public class WorldGeneration : MonoBehaviour {
             Destroy(_chunkHolder);
             _chunkHolder = new("Chunk holder");
         }
-        _currentSettingsData = data;
-        NoiseGeneration._seed = data._seed;
-        _chunkSize = data._settings._chunkSize;
+        _currentSettingsData = _data;
+        NoiseGeneration._seed = _data._seed;
+        _chunkSize = _data._settings._chunkSize;
 
-        _OnNoiseSettingChange?.Invoke(data._settings._chunkCount);
+        _OnNoiseSettingChange?.Invoke(_data._settings._chunkCount);
 
 
     }
@@ -178,9 +203,9 @@ public class WorldGeneration : MonoBehaviour {
         NoiseGeneration.GenerateNoiseMap(_currentSettingsData, offset * _chunkSize);
     }
     public void Test() {
-        _currentSettingsData = data;
-        NoiseGeneration._seed = data._seed;
-        _chunkSize = data._settings._chunkSize;
+        _currentSettingsData = _data;
+        NoiseGeneration._seed = _data._seed;
+        _chunkSize = _data._settings._chunkSize;
 
         Stopwatch stopwatch = new();
         stopwatch.Start();

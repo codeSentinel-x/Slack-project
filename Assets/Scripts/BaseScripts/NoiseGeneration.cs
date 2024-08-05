@@ -10,6 +10,7 @@ using JetBrains.Annotations;
 
 public static class NoiseGeneration {
     public static Action<float[,,], Vector2Int> _onAdvanceNoiseMapGenerationCompleat;
+    public static Action<float[,], Vector2Int> _onEnvironmentNoiseMapGenerationCompleat;
     public static uint _seed = 768754;
 
 
@@ -116,14 +117,14 @@ public static class NoiseGeneration {
         NativeArray<float> humidityResult = new(chunkSize * chunkSize, Allocator.TempJob);
         GenerateNoiseMapJob temperatureGenJob = new() {
             result = temperatureResult,
-            seed = _seed + (uint)data._settings._weightedNoiseSettings.Length,
+            seed = _seed + 1,
             nS = data._temperatureNoise,
             offset = new(offset.x, offset.y),
             mapSize = chunkSize
         };
         GenerateNoiseMapJob humidityGenJob = new() {
             result = humidityResult,
-            seed = _seed + (uint)data._settings._weightedNoiseSettings.Length + 1,
+            seed = _seed + 2,
             nS = data._humidityNoise,
             offset = new(offset.x, offset.y),
             mapSize = chunkSize
@@ -155,6 +156,34 @@ public static class NoiseGeneration {
         float allWeight = 0f;
         foreach (WeightedNoiseSetting w in wNS) allWeight += w._weight;
         return Mathf.InverseLerp(0, allWeight, v);
+    }
+
+
+    public static void GenerateEnvironmentNoiseMap(NoiseSettingData data, Vector2Int offset) {
+        var chunkSize = WorldGeneration._chunkSize;
+        float[,] finalResult = new float[chunkSize, chunkSize];
+        NativeArray<float> noiseResults = new(chunkSize * chunkSize, Allocator.TempJob);
+
+        GenerateNoiseMapJob noiseGenJob = new() {
+            result = noiseResults,
+            seed = _seed + 3,
+            nS = data._environmentNoise,
+            offset = new(offset.x, offset.y),
+            mapSize = chunkSize
+        };
+        JobHandle h = noiseGenJob.Schedule();
+        h.Complete();
+
+        // Debug.Log(weightedNoiseSettings.Length);
+        for (int x = 0; x < finalResult.GetLength(0); x++) {
+            for (int y = 0; y < finalResult.GetLength(1); y++) {
+                var arrayPos = x + chunkSize * y;
+                finalResult[x, y] = noiseResults[arrayPos];
+            }
+        }
+
+        noiseResults.Dispose();
+        _onEnvironmentNoiseMapGenerationCompleat?.Invoke(finalResult, offset);
     }
     [BurstCompile]
     public struct GenerateNoiseMapParallel : IJobParallelFor {
