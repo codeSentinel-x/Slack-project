@@ -14,7 +14,7 @@ public class WorldGeneration : MonoBehaviour {
     public static int _chunkSize;
     public Dictionary<Vector2Int, GameObject> _currentChunksDict = new();
     public Dictionary<Vector2Int, GameObject> _oldChunksDict = new();
-
+    public EnvironmentRuleSO envRule;
 
     public NoiseSettingData data;
     [SerializeField] private BiomeAssetSO _biomeAsset;
@@ -38,10 +38,10 @@ public class WorldGeneration : MonoBehaviour {
         _chunkSize = obj.GetLength(1); ;
         GameObject chunk = Instantiate(_chunkPrefab, new Vector3(start.x + _chunkSize / 2, start.y + _chunkSize / 2), Quaternion.identity).gameObject;
         ChunkController cT = chunk.GetComponent<ChunkController>();
-        cT._chunks = new ChunkItem<int>[obj.GetLength(1), obj.GetLength(2)];
+        cT._chunks = new ChunkItem<GameObject>[obj.GetLength(1), obj.GetLength(2)];
         chunk.transform.localScale = new Vector3(_chunkSize, _chunkSize, 1);
         Texture2D colorTexture = new(_chunkSize, _chunkSize);
-        Color[] chunkColors = new Color[_chunkSize * _chunkSize];
+        Color32[] chunkColors = new Color32[_chunkSize * _chunkSize];
         BiomeSO biome;
 
 
@@ -79,7 +79,7 @@ public class WorldGeneration : MonoBehaviour {
 
         colorTexture.wrapMode = TextureWrapMode.Clamp;
         colorTexture.filterMode = FilterMode.Point;
-        colorTexture.SetPixels(chunkColors);
+        colorTexture.SetPixels32(chunkColors);
         colorTexture.Apply();
 
 
@@ -90,7 +90,14 @@ public class WorldGeneration : MonoBehaviour {
         }
 
         chunk.transform.parent = _chunkHolder.transform;
-
+        SpawnEnvironment(cT._chunks);
+    }
+    public void SpawnEnvironment(ChunkItem<GameObject>[,] cArray) {
+        foreach(var t in cArray){
+            foreach(var r in envRule.rulesSO){
+                if(t.)
+            }
+        }
     }
 
     public void GenerateAdvancedChunks(NoiseSettingData data) {
@@ -122,7 +129,7 @@ public class WorldGeneration : MonoBehaviour {
 
     }
     public void GenerateAdvancedChunkAt(Vector2Int offset) {
-        NoiseGeneration.GenerateNoiseMapTest(_currentSettingsData, offset * _chunkSize);
+        NoiseGeneration.GenerateNoiseMap(_currentSettingsData, offset * _chunkSize);
     }
     public void Test() {
         _currentSettingsData = data;

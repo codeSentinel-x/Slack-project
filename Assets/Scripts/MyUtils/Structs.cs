@@ -42,13 +42,6 @@ namespace MyUtils.Structs {
         public int _chunkCount;
 
     }
-    public enum TerrainRuleAssetType {
-        SingleColor,
-        Gradient,
-        SingleTexture,
-        TextureGradient,
-        RandomTexture,
-    }
     [Serializable]
     public struct TerrainRule {
         [Tooltip("Gradient for terrain coloring.")]
@@ -78,6 +71,7 @@ namespace MyUtils.Structs {
 
         [Tooltip("Fully customizable content of the chunk. Typeof T")]
         public T _content;
+        public bool isEmpty;
     }
 
     [Serializable]

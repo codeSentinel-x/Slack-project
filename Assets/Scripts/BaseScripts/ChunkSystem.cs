@@ -17,7 +17,7 @@ public class ChunkSystem : MonoBehaviour {
     }
 
     private void Update() {
-        // CheckForPositionUpdate();
+        CheckForPositionUpdate();
     }
 
     private void CheckForPositionUpdate() {
