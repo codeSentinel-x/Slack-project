@@ -26,7 +26,7 @@ namespace MyUtils.Classes {
         public int _x;
         public int _y;
         public Vector2Int _worldPos;
-        public ChunkItem<int> _cell;
+        public ChunkItem<GameObject> _cell;
         public PathFindingCellItem _previous;
         public int _gCost;
         public int _hCost;
@@ -44,8 +44,9 @@ namespace MyUtils.Classes {
         [Range(0, 1)]
         [Tooltip("Probability of spawning, between 0 (never) and 1 (always).")]
         public float probability;
-        public bool CanBeSpawned(){
+        public bool CanBeSpawned() {
             return UnityEngine.Random.Range(0f, 1f) <= probability;
+            //TODO fix this!
         }
     }
 

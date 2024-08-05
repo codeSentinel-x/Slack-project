@@ -12,5 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea8d3b231e344d4f6a19a7091f6bca96, type: 3}
   m_Name: Trees
   m_EditorClassIdentifier: 
-  _prefab: {fileID: 0}
-  rules: []
+  _prefab: {fileID: 214671073784225239, guid: 946c2507a92b45e6f9efe6c9d48ae1ba, type: 3}
+  size: 0
+  rules:
+  - spriteVariants: []
+    biome: {fileID: 11400000, guid: 39636e43800bb2f65aa65857195f07ce, type: 2}
+    minWorldHeight: 0.3
+    maxWorldHeight: 0.7
+    probability: 0.032
+  - spriteVariants: []
+    biome: {fileID: 11400000, guid: e9c7f119aaa02e7e3be679773440c6d3, type: 2}
+    minWorldHeight: 0.6
+    maxWorldHeight: 0.4
+    probability: 0.9

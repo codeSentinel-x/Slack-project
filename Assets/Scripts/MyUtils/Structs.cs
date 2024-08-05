@@ -72,6 +72,7 @@ namespace MyUtils.Structs {
         [Tooltip("Fully customizable content of the chunk. Typeof T")]
         public T _content;
         public bool isEmpty;
+        public string biomeName;
     }
 
     [Serializable]

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using MyUtils.Classes;
 using MyUtils.Structs;
+using NUnit.Framework;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -66,9 +67,13 @@ public class WorldGeneration : MonoBehaviour {
                         chunkColors[y * _chunkSize + x] = biome._terrainRule[i]._gradient.Evaluate(localH);
 
                         //APPLY TERRAIN RULES FROM BIOME ASSET TO CHUNK ITEM
-                        cT._chunks[x, y]._cellHeight = h;
-                        cT._chunks[x, y]._terrainTypeName = biome._terrainRule[i]._cellName;
-                        cT._chunks[x, y]._isWalkable = biome._terrainRule[i]._isWalkable;
+                        cT._chunks[x, y] = new() {
+                            _cellHeight = h,
+                            biomeName = biome.name,
+                            _terrainTypeName = biome._terrainRule[i]._cellName,
+                            _isWalkable = biome._terrainRule[i]._isWalkable,
+                            isEmpty = true
+                        };
 
                         break;
                     }
@@ -90,16 +95,57 @@ public class WorldGeneration : MonoBehaviour {
         }
 
         chunk.transform.parent = _chunkHolder.transform;
-        SpawnEnvironment(cT._chunks);
+        SpawnEnvironment(cT._chunks, start, chunk);
     }
-    public void SpawnEnvironment(ChunkItem<GameObject>[,] cArray) {
-        foreach(var t in cArray){
-            foreach(var r in envRule.rulesSO){
-                if(t.)
+    public void SpawnEnvironment(ChunkItem<GameObject>[,] cArray, Vector2Int start, GameObject chunk) {
+        for (int x = 0; x < cArray.GetLength(0); x++) {
+            for (int y = 0; y < cArray.GetLength(1); y++) {
+                var t = cArray[x, y];
+                if (!t.isEmpty) continue;
+                foreach (var eR in envRule.rulesSO) {
+                    foreach (var r in eR.rules) {
+                        // UnityEngine.Debug.Log(t.biomeName);
+                        // UnityEngine.Debug.Log(r.biome.name);
+                        if (t.biomeName != r.biome.name) continue;
+                        if (r.minWorldHeight < t._cellHeight && t._cellHeight < r.maxWorldHeight) {
+                            if (r.CanBeSpawned()) {
+                                if (!AreEmpty(cArray, x, y, eR.size)) continue;
+                                Instantiate(eR._prefab, new Vector3(x + start.x, start.y + y), Quaternion.identity).transform.SetParent(chunk.transform);
+                                SetEmpty(cArray, x, y, eR.size);
+                            }
+                        }
+                    }
+                }
             }
         }
     }
+    public bool AreEmpty(ChunkItem<GameObject>[,] cArray, int x, int y, int range) {
+        int rowMin = Math.Max(0, x - range);
+        int rowMax = Math.Min(cArray.GetLength(0) - 1, x + range);
+        int colMin = Math.Max(0, y - range);
+        int colMax = Math.Min(cArray.GetLength(1) - 1, y + range);
 
+        for (int i = rowMin; i <= rowMax; i++) {
+            for (int j = colMin; j <= colMax; j++) {
+                if (!cArray[i, j].isEmpty) return false;
+            }
+        }
+
+        return true;
+    }
+    public void SetEmpty(ChunkItem<GameObject>[,] cArray, int x, int y, int range) {
+        int rowMin = Math.Max(0, x - range);
+        int rowMax = Math.Min(cArray.GetLength(0) - 1, x + range);
+        int colMin = Math.Max(0, y - range);
+        int colMax = Math.Min(cArray.GetLength(1) - 1, y + range);
+
+        for (int i = rowMin; i <= rowMax; i++) {
+            for (int j = colMin; j <= colMax; j++) {
+                cArray[i, j].isEmpty = false;
+            }
+        }
+
+    }
     public void GenerateAdvancedChunks(NoiseSettingData data) {
         if (_chunkHolder == null) _chunkHolder = new("Chunk holder");
         else {

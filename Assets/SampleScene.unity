@@ -8480,6 +8480,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b80d2a5a408c78109855cd46d55834f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  envRule: {fileID: 11400000, guid: 22220c7ee89c74f379e34d0123e712e7, type: 2}
   data:
     _settings:
       _weightedNoiseSettings:
