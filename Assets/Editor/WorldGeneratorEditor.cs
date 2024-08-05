@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 
@@ -13,6 +14,9 @@ public class WorldGeneratorEditor : Editor {
         if (GUILayout.Button("Generate world")) {
             worldGen.GenerateAdvancedChunks();
             // Debug.Log("Nuh uh");
+        }
+        if(GUILayout.Button("Test delay")){
+            worldGen.Test();
         }
     }
 

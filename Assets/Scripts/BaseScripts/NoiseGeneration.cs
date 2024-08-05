@@ -21,7 +21,6 @@ public static class NoiseGeneration {
 
 
     public static void GenerateNoiseMapTest(NoiseSettingData data, Vector2Int offset) {
-
         var chunkSize = WorldGeneration._chunkSize;
         float[,,] finalResult = new float[3, chunkSize, chunkSize];
         NativeList<JobHandle> allJobs = new(Allocator.Temp);
@@ -30,21 +29,22 @@ public static class NoiseGeneration {
         //generate [0,x,y] - height map
         int index = 0;
         NativeArray<int2> posArray = new(chunkSize * chunkSize, Allocator.TempJob);
-        for (int x = 0; x < chunkSize; x++) for (int y = 0; y < chunkSize)
-                foreach (var w in data._settings._weightedNoiseSettings) {
-                    GenerateNoiseMapParallel noiseGenJob = new() {
-                        result = noiseResults,
-                        seed = _seed,
-                        noiseSetting = w._noiseSetting,
-                        normalizedWeight = GetNormalizedWeight(data._settings._weightedNoiseSettings, w._weight),
-                        offset = new(offset.x, offset.y),
-                        mapSize = chunkSize
-                    };
-                    Debug.Log(GetNormalizedWeight(data._settings._weightedNoiseSettings, w._weight));
-                    if (index != 0) allJobs.Add(noiseGenJob.Schedule(allJobs[index - 1]));
-                    else allJobs.Add(noiseGenJob.Schedule());
-                    index++;
-                }
+        for (int x = 0; x < chunkSize; x++) for (int y = 0; y < chunkSize; y++) posArray[x + chunkSize * y] = new int2(x, y);
+        foreach (var w in data._settings._weightedNoiseSettings) {
+            GenerateNoiseMapParallel noiseGenJob = new() {
+                result = noiseResults,
+                seed = _seed,
+                noiseSetting = w._noiseSetting,
+                normalizedWeight = GetNormalizedWeight(data._settings._weightedNoiseSettings, w._weight),
+                offset = new(offset.x, offset.y),
+                mapSize = chunkSize,
+                posArray = posArray
+            };
+            // Debug.Log(GetNormalizedWeight(data._settings._weightedNoiseSettings, w._weight));
+            if (index != 0) allJobs.Add(noiseGenJob.Schedule(posArray.Length, 100, allJobs[index - 1]));
+            else allJobs.Add(noiseGenJob.Schedule(posArray.Length, 100));
+            index++;
+        }
 
         //generate [1,x,y] - temperature map  and //generate [2,x,y] - humidity map
         NativeArray<float> temperatureResult = new(chunkSize * chunkSize, Allocator.TempJob);
@@ -81,6 +81,7 @@ public static class NoiseGeneration {
 
         noiseResults.Dispose();
         allJobs.Dispose();
+        posArray.Dispose();
         temperatureResult.Dispose();
         humidityResult.Dispose();
 
@@ -88,7 +89,6 @@ public static class NoiseGeneration {
     }
 
     public static void GenerateNoiseMap(NoiseSettingData data, Vector2Int offset) {
-
         var chunkSize = WorldGeneration._chunkSize;
         float[,,] finalResult = new float[3, chunkSize, chunkSize];
         NativeList<JobHandle> allJobs = new(Allocator.Temp);
@@ -105,7 +105,7 @@ public static class NoiseGeneration {
                 offset = new(offset.x, offset.y),
                 mapSize = chunkSize
             };
-            Debug.Log(GetNormalizedWeight(data._settings._weightedNoiseSettings, w._weight));
+            // Debug.Log(GetNormalizedWeight(data._settings._weightedNoiseSettings, w._weight));
             if (index != 0) allJobs.Add(noiseGenJob.Schedule(allJobs[index - 1]));
             else allJobs.Add(noiseGenJob.Schedule());
             index++;
@@ -148,7 +148,6 @@ public static class NoiseGeneration {
         allJobs.Dispose();
         temperatureResult.Dispose();
         humidityResult.Dispose();
-
         _onAdvanceNoiseMapGenerationCompleat?.Invoke(finalResult, offset);
     }
 
@@ -180,8 +179,8 @@ public static class NoiseGeneration {
                 amplitude *= noiseSetting._persistance;
                 octaveOffset[i] = new float2(x, y);
             }
-            float maxNoiseH = float.MinValue;
-            float minNoiseH = float.MaxValue;
+            // float maxNoiseH = float.MinValue;
+            // float minNoiseH = float.MaxValue;
             amplitude = 1f;
             float frequency = 1f;
             float noiseH = 0f;
@@ -198,12 +197,14 @@ public static class NoiseGeneration {
                 frequency *= noiseSetting._lacunarity;
             }
 
-            if (noiseH > maxNoiseH) maxNoiseH = noiseH;
-            else if (noiseH < minNoiseH) minNoiseH = noiseH;
+            // if (noiseH > maxNoiseH) maxNoiseH = noiseH;
+            // else if (noiseH < minNoiseH) minNoiseH = noiseH;
 
             float normalizedHeight = (noiseH + 1) / (maxPossibleH / 0.9f);
             result[index] += Mathf.Clamp(normalizedHeight, 0, int.MaxValue) * normalizedWeight;
+            octaveOffset.Dispose();
         }
+
     }
     [BurstCompile]
     public struct GenerateNoiseMapLayerJob : IJob {

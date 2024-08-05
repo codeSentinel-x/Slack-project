@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using MyUtils.Classes;
 using MyUtils.Structs;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class WorldGeneration : MonoBehaviour {
@@ -120,9 +122,39 @@ public class WorldGeneration : MonoBehaviour {
 
     }
     public void GenerateAdvancedChunkAt(Vector2Int offset) {
-        NoiseGeneration.GenerateNoiseMap(_currentSettingsData, offset * _chunkSize);
+        NoiseGeneration.GenerateNoiseMapTest(_currentSettingsData, offset * _chunkSize);
     }
+    public void Test() {
+        _currentSettingsData = data;
+        NoiseGeneration._seed = data._seed;
+        _chunkSize = data._settings._chunkSize;
 
+        Stopwatch stopwatch = new();
+        stopwatch.Start();
+        NoiseGeneration.GenerateNoiseMap(_currentSettingsData, Vector2Int.zero * _chunkSize);
+        stopwatch.Stop();
+        long normalTime = stopwatch.ElapsedTicks;
+        UnityEngine.Debug.Log("Normal time: " + normalTime + " ticks");
+
+        stopwatch.Reset();
+
+        stopwatch.Start();
+        NoiseGeneration.GenerateNoiseMapTest(_currentSettingsData, Vector2Int.zero * _chunkSize);
+        stopwatch.Stop();
+        long parallelTime = stopwatch.ElapsedTicks;
+        UnityEngine.Debug.Log("Parallel time: " + parallelTime + " ticks");
+
+
+
+        if (parallelTime < normalTime) {
+            UnityEngine.Debug.Log("Parallel is faster.");
+        }
+        else {
+            UnityEngine.Debug.Log("Normal is faster.");
+        }
+
+
+    }
     public void DestroyWorld() {
         if (_chunkHolder != null) Destroy(_chunkHolder);
     }

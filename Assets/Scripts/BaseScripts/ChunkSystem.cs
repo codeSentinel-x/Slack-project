@@ -17,7 +17,7 @@ public class ChunkSystem : MonoBehaviour {
     }
 
     private void Update() {
-        CheckForPositionUpdate();
+        // CheckForPositionUpdate();
     }
 
     private void CheckForPositionUpdate() {
@@ -30,7 +30,7 @@ public class ChunkSystem : MonoBehaviour {
     }
 
     public void OnChunkChange() {
-        Debug.Log("CurrentChunk: " + _lastChunkPosition);
+        // Debug.Log("CurrentChunk: " + _lastChunkPosition);
         GenerateAdvancedChunkInRange();
     }
 
