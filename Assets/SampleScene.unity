@@ -8482,7 +8482,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _chunkPrefab: {fileID: 6767066938474356729, guid: 96bdeeecd7391b3febf364efe6b23e9c, type: 3}
   _sourceMaterial: {fileID: 2100000, guid: b7dd32907d9cd80d8a75b689e0506dbb, type: 2}
-  _settingSource: {fileID: 0}
+  _settingSource: {fileID: 11400000, guid: 0944ce5fc56abc4c896e78ea6083a838, type: 2}
 --- !u!4 &1710238900
 Transform:
   m_ObjectHideFlags: 0

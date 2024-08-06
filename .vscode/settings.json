@@ -56,5 +56,8 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Slack project.sln"
+    "dotnet.defaultSolution": "Slack project.sln",
+    "cSpell.words": [
+        "Envi"
+    ]
 }

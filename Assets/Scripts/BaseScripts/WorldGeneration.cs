@@ -100,9 +100,15 @@ public class WorldGeneration : MonoBehaviour {
             for (int y = 0; y < cArray.GetLength(1); y++) {
                 var t = cArray[x, y];
                 if (!t.isEmpty) continue;
-                foreach (var eR in _settingSource._environmentRuleSource.rulesSO) {
-                    foreach (var r in eR.rules) {
-                        if (t.biomeName != r._biome.name) continue;
+                foreach (SpawnRuleSO eR in _settingSource._environmentRuleSource.rulesSO) {
+                    foreach (EnvironmentRuleSO r in eR.enviRules) {
+                        var currentEnviRule = default(EnviElementRuleSO);
+                        foreach (var En  in r.rulesSO) {
+                            if (t.biomeName == r._biome.name) {
+                                currentEnviRule =
+                                continue;
+                            }
+                        }
                         if (r._minWorldHeight < t._cellHeight && t._cellHeight < r._maxWorldHeight) {
                             if (r._minNoiseHeight < noiseResult[x, y] && noiseResult[x, y] < r._maxNoiseHeight) {
                                 if (r.CanBeSpawned()) {

@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ea8d3b231e344d4f6a19a7091f6bca96, type: 3}
-  m_Name: Trees
+  m_Name: Default
   m_EditorClassIdentifier: 
   _prefab: {fileID: 214671073784225239, guid: 946c2507a92b45e6f9efe6c9d48ae1ba, type: 3}
   size: 2
@@ -33,9 +33,9 @@ MonoBehaviour:
     - {fileID: -4758267250684081389, guid: c5afd7f120e3fbd4e8621926196cf254, type: 3}
     _biome: {fileID: 11400000, guid: 39636e43800bb2f65aa65857195f07ce, type: 2}
     _minWorldHeight: 0.3
-    _maxWorldHeight: 0.7
+    _maxWorldHeight: 0.8
     _minNoiseHeight: 0.2
-    _maxNoiseHeight: 0.5
+    _maxNoiseHeight: 0.3
     _probability: 0.357
   - _spriteVariants:
     - {fileID: -5518540548040731771, guid: 5b0bb40981314004d9c8cce7a3dbde0d, type: 3}
@@ -48,3 +48,12 @@ MonoBehaviour:
     _minNoiseHeight: 0.4
     _maxNoiseHeight: 0.6
     _probability: 0.283
+  - _spriteVariants:
+    - {fileID: -5518540548040731771, guid: 5b0bb40981314004d9c8cce7a3dbde0d, type: 3}
+    - {fileID: -5319649112636079990, guid: 65bc634fd17c885b9b902a41cb7e2c89, type: 3}
+    _biome: {fileID: 11400000, guid: 897764390ce79c45a98a80db9e4bf9bc, type: 2}
+    _minWorldHeight: 0.3
+    _maxWorldHeight: 0.6
+    _minNoiseHeight: 0.1
+    _maxNoiseHeight: 0.4
+    _probability: 0.04

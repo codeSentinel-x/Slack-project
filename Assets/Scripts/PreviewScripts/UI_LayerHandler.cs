@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using MyUtils.Structs;
 using TMPro;
 using UnityEngine;
@@ -14,7 +15,6 @@ public class UI_LayerHandler : MonoBehaviour {
     public void Setup(int id) {
         _layerIdText.text = id.ToString();
     }
-
 
     public void Setup(int id, NoiseLayerSetting s, float weight) {
         _layerIdText.text = id.ToString();
