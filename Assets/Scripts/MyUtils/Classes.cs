@@ -54,5 +54,5 @@ namespace MyUtils.Classes {
             return random <= _probability;
         }
     }
-
+     
 }
