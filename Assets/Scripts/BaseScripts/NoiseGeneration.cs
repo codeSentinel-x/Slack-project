@@ -9,8 +9,6 @@ using Unity.Burst;
 using JetBrains.Annotations;
 
 public static class NoiseGeneration {
-    public static Action<float[,,], Vector2Int> _onAdvanceNoiseMapGenerationCompleat;
-    public static Action<float[,], Vector2Int> _onEnvironmentNoiseMapGenerationCompleat;
     public static uint _seed = 768754;
 
 
@@ -89,7 +87,7 @@ public static class NoiseGeneration {
         // _onAdvanceNoiseMapGenerationCompleat?.Invoke(finalResult, offset);
     }
 
-    public static void GenerateNoiseMap(NoiseSettingData data, Vector2Int offset,  Action<float[,,], Vector2Int> callback) {
+    public static void GenerateNoiseMap(NoiseSettingData data, Vector2Int offset, Action<float[,,], Vector2Int> callback) {
         var chunkSize = WorldGeneration._chunkSize;
         float[,,] finalResult = new float[3, chunkSize, chunkSize];
         NativeList<JobHandle> allJobs = new(Allocator.Temp);
@@ -149,7 +147,7 @@ public static class NoiseGeneration {
         allJobs.Dispose();
         temperatureResult.Dispose();
         humidityResult.Dispose();
-        _onAdvanceNoiseMapGenerationCompleat?.Invoke(finalResult, offset);
+        callback?.Invoke(finalResult, offset);
     }
 
     private static float GetNormalizedWeight(WeightedNoiseSetting[] wNS, float v) {
@@ -159,7 +157,7 @@ public static class NoiseGeneration {
     }
 
 
-    public static void GenerateEnvironmentNoiseMap(NoiseSettingData data, Vector2Int offset,  Action<float[,,], Vector2Int> callback) {
+    public static void GenerateEnvironmentNoiseMap(NoiseSettingData data, Vector2Int offset, Action<float[,], Vector2Int> callback) {
         var chunkSize = WorldGeneration._chunkSize;
         float[,] finalResult = new float[chunkSize, chunkSize];
         NativeArray<float> noiseResults = new(chunkSize * chunkSize, Allocator.TempJob);
@@ -183,7 +181,7 @@ public static class NoiseGeneration {
         }
 
         noiseResults.Dispose();
-        _onEnvironmentNoiseMapGenerationCompleat?.Invoke(finalResult, offset);
+        callback?.Invoke(finalResult, offset);
     }
     [BurstCompile]
     public struct GenerateNoiseMapParallel : IJobParallelFor {

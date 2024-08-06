@@ -18,10 +18,21 @@ MonoBehaviour:
   - spriteVariants: []
     biome: {fileID: 11400000, guid: 39636e43800bb2f65aa65857195f07ce, type: 2}
     minWorldHeight: 0.3
-    maxWorldHeight: 0.000001
-    probability: 0.039
+    maxWorldHeight: 0.7
+    minNoiseHeight: 0.3
+    maxNoiseHeight: 0.5
+    probability: 0.566
   - spriteVariants: []
     biome: {fileID: 11400000, guid: e9c7f119aaa02e7e3be679773440c6d3, type: 2}
     minWorldHeight: 0.4
     maxWorldHeight: 0.7
+    minNoiseHeight: 0
+    maxNoiseHeight: 0
     probability: 0.606
+  - spriteVariants: []
+    biome: {fileID: 11400000, guid: 4e83740854a640cceafeec15f161d54b, type: 2}
+    minWorldHeight: 0.4
+    maxWorldHeight: 0.7
+    minNoiseHeight: 0.3
+    maxNoiseHeight: 0.5
+    probability: 0.141

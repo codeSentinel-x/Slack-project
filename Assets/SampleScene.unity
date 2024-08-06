@@ -6740,6 +6740,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1397811153}
   m_CullTransparentMesh: 1
+--- !u!1 &1407387680
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1407387681}
+  m_Layer: 0
+  m_Name: Chunk holder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1407387681
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1407387680}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1425481632 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5050118557642110194, guid: 86a7864b430dbbb619097c4804a82dd1, type: 3}
@@ -8477,7 +8508,7 @@ MonoBehaviour:
           _persistance: 1
           _lacunarity: 2
         _weight: 3
-      _chunkSize: 50
+      _chunkSize: 25
       _chunkCount: 5
     _temperatureNoise:
       _scale: 1000
@@ -8490,10 +8521,10 @@ MonoBehaviour:
       _persistance: 0.5
       _lacunarity: 2
     _environmentNoise:
-      _scale: 300
-      _octaves: 3
-      _persistance: 0.503
-      _lacunarity: 2
+      _scale: 50
+      _octaves: 5
+      _persistance: 1
+      _lacunarity: 4
     _seed: 315
   _biomeAsset: {fileID: 11400000, guid: 4cc9a0124c6770095a8d26b6db834039, type: 2}
   _chunkPrefab: {fileID: 6767066938474356729, guid: 96bdeeecd7391b3febf364efe6b23e9c, type: 3}
@@ -10684,3 +10715,4 @@ SceneRoots:
   - {fileID: 1260336497}
   - {fileID: 1168646999}
   - {fileID: 1512643496}
+  - {fileID: 1407387681}

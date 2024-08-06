@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using MyUtils;
 using MyUtils.Classes;
 using MyUtils.Structs;
 using NUnit.Framework;
@@ -29,14 +29,9 @@ public class WorldGeneration : MonoBehaviour {
         _instance = this;
     }
 
-    private void Start() {
-        NoiseGeneration._onAdvanceNoiseMapGenerationCompleat += GenerateComplexChunk;
-        // NoiseGeneration._onEnvironmentNoiseMapGenerationCompleat += SpawnEnvironment;
-    }
-
 
     private void GenerateComplexChunk(float[,,] obj, Vector2Int start) {
-        UnityEngine.Debug.Log("Generating");
+        Debug.Log("Generating");
         if (_chunkHolder == null) return;
         _chunkSize = obj.GetLength(1); ;
         GameObject chunk = Instantiate(_chunkPrefab, new Vector3(start.x + _chunkSize / 2, start.y + _chunkSize / 2), Quaternion.identity).gameObject;
@@ -97,10 +92,12 @@ public class WorldGeneration : MonoBehaviour {
         }
 
         chunk.transform.parent = _chunkHolder.transform;
-        // NoiseGeneration.GenerateEnvironmentNoiseMap(_data, start);
+        NoiseGeneration.GenerateEnvironmentNoiseMap(_data, start, (x, y) => SpawnEnvironment(x, y));
     }
-    private void SpawnEnvironment(float[,] arg1, Vector2Int startPos, ChunkItem<GameObject>[,] cArray, Vector2Int start, GameObject chunk) {
-        //TODO this 
+    private void SpawnEnvironment(float[,] noiseResult, Vector2Int start) {
+        GameObject chunk = _instance._currentChunksDict[start / _chunkSize];
+        Debug.Log(chunk.name);
+        var cArray = chunk.GetComponent<ChunkController>()._chunks;
         for (int x = 0; x < cArray.GetLength(0); x++) {
             for (int y = 0; y < cArray.GetLength(1); y++) {
                 var t = cArray[x, y];
@@ -111,10 +108,14 @@ public class WorldGeneration : MonoBehaviour {
                         // UnityEngine.Debug.Log(r.biome.name);
                         if (t.biomeName != r.biome.name) continue;
                         if (r.minWorldHeight < t._cellHeight && t._cellHeight < r.maxWorldHeight) {
-                            if (r.CanBeSpawned()) {
-                                if (!AreEmpty(cArray, x, y, eR.size)) continue;
-                                Instantiate(eR._prefab, new Vector3(x + start.x, start.y + y), Quaternion.identity).transform.SetParent(chunk.transform);
-                                SetEmpty(cArray, x, y, eR.size);
+                            if (r.minNoiseHeight < noiseResult[x, y] && noiseResult[x, y] < r.maxNoiseHeight) {
+                                if (r.CanBeSpawned()) {
+                                    if (!AreEmpty(cArray, x, y, eR.size)) continue;
+                                    Transform obj = Instantiate(eR._prefab, new Vector3(x + start.x, start.y + y), Quaternion.identity).transform;
+                                    obj.SetParent(chunk.transform);
+                                    obj.GetComponentInChildren<SpriteRenderer>().sprite = MyRandom.GetFromArray<Sprite>(r.spriteVariants);
+                                    SetEmpty(cArray, x, y, eR.size);
+                                }
                             }
                         }
                     }
@@ -122,28 +123,7 @@ public class WorldGeneration : MonoBehaviour {
             }
         }
     }
-    public void SpawnEnvironment(ChunkItem<GameObject>[,] cArray, Vector2Int start, GameObject chunk) {
-        for (int x = 0; x < cArray.GetLength(0); x++) {
-            for (int y = 0; y < cArray.GetLength(1); y++) {
-                var t = cArray[x, y];
-                if (!t.isEmpty) continue;
-                foreach (var eR in _envRule.rulesSO) {
-                    foreach (var r in eR.rules) {
-                        // UnityEngine.Debug.Log(t.biomeName);
-                        // UnityEngine.Debug.Log(r.biome.name);
-                        if (t.biomeName != r.biome.name) continue;
-                        if (r.minWorldHeight < t._cellHeight && t._cellHeight < r.maxWorldHeight) {
-                            if (r.CanBeSpawned()) {
-                                if (!AreEmpty(cArray, x, y, eR.size)) continue;
-                                Instantiate(eR._prefab, new Vector3(x + start.x, start.y + y), Quaternion.identity).transform.SetParent(chunk.transform);
-                                SetEmpty(cArray, x, y, eR.size);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+
     public bool AreEmpty(ChunkItem<GameObject>[,] cArray, int x, int y, int range) {
         int rowMin = Math.Max(0, x - range);
         int rowMax = Math.Min(cArray.GetLength(0) - 1, x + range);
@@ -207,7 +187,7 @@ public class WorldGeneration : MonoBehaviour {
         NoiseGeneration._seed = _data._seed;
         _chunkSize = _data._settings._chunkSize;
 
-        Stopwatch stopwatch = new();
+        System.Diagnostics.Stopwatch stopwatch = new();
         stopwatch.Start();
         NoiseGeneration.GenerateNoiseMap(_currentSettingsData, Vector2Int.zero * _chunkSize, (x, y) => GenerateComplexChunk(x, y));
         stopwatch.Stop();
