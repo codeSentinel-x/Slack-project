@@ -213,8 +213,8 @@ MonoBehaviour:
     _isWalkable: 1
   - _gradient:
       serializedVersion: 2
-      key0: {r: 0.105882354, g: 0.7372549, b: 0, a: 1}
-      key1: {r: 0.10766295, g: 0.6415094, b: 0.015129937, a: 1}
+      key0: {r: 0.32941177, g: 0.7254902, b: 0.2627451, a: 1}
+      key1: {r: 0.24464226, g: 0.5377358, b: 0.1953097, a: 1}
       key2: {r: 0, g: 0, b: 0, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
       key4: {r: 0, g: 0, b: 0, a: 0}
@@ -246,7 +246,7 @@ MonoBehaviour:
     _isWalkable: 1
   - _gradient:
       serializedVersion: 2
-      key0: {r: 0.32941177, g: 0.7254902, b: 0.2627451, a: 1}
+      key0: {r: 0.24313726, g: 0.5372549, b: 0.19607843, a: 1}
       key1: {r: 0.24203454, g: 0.46226418, b: 0.2784203, a: 1}
       key2: {r: 0, g: 0, b: 0, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}

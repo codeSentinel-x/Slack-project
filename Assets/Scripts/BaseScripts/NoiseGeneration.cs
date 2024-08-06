@@ -21,7 +21,7 @@ public static class NoiseGeneration {
     }
 
 
-    public static void GenerateNoiseMapTest(NoiseSettingData data, Vector2Int offset) {
+    public static void GenerateNoiseMapTest(NoiseSettingData data, Vector2Int offset, Action<float[,,], Vector2Int> callback) {
         var chunkSize = WorldGeneration._chunkSize;
         float[,,] finalResult = new float[3, chunkSize, chunkSize];
         NativeList<JobHandle> allJobs = new(Allocator.Temp);
@@ -85,11 +85,11 @@ public static class NoiseGeneration {
         posArray.Dispose();
         temperatureResult.Dispose();
         humidityResult.Dispose();
-
-        _onAdvanceNoiseMapGenerationCompleat?.Invoke(finalResult, offset);
+        callback.Invoke(finalResult, offset);
+        // _onAdvanceNoiseMapGenerationCompleat?.Invoke(finalResult, offset);
     }
 
-    public static void GenerateNoiseMap(NoiseSettingData data, Vector2Int offset) {
+    public static void GenerateNoiseMap(NoiseSettingData data, Vector2Int offset,  Action<float[,,], Vector2Int> callback) {
         var chunkSize = WorldGeneration._chunkSize;
         float[,,] finalResult = new float[3, chunkSize, chunkSize];
         NativeList<JobHandle> allJobs = new(Allocator.Temp);
@@ -159,7 +159,7 @@ public static class NoiseGeneration {
     }
 
 
-    public static void GenerateEnvironmentNoiseMap(NoiseSettingData data, Vector2Int offset) {
+    public static void GenerateEnvironmentNoiseMap(NoiseSettingData data, Vector2Int offset,  Action<float[,,], Vector2Int> callback) {
         var chunkSize = WorldGeneration._chunkSize;
         float[,] finalResult = new float[chunkSize, chunkSize];
         NativeArray<float> noiseResults = new(chunkSize * chunkSize, Allocator.TempJob);

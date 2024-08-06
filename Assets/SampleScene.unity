@@ -8449,41 +8449,52 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b80d2a5a408c78109855cd46d55834f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  envRule: {fileID: 11400000, guid: 22220c7ee89c74f379e34d0123e712e7, type: 2}
-  data:
+  _envRule: {fileID: 11400000, guid: 22220c7ee89c74f379e34d0123e712e7, type: 2}
+  _data:
     _settings:
       _weightedNoiseSettings:
       - _noiseSetting:
-          _scale: 50
-          _octaves: 2
-          _persistance: 0.447
-          _lacunarity: 1.68
+          _scale: 150
+          _octaves: 3
+          _persistance: 0.353
+          _lacunarity: 1.2
+        _weight: 100
+      - _noiseSetting:
+          _scale: 75
+          _octaves: 5
+          _persistance: 0.64
+          _lacunarity: 2
         _weight: 20
       - _noiseSetting:
           _scale: 25
-          _octaves: 6
-          _persistance: 0.501
-          _lacunarity: 1.6
-        _weight: 10
-      - _noiseSetting:
-          _scale: 12.5
-          _octaves: 6
-          _persistance: 0.573
-          _lacunarity: 2
+          _octaves: 5
+          _persistance: 0.812
+          _lacunarity: 1.3
         _weight: 5
-      _chunkSize: 10
-      _chunkCount: 10
+      - _noiseSetting:
+          _scale: 5
+          _octaves: 10
+          _persistance: 1
+          _lacunarity: 2
+        _weight: 3
+      _chunkSize: 50
+      _chunkCount: 5
     _temperatureNoise:
-      _scale: 300
+      _scale: 1000
       _octaves: 3
       _persistance: 0.5
       _lacunarity: 2
     _humidityNoise:
-      _scale: 300
+      _scale: 1000
       _octaves: 3
       _persistance: 0.5
-      _lacunarity: 1.9
-    _seed: 54
+      _lacunarity: 2
+    _environmentNoise:
+      _scale: 300
+      _octaves: 3
+      _persistance: 0.503
+      _lacunarity: 2
+    _seed: 315
   _biomeAsset: {fileID: 11400000, guid: 4cc9a0124c6770095a8d26b6db834039, type: 2}
   _chunkPrefab: {fileID: 6767066938474356729, guid: 96bdeeecd7391b3febf364efe6b23e9c, type: 3}
   _sourceMaterial: {fileID: 2100000, guid: b7dd32907d9cd80d8a75b689e0506dbb, type: 2}

@@ -31,13 +31,13 @@ public class WorldGeneration : MonoBehaviour {
 
     private void Start() {
         NoiseGeneration._onAdvanceNoiseMapGenerationCompleat += GenerateComplexChunk;
-        NoiseGeneration._onEnvironmentNoiseMapGenerationCompleat += SpawnEnvironment;
+        // NoiseGeneration._onEnvironmentNoiseMapGenerationCompleat += SpawnEnvironment;
     }
 
 
     private void GenerateComplexChunk(float[,,] obj, Vector2Int start) {
+        UnityEngine.Debug.Log("Generating");
         if (_chunkHolder == null) return;
-
         _chunkSize = obj.GetLength(1); ;
         GameObject chunk = Instantiate(_chunkPrefab, new Vector3(start.x + _chunkSize / 2, start.y + _chunkSize / 2), Quaternion.identity).gameObject;
         ChunkController cT = chunk.GetComponent<ChunkController>();
@@ -97,9 +97,9 @@ public class WorldGeneration : MonoBehaviour {
         }
 
         chunk.transform.parent = _chunkHolder.transform;
-        NoiseGeneration.GenerateEnvironmentNoiseMap(_data, start);
+        // NoiseGeneration.GenerateEnvironmentNoiseMap(_data, start);
     }
-    private void SpawnEnvironment(float[,] arg1, Vector2Int startPos, ChunkItem<GameObject>[,] cArray, Vector2Int start, GameObject chunk ) {
+    private void SpawnEnvironment(float[,] arg1, Vector2Int startPos, ChunkItem<GameObject>[,] cArray, Vector2Int start, GameObject chunk) {
         //TODO this 
         for (int x = 0; x < cArray.GetLength(0); x++) {
             for (int y = 0; y < cArray.GetLength(1); y++) {
@@ -200,7 +200,7 @@ public class WorldGeneration : MonoBehaviour {
 
     }
     public void GenerateAdvancedChunkAt(Vector2Int offset) {
-        NoiseGeneration.GenerateNoiseMap(_currentSettingsData, offset * _chunkSize);
+        NoiseGeneration.GenerateNoiseMap(_currentSettingsData, offset * _chunkSize, (x, y) => GenerateComplexChunk(x, y));
     }
     public void Test() {
         _currentSettingsData = _data;
@@ -209,7 +209,7 @@ public class WorldGeneration : MonoBehaviour {
 
         Stopwatch stopwatch = new();
         stopwatch.Start();
-        NoiseGeneration.GenerateNoiseMap(_currentSettingsData, Vector2Int.zero * _chunkSize);
+        NoiseGeneration.GenerateNoiseMap(_currentSettingsData, Vector2Int.zero * _chunkSize, (x, y) => GenerateComplexChunk(x, y));
         stopwatch.Stop();
         long normalTime = stopwatch.ElapsedTicks;
         UnityEngine.Debug.Log("Normal time: " + normalTime + " ticks");
@@ -217,7 +217,7 @@ public class WorldGeneration : MonoBehaviour {
         stopwatch.Reset();
 
         stopwatch.Start();
-        NoiseGeneration.GenerateNoiseMapTest(_currentSettingsData, Vector2Int.zero * _chunkSize);
+        NoiseGeneration.GenerateNoiseMapTest(_currentSettingsData, Vector2Int.zero * _chunkSize, (x, y) => GenerateComplexChunk(x, y));
         stopwatch.Stop();
         long parallelTime = stopwatch.ElapsedTicks;
         UnityEngine.Debug.Log("Parallel time: " + parallelTime + " ticks");
