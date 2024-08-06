@@ -11,16 +11,22 @@ public class WorldGeneratorEditor : Editor {
         if (DrawDefaultInspector()) {
             //Maybe later
         }
-        if (GUILayout.Button("Generate world")) {
+        
+        if (GUILayout.Button("\nGenerate world\n")) {
             worldGen.GenerateAdvancedChunks();
-            // Debug.Log("Nuh uh");
         }
-        if (GUILayout.Button("Test delay")) {
+        if (GUILayout.Button("\nGenerateEnviVisual\n")) {
+            worldGen.GenerateEnviVisual();
+            worldGen.ChangeWorldVisibility();
+        }
+
+        if (GUILayout.Button("\nChangeVisual\n")) {
+
+            worldGen.ChangeWorldVisibility();
+        }
+
+        if (GUILayout.Button("\nTest delay\n")) {
             worldGen.TestSpeed();
         }
-        if (GUILayout.Button("GenerateEnviNoiseVisual")) {
-            worldGen.GenerateEnviVisual();
-        }
     }
-
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 using MyUtils;
 using MyUtils.Classes;
 using MyUtils.Structs;
@@ -32,7 +33,7 @@ public class WorldGeneration : MonoBehaviour {
     private void GenerateComplexChunk(float[,,] obj, Vector2Int start) {
         Debug.Log("Generating");
         if (_chunkHolder == null) return;
-        _chunkSize = obj.GetLength(1); ;
+        _chunkSize = obj.GetLength(1);
         GameObject chunk = Instantiate(_chunkPrefab, new Vector3(start.x + _chunkSize / 2, start.y + _chunkSize / 2), Quaternion.identity).gameObject;
         ChunkController cT = chunk.GetComponent<ChunkController>();
         cT._chunks = new ChunkItem<GameObject>[obj.GetLength(1), obj.GetLength(2)];
@@ -111,7 +112,9 @@ public class WorldGeneration : MonoBehaviour {
                                             if (!AreEmpty(cArray, x, y, enviRule._size)) continue;
                                             Transform obj = Instantiate(enviRule._prefab, new Vector3(x + start.x, start.y + y), Quaternion.identity).transform;
                                             obj.SetParent(chunk.transform);
-                                            obj.GetComponentInChildren<SpriteRenderer>().sprite = MyRandom.GetFromArray<Sprite>(r._spriteVariants);
+                                            SpriteRenderer rend = obj.GetComponentInChildren<SpriteRenderer>();
+                                            rend.sprite = MyRandom.GetFromArray<Sprite>(r._spriteVariants);
+                                            rend.sortingOrder = start.y - y;
                                             SetEmpty(cArray, x, y, enviRule._size);
                                         }
                                     }
@@ -217,12 +220,50 @@ public class WorldGeneration : MonoBehaviour {
     public void DestroyWorld() {
         if (_chunkHolder != null) Destroy(_chunkHolder);
     }
-
+    private GameObject enviHandler;
     public void GenerateEnviVisual() {
-        NoiseGeneration.GenerateEnvironmentNoiseMap(_currentSettingsData, new Vector2Int(1000, 1000), (x, y) => {
-        
-        });
+        if (enviHandler != null) Destroy(enviHandler);
+        enviHandler = new();
+        enviHandler.SetActive(false);
+        foreach (KeyValuePair<Vector2Int, GameObject> obj in _currentChunksDict)
+            NoiseGeneration.GenerateEnvironmentNoiseMap(_currentSettingsData, obj.Key * _chunkSize, (result, startPos) => {
+                Debug.Log("Generating");
+                GameObject chunk = Instantiate(_chunkPrefab, new Vector3(startPos.x + _chunkSize / 2, startPos.y + _chunkSize / 2), Quaternion.identity).gameObject;
+                chunk.transform.SetParent(enviHandler.transform);
+                chunk.transform.localScale = new Vector3(_chunkSize, _chunkSize, 1);
+                Texture2D colorTexture = new(_chunkSize, _chunkSize);
+                Color[] chunkColors = new Color[_chunkSize * _chunkSize];
+                for (int y = 0; y < _chunkSize; y++) {
+                    for (int x = 0; x < _chunkSize; x++) {
+
+                        float h = result[x, y];
+                        h = Mathf.Clamp01(h);
+                        chunkColors[y * _chunkSize + x] = Color.Lerp(Color.white, Color.black, h);
+
+                    }
+
+                }
+
+
+
+                colorTexture.wrapMode = TextureWrapMode.Clamp;
+                colorTexture.filterMode = FilterMode.Point;
+                colorTexture.SetPixels(chunkColors);
+                colorTexture.Apply();
+
+
+                (chunk.GetComponent<MeshRenderer>().material = new Material(_sourceMaterial)).mainTexture = colorTexture;
+
+
+            });
     }
+    bool v;
+    public void ChangeWorldVisibility() {
+        _chunkHolder.SetActive(v);
+        enviHandler.SetActive(!v);
+        v = !v;
+    }
+
 }
 
 
