@@ -15,8 +15,8 @@ public class WorldGeneratorEditor : Editor {
             worldGen.GenerateAdvancedChunks();
             // Debug.Log("Nuh uh");
         }
-        if(GUILayout.Button("Test delay")){
-            worldGen.Test();
+        if (GUILayout.Button("Test delay")) {
+            worldGen.TestSpeed();
         }
     }
 

@@ -13,15 +13,13 @@ public class WorldGeneration : MonoBehaviour {
     public static WorldGeneration _instance;
     public static NoiseSettingData _currentSettingsData;
     public static int _chunkSize;
+
     public Dictionary<Vector2Int, GameObject> _currentChunksDict = new();
     public Dictionary<Vector2Int, GameObject> _oldChunksDict = new();
-    public EnvironmentRuleSO _envRule;
 
-    public NoiseSettingData _data;
-    [SerializeField] private BiomeAssetSO _biomeAsset;
     [SerializeField] private Transform _chunkPrefab;
-
     [SerializeField] private Material _sourceMaterial;
+    [SerializeField] private WorldGenerationSettingSO _settingSource;
     private GameObject _chunkHolder;
     public Action<int> _OnNoiseSettingChange;
 
@@ -50,7 +48,7 @@ public class WorldGeneration : MonoBehaviour {
                 h = Mathf.Clamp01(h);
 
                 //GET BIOME VALUE BASE ON TEMPERATURE AND HUMIDITY NOISE
-                biome = _biomeAsset.GetBiomeSO2(obj[1, x, y], obj[2, x, y]);
+                biome = _settingSource._biomeAssetSource.GetBiomeSO2(obj[1, x, y], obj[2, x, y]);
 
                 for (int i = 0; i < biome._terrainRule.Length; i++) {
                     if (biome._terrainRule[i]._maxHeight >= h) {
@@ -92,7 +90,7 @@ public class WorldGeneration : MonoBehaviour {
         }
 
         chunk.transform.parent = _chunkHolder.transform;
-        NoiseGeneration.GenerateEnvironmentNoiseMap(_data, start, (x, y) => SpawnEnvironment(x, y));
+        NoiseGeneration.GenerateEnvironmentNoiseMap(_currentSettingsData, start, (x, y) => SpawnEnvironment(x, y));
     }
     private void SpawnEnvironment(float[,] noiseResult, Vector2Int start) {
         GameObject chunk = _instance._currentChunksDict[start / _chunkSize];
@@ -102,18 +100,16 @@ public class WorldGeneration : MonoBehaviour {
             for (int y = 0; y < cArray.GetLength(1); y++) {
                 var t = cArray[x, y];
                 if (!t.isEmpty) continue;
-                foreach (var eR in _envRule.rulesSO) {
+                foreach (var eR in _settingSource._environmentRuleSource.rulesSO) {
                     foreach (var r in eR.rules) {
-                        // UnityEngine.Debug.Log(t.biomeName);
-                        // UnityEngine.Debug.Log(r.biome.name);
-                        if (t.biomeName != r.biome.name) continue;
-                        if (r.minWorldHeight < t._cellHeight && t._cellHeight < r.maxWorldHeight) {
-                            if (r.minNoiseHeight < noiseResult[x, y] && noiseResult[x, y] < r.maxNoiseHeight) {
+                        if (t.biomeName != r._biome.name) continue;
+                        if (r._minWorldHeight < t._cellHeight && t._cellHeight < r._maxWorldHeight) {
+                            if (r._minNoiseHeight < noiseResult[x, y] && noiseResult[x, y] < r._maxNoiseHeight) {
                                 if (r.CanBeSpawned()) {
                                     if (!AreEmpty(cArray, x, y, eR.size)) continue;
                                     Transform obj = Instantiate(eR._prefab, new Vector3(x + start.x, start.y + y), Quaternion.identity).transform;
                                     obj.SetParent(chunk.transform);
-                                    obj.GetComponentInChildren<SpriteRenderer>().sprite = MyRandom.GetFromArray<Sprite>(r.spriteVariants);
+                                    obj.GetComponentInChildren<SpriteRenderer>().sprite = MyRandom.GetFromArray<Sprite>(r._spriteVariants);
                                     SetEmpty(cArray, x, y, eR.size);
                                 }
                             }
@@ -161,7 +157,7 @@ public class WorldGeneration : MonoBehaviour {
         NoiseGeneration._seed = data._seed;
         _currentSettingsData = data;
 
-        _OnNoiseSettingChange?.Invoke(data._settings._chunkCount);
+        _OnNoiseSettingChange?.Invoke(data._settings._chunkRenderDistance);
 
 
     }
@@ -171,21 +167,20 @@ public class WorldGeneration : MonoBehaviour {
             Destroy(_chunkHolder);
             _chunkHolder = new("Chunk holder");
         }
-        _currentSettingsData = _data;
-        NoiseGeneration._seed = _data._seed;
-        _chunkSize = _data._settings._chunkSize;
+        _currentSettingsData = _settingSource._dataSource._data;
+        NoiseGeneration._seed = _currentSettingsData._seed;
+        _chunkSize = _currentSettingsData._settings._chunkSize;
 
-        _OnNoiseSettingChange?.Invoke(_data._settings._chunkCount);
+        _OnNoiseSettingChange?.Invoke(_currentSettingsData._settings._chunkRenderDistance);
 
 
     }
     public void GenerateAdvancedChunkAt(Vector2Int offset) {
         NoiseGeneration.GenerateNoiseMap(_currentSettingsData, offset * _chunkSize, (x, y) => GenerateComplexChunk(x, y));
     }
-    public void Test() {
-        _currentSettingsData = _data;
-        NoiseGeneration._seed = _data._seed;
-        _chunkSize = _data._settings._chunkSize;
+    public void TestSpeed() {
+        NoiseGeneration._seed = _currentSettingsData._seed;
+        _chunkSize = _currentSettingsData._settings._chunkSize;
 
         System.Diagnostics.Stopwatch stopwatch = new();
         stopwatch.Start();

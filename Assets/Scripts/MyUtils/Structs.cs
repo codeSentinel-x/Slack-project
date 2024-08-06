@@ -39,7 +39,7 @@ namespace MyUtils.Structs {
         public int _chunkSize;
 
         [Tooltip("Number of chunks to render.")]
-        public int _chunkCount;
+        public int _chunkRenderDistance;
 
     }
     [Serializable]

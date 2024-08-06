@@ -15,24 +15,36 @@ MonoBehaviour:
   _prefab: {fileID: 214671073784225239, guid: 946c2507a92b45e6f9efe6c9d48ae1ba, type: 3}
   size: 2
   rules:
-  - spriteVariants: []
-    biome: {fileID: 11400000, guid: 39636e43800bb2f65aa65857195f07ce, type: 2}
-    minWorldHeight: 0.3
-    maxWorldHeight: 0.7
-    minNoiseHeight: 0.3
-    maxNoiseHeight: 0.5
-    probability: 0.566
-  - spriteVariants: []
-    biome: {fileID: 11400000, guid: e9c7f119aaa02e7e3be679773440c6d3, type: 2}
-    minWorldHeight: 0.4
-    maxWorldHeight: 0.7
-    minNoiseHeight: 0
-    maxNoiseHeight: 0
-    probability: 0.606
-  - spriteVariants: []
-    biome: {fileID: 11400000, guid: 4e83740854a640cceafeec15f161d54b, type: 2}
-    minWorldHeight: 0.4
-    maxWorldHeight: 0.7
-    minNoiseHeight: 0.3
-    maxNoiseHeight: 0.5
-    probability: 0.141
+  - _spriteVariants:
+    - {fileID: -5518540548040731771, guid: 5b0bb40981314004d9c8cce7a3dbde0d, type: 3}
+    - {fileID: -5319649112636079990, guid: 65bc634fd17c885b9b902a41cb7e2c89, type: 3}
+    - {fileID: -8497923142140006012, guid: 983ecead6e76fa92ba8404d2835b032a, type: 3}
+    - {fileID: -4758267250684081389, guid: c5afd7f120e3fbd4e8621926196cf254, type: 3}
+    _biome: {fileID: 11400000, guid: e9c7f119aaa02e7e3be679773440c6d3, type: 2}
+    _minWorldHeight: 0.3
+    _maxWorldHeight: 0.7
+    _minNoiseHeight: 0.1
+    _maxNoiseHeight: 0.4
+    _probability: 0.707
+  - _spriteVariants:
+    - {fileID: -5518540548040731771, guid: 5b0bb40981314004d9c8cce7a3dbde0d, type: 3}
+    - {fileID: -5319649112636079990, guid: 65bc634fd17c885b9b902a41cb7e2c89, type: 3}
+    - {fileID: -8497923142140006012, guid: 983ecead6e76fa92ba8404d2835b032a, type: 3}
+    - {fileID: -4758267250684081389, guid: c5afd7f120e3fbd4e8621926196cf254, type: 3}
+    _biome: {fileID: 11400000, guid: 39636e43800bb2f65aa65857195f07ce, type: 2}
+    _minWorldHeight: 0.3
+    _maxWorldHeight: 0.7
+    _minNoiseHeight: 0.2
+    _maxNoiseHeight: 0.5
+    _probability: 0.357
+  - _spriteVariants:
+    - {fileID: -5518540548040731771, guid: 5b0bb40981314004d9c8cce7a3dbde0d, type: 3}
+    - {fileID: -5319649112636079990, guid: 65bc634fd17c885b9b902a41cb7e2c89, type: 3}
+    - {fileID: -8497923142140006012, guid: 983ecead6e76fa92ba8404d2835b032a, type: 3}
+    - {fileID: -4758267250684081389, guid: c5afd7f120e3fbd4e8621926196cf254, type: 3}
+    _biome: {fileID: 11400000, guid: 4e83740854a640cceafeec15f161d54b, type: 2}
+    _minWorldHeight: 0.3
+    _maxWorldHeight: 0.6
+    _minNoiseHeight: 0.4
+    _maxNoiseHeight: 0.6
+    _probability: 0.283

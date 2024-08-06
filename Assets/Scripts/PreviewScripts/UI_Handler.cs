@@ -45,7 +45,7 @@ public class UI_Handler : MonoBehaviour {
         MultipleLayerNoiseSetting mLNS = new() {
             _weightedNoiseSettings = new WeightedNoiseSetting[_layers.Count],
             _chunkSize = int.Parse(_chunkSizeText.text),
-            _chunkCount = int.Parse(_chunkCountText.text),
+            _chunkRenderDistance = int.Parse(_chunkCountText.text),
         };
         for (int i = 0; i < mLNS._weightedNoiseSettings.Length; i++) {
             mLNS._weightedNoiseSettings[i]._noiseSetting = _layers[i].GetSettings();
@@ -63,7 +63,7 @@ public class UI_Handler : MonoBehaviour {
 
         _seedText.text = loadedData._seed.ToString();
         _seedText.onDeselect.Invoke(_seedText.text);
-        _chunkCountText.text = loadedData._settings._chunkCount.ToString();
+        _chunkCountText.text = loadedData._settings._chunkRenderDistance.ToString();
         _chunkCountText.onDeselect.Invoke(_chunkCountText.text);
         _chunkSizeText.text = loadedData._settings._chunkSize.ToString();
         _chunkSizeText.onDeselect.Invoke(_chunkSizeText.text);

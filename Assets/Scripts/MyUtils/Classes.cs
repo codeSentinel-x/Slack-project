@@ -39,19 +39,19 @@ namespace MyUtils.Classes {
     }
     [Serializable]
     public class Rule {
-        public Sprite[] spriteVariants;
-        public BiomeSO biome;
-        public float minWorldHeight;
-        public float maxWorldHeight;
-        public float minNoiseHeight;
-        public float maxNoiseHeight;
+        public Sprite[] _spriteVariants;
+        public BiomeSO _biome;
+        public float _minWorldHeight;
+        public float _maxWorldHeight;
+        public float _minNoiseHeight;
+        public float _maxNoiseHeight;
         [Range(0, 1)]
         [Tooltip("Probability of spawning, between 0 (never) and 1 (always).")]
-        public float probability;
+        public float _probability;
         public bool CanBeSpawned() {
             float random = UnityEngine.Random.Range(0f, 1f);
             Debug.Log(random.ToString("f1"));
-            return random <= probability;
+            return random <= _probability;
             //TODO fix this!
         }
     }

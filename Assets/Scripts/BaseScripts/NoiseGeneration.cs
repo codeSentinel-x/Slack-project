@@ -6,7 +6,6 @@ using System;
 using MyUtils.Classes;
 using Unity.Mathematics;
 using Unity.Burst;
-using JetBrains.Annotations;
 
 public static class NoiseGeneration {
     public static uint _seed = 768754;
