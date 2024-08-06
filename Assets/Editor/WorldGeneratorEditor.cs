@@ -18,6 +18,9 @@ public class WorldGeneratorEditor : Editor {
         if (GUILayout.Button("Test delay")) {
             worldGen.TestSpeed();
         }
+        if (GUILayout.Button("GenerateEnviNoiseVisual")) {
+            worldGen.GenerateEnviVisual();
+        }
     }
 
 }

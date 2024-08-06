@@ -39,8 +39,8 @@ MonoBehaviour:
           _persistance: 1
           _lacunarity: 2
         _weight: 3
-      _chunkSize: 10
-      _chunkRenderDistance: 5
+      _chunkSize: 15
+      _chunkRenderDistance: 2
     _temperatureNoise:
       _scale: 1000
       _octaves: 3

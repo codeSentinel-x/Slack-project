@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4857dc4b81363bf9a8a9da5f9c62288, type: 3}
+  m_Name: RockDefault
+  m_EditorClassIdentifier: 
+  _prefab: {fileID: 214671073784225239, guid: fa7038b48a4c46c35a0e00a2f77c973b, type: 3}
+  _size: 2
+  _useFirstSettingForAllBiomes: 1
+  _rules:
+  - _spriteVariants:
+    - {fileID: -2182124076254010665, guid: 09f77c828f22c721b9946cf04fed6f8b, type: 3}
+    _biome: {fileID: 11400000, guid: 0b725715d71398bf299ecd5fa1ed387e, type: 2}
+    _minWorldHeight: 0.1
+    _maxWorldHeight: 2
+    _minNoiseHeight: 0.7
+    _maxNoiseHeight: 1
+    _probability: 0.2

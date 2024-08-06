@@ -12,48 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea8d3b231e344d4f6a19a7091f6bca96, type: 3}
   m_Name: Default
   m_EditorClassIdentifier: 
-  _prefab: {fileID: 214671073784225239, guid: 946c2507a92b45e6f9efe6c9d48ae1ba, type: 3}
-  size: 2
-  rules:
-  - _spriteVariants:
-    - {fileID: -5518540548040731771, guid: 5b0bb40981314004d9c8cce7a3dbde0d, type: 3}
-    - {fileID: -5319649112636079990, guid: 65bc634fd17c885b9b902a41cb7e2c89, type: 3}
-    - {fileID: -8497923142140006012, guid: 983ecead6e76fa92ba8404d2835b032a, type: 3}
-    - {fileID: -4758267250684081389, guid: c5afd7f120e3fbd4e8621926196cf254, type: 3}
-    _biome: {fileID: 11400000, guid: e9c7f119aaa02e7e3be679773440c6d3, type: 2}
-    _minWorldHeight: 0.3
-    _maxWorldHeight: 0.7
-    _minNoiseHeight: 0.1
-    _maxNoiseHeight: 0.4
-    _probability: 0.707
-  - _spriteVariants:
-    - {fileID: -5518540548040731771, guid: 5b0bb40981314004d9c8cce7a3dbde0d, type: 3}
-    - {fileID: -5319649112636079990, guid: 65bc634fd17c885b9b902a41cb7e2c89, type: 3}
-    - {fileID: -8497923142140006012, guid: 983ecead6e76fa92ba8404d2835b032a, type: 3}
-    - {fileID: -4758267250684081389, guid: c5afd7f120e3fbd4e8621926196cf254, type: 3}
-    _biome: {fileID: 11400000, guid: 39636e43800bb2f65aa65857195f07ce, type: 2}
-    _minWorldHeight: 0.3
-    _maxWorldHeight: 0.8
-    _minNoiseHeight: 0.2
-    _maxNoiseHeight: 0.3
-    _probability: 0.357
-  - _spriteVariants:
-    - {fileID: -5518540548040731771, guid: 5b0bb40981314004d9c8cce7a3dbde0d, type: 3}
-    - {fileID: -5319649112636079990, guid: 65bc634fd17c885b9b902a41cb7e2c89, type: 3}
-    - {fileID: -8497923142140006012, guid: 983ecead6e76fa92ba8404d2835b032a, type: 3}
-    - {fileID: -4758267250684081389, guid: c5afd7f120e3fbd4e8621926196cf254, type: 3}
-    _biome: {fileID: 11400000, guid: 4e83740854a640cceafeec15f161d54b, type: 2}
-    _minWorldHeight: 0.3
-    _maxWorldHeight: 0.6
-    _minNoiseHeight: 0.4
-    _maxNoiseHeight: 0.6
-    _probability: 0.283
-  - _spriteVariants:
-    - {fileID: -5518540548040731771, guid: 5b0bb40981314004d9c8cce7a3dbde0d, type: 3}
-    - {fileID: -5319649112636079990, guid: 65bc634fd17c885b9b902a41cb7e2c89, type: 3}
-    _biome: {fileID: 11400000, guid: 897764390ce79c45a98a80db9e4bf9bc, type: 2}
-    _minWorldHeight: 0.3
-    _maxWorldHeight: 0.6
-    _minNoiseHeight: 0.1
-    _maxNoiseHeight: 0.4
-    _probability: 0.04
+  _enviRules:
+  - {fileID: 11400000, guid: 840a0cd736da5951880c64469f3ff644, type: 2}
+  - {fileID: 11400000, guid: 417728d0ec17e2618ac441d9e04510f1, type: 2}
+  - {fileID: 11400000, guid: b7063a1445b8af2308444c04cf583556, type: 2}
+  - {fileID: 11400000, guid: 7250678f1f69d6020b8169b0a808b4df, type: 2}
+  - {fileID: 11400000, guid: 086cd13d43bc38371a325b2913904291, type: 2}
+  - {fileID: 11400000, guid: b2dc5ccd76c6186cd941fd782c8a10d2, type: 2}
+  - {fileID: 11400000, guid: 567f536c6fc8132248df7c090b08a65c, type: 2}
+  - {fileID: 11400000, guid: 94d490b4ecae802228ac6334a725e838, type: 2}
+  - {fileID: 11400000, guid: 6fed69e7b09e512fe980109577ae6a89, type: 2}

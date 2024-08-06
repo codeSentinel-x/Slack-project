@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 214671073784225239}
   m_Layer: 0
-  m_Name: Dzewo
+  m_Name: Mushroms
   m_TagString: Untagged
   m_Icon: {fileID: 3306451490063965843, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -58,7 +58,7 @@ Transform:
   m_GameObject: {fileID: 8398617104871236220}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.503, z: 0}
+  m_LocalPosition: {x: 0.008, y: 0.21, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -107,7 +107,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -5518540548040731771, guid: 5b0bb40981314004d9c8cce7a3dbde0d, type: 3}
+  m_Sprite: {fileID: -1810613875485463647, guid: 83be86bd57f956c0c8e0142c1fc350f8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

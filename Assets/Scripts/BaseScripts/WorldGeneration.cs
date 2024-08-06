@@ -13,7 +13,7 @@ public class WorldGeneration : MonoBehaviour {
     public static WorldGeneration _instance;
     public static NoiseSettingData _currentSettingsData;
     public static int _chunkSize;
-
+    public static Unity.Mathematics.Random _rng;
     public Dictionary<Vector2Int, GameObject> _currentChunksDict = new();
     public Dictionary<Vector2Int, GameObject> _oldChunksDict = new();
 
@@ -25,6 +25,7 @@ public class WorldGeneration : MonoBehaviour {
 
     private void Awake() {
         _instance = this;
+        _OnNoiseSettingChange += (x) => _rng = new(_currentSettingsData._seed);
     }
 
 
@@ -100,24 +101,23 @@ public class WorldGeneration : MonoBehaviour {
             for (int y = 0; y < cArray.GetLength(1); y++) {
                 var t = cArray[x, y];
                 if (!t.isEmpty) continue;
-                foreach (SpawnRuleSO eR in _settingSource._environmentRuleSource.rulesSO) {
-                    foreach (EnvironmentRuleSO r in eR.enviRules) {
-                        var currentEnviRule = default(EnviElementRuleSO);
-                        foreach (var En  in r.rulesSO) {
-                            if (t.biomeName == r._biome.name) {
-                                currentEnviRule =
-                                continue;
-                            }
-                        }
-                        if (r._minWorldHeight < t._cellHeight && t._cellHeight < r._maxWorldHeight) {
-                            if (r._minNoiseHeight < noiseResult[x, y] && noiseResult[x, y] < r._maxNoiseHeight) {
-                                if (r.CanBeSpawned()) {
-                                    if (!AreEmpty(cArray, x, y, eR.size)) continue;
-                                    Transform obj = Instantiate(eR._prefab, new Vector3(x + start.x, start.y + y), Quaternion.identity).transform;
-                                    obj.SetParent(chunk.transform);
-                                    obj.GetComponentInChildren<SpriteRenderer>().sprite = MyRandom.GetFromArray<Sprite>(r._spriteVariants);
-                                    SetEmpty(cArray, x, y, eR.size);
+                foreach (SpawnRuleSO eR in _settingSource._environmentRuleSource._rulesSO) {
+                    foreach (EnviElementRuleSO enviRule in eR._enviRules) {
+                        foreach (var r in enviRule._rules) {
+                            if (t.biomeName == r._biome.name || enviRule._useFirstSettingForAllBiomes) {
+                                if (r._minWorldHeight < t._cellHeight && t._cellHeight < r._maxWorldHeight) {
+                                    if (r._minNoiseHeight < noiseResult[x, y] && noiseResult[x, y] < r._maxNoiseHeight) {
+                                        if (r.CanBeSpawned()) {
+                                            if (!AreEmpty(cArray, x, y, enviRule._size)) continue;
+                                            Transform obj = Instantiate(enviRule._prefab, new Vector3(x + start.x, start.y + y), Quaternion.identity).transform;
+                                            obj.SetParent(chunk.transform);
+                                            obj.GetComponentInChildren<SpriteRenderer>().sprite = MyRandom.GetFromArray<Sprite>(r._spriteVariants);
+                                            SetEmpty(cArray, x, y, enviRule._size);
+                                        }
+                                    }
                                 }
+                                continue;
+
                             }
                         }
                     }
@@ -216,6 +216,12 @@ public class WorldGeneration : MonoBehaviour {
     }
     public void DestroyWorld() {
         if (_chunkHolder != null) Destroy(_chunkHolder);
+    }
+
+    public void GenerateEnviVisual() {
+        NoiseGeneration.GenerateEnvironmentNoiseMap(_currentSettingsData, new Vector2Int(1000, 1000), (x, y) => {
+        
+        });
     }
 }
 

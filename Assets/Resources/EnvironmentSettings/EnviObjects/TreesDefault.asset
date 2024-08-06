@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4857dc4b81363bf9a8a9da5f9c62288, type: 3}
+  m_Name: TreesDefault
+  m_EditorClassIdentifier: 
+  _prefab: {fileID: 214671073784225239, guid: 946c2507a92b45e6f9efe6c9d48ae1ba, type: 3}
+  _size: 2
+  _useFirstSettingForAllBiomes: 1
+  _rules:
+  - _spriteVariants:
+    - {fileID: -5319649112636079990, guid: 65bc634fd17c885b9b902a41cb7e2c89, type: 3}
+    - {fileID: -8497923142140006012, guid: 983ecead6e76fa92ba8404d2835b032a, type: 3}
+    - {fileID: -4758267250684081389, guid: c5afd7f120e3fbd4e8621926196cf254, type: 3}
+    - {fileID: -5518540548040731771, guid: 5b0bb40981314004d9c8cce7a3dbde0d, type: 3}
+    _biome: {fileID: 11400000, guid: 0b725715d71398bf299ecd5fa1ed387e, type: 2}
+    _minWorldHeight: 0.6
+    _maxWorldHeight: 2
+    _minNoiseHeight: 0.3
+    _maxNoiseHeight: 0.6
+    _probability: 0.3

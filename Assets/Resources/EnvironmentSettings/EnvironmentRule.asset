@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: add5eb8563b99d7ce97e3e689fd413ab, type: 3}
   m_Name: EnvironmentRule
   m_EditorClassIdentifier: 
-  rulesSO:
+  _rulesSO:
   - {fileID: 11400000, guid: 2a26fad8b4a1c15b1996c4a7dc4d9df7, type: 2}

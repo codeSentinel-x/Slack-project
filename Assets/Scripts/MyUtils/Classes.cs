@@ -49,10 +49,9 @@ namespace MyUtils.Classes {
         [Tooltip("Probability of spawning, between 0 (never) and 1 (always).")]
         public float _probability;
         public bool CanBeSpawned() {
-            float random = UnityEngine.Random.Range(0f, 1f);
-            Debug.Log(random.ToString("f1"));
+            float random = WorldGeneration._rng.NextFloat(0f, 1f);
+            Debug.Log(random.ToString("f3"));
             return random <= _probability;
-            //TODO fix this!
         }
     }
 

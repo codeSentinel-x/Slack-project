@@ -4,8 +4,6 @@ using UnityEngine;
 
 [CreateAssetMenu(menuName = "ScriptableObjects/EnvironmentRuleSO")]
 public class EnvironmentRuleSO : ScriptableObject {
-    public int size;
-    public Transform _prefab;
-    public SpawnRuleSO[] rulesSO;
+    public SpawnRuleSO[] _rulesSO;
 
 }
