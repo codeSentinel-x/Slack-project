@@ -58,15 +58,15 @@ public class NPC_Behaviour : MonoBehaviour {
     }
 
     private void WakeUp(string reason) {
-        Debug.Log($"Creature {gameObject.name} waked up. Reason: {reason}");
+        Log("waked up.", reason: reason, color: Color.blue, collapse: false);
         _isSleeping = false;
     }
     private void LookForBed() {
-        Debug.Log($"Creature {gameObject.name} is looking for bed");
+        Log("is looking for bed");
     }
 
     private void GoToSleep() {
-        Debug.Log($"Creature {gameObject.name} fallen asleep");
+        Log("fallen asleep", color: Color.cyan, reason: "Exhaustion", collapse: false);
         _isSleeping = true;
     }
 
@@ -85,7 +85,7 @@ public class NPC_Behaviour : MonoBehaviour {
     private void LookForFood() {
         if (_inventory.Count > 0) {
             _food += _inventory[0].addition;
-            Debug.Log($"Creature {gameObject.name} restore {_inventory[0].addition} points of food by eating {_inventory[0].name}");
+            Log($"restore {_inventory[0].addition} points of food", reason: $"Used {_inventory[0].name} from inventory", color: Color.green,  collapse: false);
             _inventory.RemoveAt(0);
         }
         else {
@@ -96,7 +96,7 @@ public class NPC_Behaviour : MonoBehaviour {
     }
 
     private void GoToRandomTile() {
-        Debug.Log($"Creature {gameObject.name} is going to random tile");
+        Log("is going to random tile");
     }
 
     private List<Food> GetFoodInRange() {
@@ -105,7 +105,7 @@ public class NPC_Behaviour : MonoBehaviour {
     }
 
     private void Die(string reason) {
-        Log("died", reason: reason, color: Color.red, displayLifetime: true, useBoldText: false);
+        Log("died", reason: reason, color: Color.red, lifetime: true, collapse: false);
         _isDead = true;
     }
 
@@ -116,17 +116,17 @@ public class NPC_Behaviour : MonoBehaviour {
             if (transform.position == _transforms[_index]) _index++;
         }
     }
-    public void Log(string message, string reason = "", Color color = default, bool displayLifetime = false, bool useBoldText = false) {
+    public void Log(string message, string reason = "", Color color = default, bool lifetime = false, bool bold = false, bool collapse = true) {
 
         string finalMessage = $"Creature: {gameObject.name} {message}";
 
         if (color == default) color = Color.white;
         finalMessage = $"<color=#{color.ToHexString()}>||   {finalMessage}   ||   </color><color=#{Color.white.ToHexString()}>";
         if (reason != "") finalMessage += $"Reason: {reason}.   ||   ";
-        if (displayLifetime) finalMessage += $"Lifetime: {Time.time - _birthTime:f2} seconds.   ||   ";
-        if (useBoldText) finalMessage = $"<b>{finalMessage}</b>";
+        if (lifetime) finalMessage += $"Lifetime: {Time.time - _birthTime:f2} seconds.   ||   ";
+        if (bold) finalMessage = $"<b>{finalMessage}</b>";
 
-        CustomLog.Log(finalMessage);
+        CustomLog.Log(finalMessage, collapse);
 
     }
 }
