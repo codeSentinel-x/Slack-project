@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: GreenMushromDefault
   m_EditorClassIdentifier: 
   _prefab: {fileID: 214671073784225239, guid: 68069a849bb963f93abe728da0d63351, type: 3}
-  _size: 1
+  _size: 2
   _useFirstSettingForAllBiomes: 1
   _rules:
   - _spriteVariants:

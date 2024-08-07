@@ -21,6 +21,6 @@ MonoBehaviour:
     _biome: {fileID: 11400000, guid: 0b725715d71398bf299ecd5fa1ed387e, type: 2}
     _minWorldHeight: 0.6
     _maxWorldHeight: 2
-    _minNoiseHeight: 0.3
+    _minNoiseHeight: 0.4
     _maxNoiseHeight: 0.6
-    _probability: 0.15
+    _probability: 0.1

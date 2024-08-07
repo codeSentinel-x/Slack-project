@@ -52,8 +52,8 @@ MonoBehaviour:
       _persistance: 0.5
       _lacunarity: 2
     _environmentNoise:
-      _scale: 50
-      _octaves: 5
-      _persistance: 1
-      _lacunarity: 4
-    _seed: 312
+      _scale: 20
+      _octaves: 4
+      _persistance: 0.351
+      _lacunarity: 3
+    _seed: 389
