@@ -38,14 +38,7 @@ public class CustomConsoleWindow : EditorWindow {
             alignment = TextAnchor.MiddleLeft,
             normal = { textColor = Color.white }
         };
-        _foldoutStyle = new(EditorStyles.foldout) {
-            wordWrap = true,
-            richText = true,
-            fontSize = 10,
-            fontStyle = FontStyle.Bold,
-            alignment = TextAnchor.MiddleLeft,
-            normal = { textColor = Color.white }
-        };
+
         _messageCountStyle = new() {
             wordWrap = true,
             richText = true,
@@ -75,18 +68,30 @@ public class CustomConsoleWindow : EditorWindow {
     }
 
     private void OnGUI() {
+
         GUILayout.Label("Custom Log Messages", EditorStyles.boldLabel);
         _scrollPos = GUILayout.BeginScrollView(_scrollPos, true, false);
+        _foldoutStyle ??= new GUIStyle(EditorStyles.foldout) {
+            wordWrap = true,
+            richText = true,
+            fontSize = 10,
+            fontStyle = FontStyle.Bold,
+            alignment = TextAnchor.MiddleLeft,
+            normal = { textColor = Color.white }
+        };
 
         foreach (var messagesHolder in _logMessages) {
             if (!_foldouts.ContainsKey(messagesHolder.tag)) {
                 _foldouts.Add(messagesHolder.tag, messagesHolder);
             }
-            GUILayout.BeginVertical(_foldoutBorderStyle, GUILayout.ExpandWidth(true));
+            GUILayout.BeginVertical(_foldoutBorderStyle, GUILayout.ExpandWidth(false));
+            GUILayout.BeginHorizontal();
             _foldouts[messagesHolder.tag].isEnabled = EditorGUILayout.Foldout(_foldouts[messagesHolder.tag].isEnabled, messagesHolder.tag);
-            if (_foldouts[messagesHolder.tag].isEnabled) {
-                EditorGUILayout.LabelField("Total Count", messagesHolder.totalCount.ToString());
+            if (messagesHolder.totalCount > 0) GUILayout.Label($"({messagesHolder.totalCount + 1})     ", _messageCountStyle, GUILayout.ExpandWidth(false));
+            GUILayout.Label($"Last occurrence: [{messagesHolder.lastOccurrence:f2}]  ", _messageCountStyle, GUILayout.ExpandWidth(false));
+            GUILayout.EndHorizontal();
 
+            if (_foldouts[messagesHolder.tag].isEnabled) {
                 for (int i = messagesHolder.messages.Count - 1; i >= 0; i--) {
                     var message = messagesHolder.messages[i];
                     GUILayout.BeginHorizontal();
@@ -125,21 +130,28 @@ public class MessagesHolder {
     public bool isEnabled = false;
     public List<Message> messages = new();
     public int totalCount = 0;
+    public float lastOccurrence = 0;
     public MessagesHolder(string t, string fM) {
         tag = t;
         messages = new() { new Message(fM, 0, Time.time) };
     }
     public void AddMessage(string message) {
-        var count = 0;
+        bool found = false; ;
         foreach (var m in messages) {
             if (m.content == message) {
-                count = totalCount = m.count + 1;
+                totalCount = m.count + 1;
                 m.count++;
                 m.lastOccurrence = Time.realtimeSinceStartup;
+                lastOccurrence = Time.realtimeSinceStartup;
+                found = true;
                 break;
             }
         }
-        if (count == 0) messages.Add(new Message(message, count, Time.time));
+        if (!found) {
+            messages.Add(new Message(message, 0, Time.time));
+            totalCount += 1;
+            lastOccurrence = Time.realtimeSinceStartup;
+        }
     }
 }
 public class Message {
