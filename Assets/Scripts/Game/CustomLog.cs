@@ -8,15 +8,15 @@ namespace MyUtils.Custom {
         public static void Log(string message, string tag, bool colWithSame) {
 
             bool found = false;
-            if (colWithSame) {
-                foreach (var m in logMessages) {
-                    if (m.tag == tag) {
-                        m.AddMessage(message);
-                        found = true;
-                        break;
-                    }
+
+            foreach (var m in logMessages) {
+                if (m.tag == tag) {
+                    m.AddMessage(message);
+                    found = true;
+                    break;
                 }
             }
+
             if (!found) logMessages.Add(new MessagesHolder(tag, message));
             CustomConsoleWindow.UpdateLog(logMessages);
         }
