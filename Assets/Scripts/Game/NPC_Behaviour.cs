@@ -105,7 +105,7 @@ public class NPC_Behaviour : MonoBehaviour {
     }
 
     private void Die(string reason) {
-        Log("died", reason: reason, color: Color.red, displayLifetime: true, useBoldText: true);
+        Log("died", reason: reason, color: Color.red, displayLifetime: true, useBoldText: false);
         _isDead = true;
     }
 
@@ -118,12 +118,13 @@ public class NPC_Behaviour : MonoBehaviour {
     }
     public void Log(string message, string reason = "", Color color = default, bool displayLifetime = false, bool useBoldText = false) {
 
-        string finalMessage = $"Creature {gameObject.name} {message}.\n";
+        string finalMessage = $"Creature: {gameObject.name} {message}";
 
-        if (color != default) finalMessage = $"<color=#{color.ToHexString()}>" + finalMessage + "</color>";
-        if (useBoldText) finalMessage = "<b>" + finalMessage + "</b>";
-        if (reason != "") finalMessage += $"Reason: {reason}. ";
-        if (displayLifetime) finalMessage += $"Lifetime: {Time.time - _birthTime:f2} seconds. ";
+        if (color == default) color = Color.white;
+        finalMessage = $"<color=#{color.ToHexString()}>||   {finalMessage}   ||   </color><color=#{Color.white.ToHexString()}>";
+        if (reason != "") finalMessage += $"Reason: {reason}.   ||   ";
+        if (displayLifetime) finalMessage += $"Lifetime: {Time.time - _birthTime:f2} seconds.   ||   ";
+        if (useBoldText) finalMessage = $"<b>{finalMessage}</b>";
 
         CustomLog.Log(finalMessage);
 
