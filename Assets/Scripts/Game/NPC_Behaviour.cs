@@ -1,10 +1,11 @@
 using System;
+using System.Buffers;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Animations;
-
+using MyUtils.Custom;
 public class NPC_Behaviour : MonoBehaviour {
     [Range(0f, 100f)] public float _food = 100;
     [Range(0f, 100f)] public float _sleep = 100;
@@ -99,12 +100,12 @@ public class NPC_Behaviour : MonoBehaviour {
     }
 
     private List<Food> GetFoodInRange() {
-        Debug.Log($"Creature {gameObject.name} is looking for food in range");
+        Log("is looking for food in range");
         return null;
     }
 
     private void Die(string reason) {
-        Debug.Log($"<color=red>Creature {gameObject.name} died. Reason: {reason}. Lifetime: {Time.time - _birthTime:f2} seconds</color>");
+        Log("died", reason: reason, color: Color.red, displayLifetime: true, useBoldText: true);
         _isDead = true;
     }
 
@@ -115,7 +116,20 @@ public class NPC_Behaviour : MonoBehaviour {
             if (transform.position == _transforms[_index]) _index++;
         }
     }
+    public void Log(string message, string reason = "", Color color = default, bool displayLifetime = false, bool useBoldText = false) {
+
+        string finalMessage = $"Creature {gameObject.name} {message}.\n";
+
+        if (color != default) finalMessage = $"<color=#{color.ToHexString()}>" + finalMessage + "</color>";
+        if (useBoldText) finalMessage = "<b>" + finalMessage + "</b>";
+        if (reason != "") finalMessage += $"Reason: {reason}. ";
+        if (displayLifetime) finalMessage += $"Lifetime: {Time.time - _birthTime:f2} seconds. ";
+
+        CustomLog.Log(finalMessage);
+
+    }
 }
+
 [Serializable]
 public class Food {
     public string name;
