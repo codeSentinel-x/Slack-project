@@ -4791,9 +4791,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ebf4cc7b1e17186989ce339bfe3c2ff4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _food: 7.9
+  _food: 100
   _sleep: 100
-  _inventory: []
+  _inventory:
+  - name: meal
+    addition: 50
+  - name: apple
+    addition: 15
+  - name: apple
+    addition: 15
   _speed: 10
   _viewRange: 5
   _isSleeping: 0
@@ -6197,7 +6203,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76fb009827080b2799f26eecf4884986, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _tickIntervalSetting: 0.1
+  _tickIntervalSetting: 0.04
 --- !u!4 &1230000217
 Transform:
   m_ObjectHideFlags: 0

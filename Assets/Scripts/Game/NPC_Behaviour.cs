@@ -85,7 +85,7 @@ public class NPC_Behaviour : MonoBehaviour {
     private void LookForFood() {
         if (_inventory.Count > 0) {
             _food += _inventory[0].addition;
-            Log($"restore {_inventory[0].addition} points of food", reason: $"Used {_inventory[0].name} from inventory", color: Color.green,  collapse: false);
+            Log($"restore {_inventory[0].addition} points of food", reason: $"Used {_inventory[0].name} from inventory", color: Color.green, collapse: false);
             _inventory.RemoveAt(0);
         }
         else {
@@ -126,7 +126,7 @@ public class NPC_Behaviour : MonoBehaviour {
         if (lifetime) finalMessage += $"Lifetime: {Time.time - _birthTime:f2} seconds.   ||   ";
         if (bold) finalMessage = $"<b>{finalMessage}</b>";
 
-        CustomLog.Log(finalMessage, collapse);
+        CustomLog.Log(finalMessage, gameObject.name, collapse);
 
     }
 }

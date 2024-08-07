@@ -1,11 +1,12 @@
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEditor.Search;
 using UnityEngine;
 
 public class CustomConsoleWindow : EditorWindow {
-    private static List<Message> _logMessages = new();
+    private static List<MessagesHolder> _logMessages = new();
     private Vector2 _scrollPos;
     private GUIStyle _messageStyle;
     private GUIStyle _messageCountStyle;
@@ -41,8 +42,8 @@ public class CustomConsoleWindow : EditorWindow {
         };
 
     }
-    public static void UpdateLog(List<Message> messages) {
-        _logMessages = new List<Message>(messages);
+    public static void UpdateLog(List<MessagesHolder> messages) {
+        _logMessages = new List<MessagesHolder>(messages);
         var window = GetWindow<CustomConsoleWindow>();
         window.Repaint();
     }
@@ -50,16 +51,19 @@ public class CustomConsoleWindow : EditorWindow {
     private void OnGUI() {
         GUILayout.Label("Custom Log Messages", EditorStyles.boldLabel);
         _scrollPos = GUILayout.BeginScrollView(_scrollPos, false, false);
-        foreach (var message in _logMessages) {
+
+        foreach (var messageHandler in _logMessages) {
 
             GUILayout.BeginHorizontal();
             GUILayout.BeginVertical(_borderStyle, GUILayout.ExpandWidth(true));
             GUILayout.BeginHorizontal();
-
-            GUILayout.Label(message.content, _messageStyle, GUILayout.ExpandWidth(true));
-            if (message.count > 0) GUILayout.Label($"({message.count + 1})     ", _messageCountStyle, GUILayout.ExpandWidth(false));
-            GUILayout.Label($"Last occurrence: [{message.lastOccurrence:f2}]  ", _messageCountStyle, GUILayout.ExpandWidth(false));
-
+            EditorGUILayout.BeginFoldoutHeaderGroup();
+            foreach (var message in messageHandler.messages) {
+                GUILayout.Label(message.content, _messageStyle, GUILayout.ExpandWidth(true));
+                if (message.count > 0) GUILayout.Label($"({message.count + 1})     ", _messageCountStyle, GUILayout.ExpandWidth(false));
+                GUILayout.Label($"Last occurrence: [{message.lastOccurrence:f2}]  ", _messageCountStyle, GUILayout.ExpandWidth(false));
+            }
+            EditorGUILayout.EndFoldoutHeaderGroup();
             GUILayout.EndHorizontal();
             GUILayout.EndVertical();
             GUILayout.EndHorizontal();
@@ -80,17 +84,34 @@ public class CustomConsoleWindow : EditorWindow {
     }
 
 }
-public class Message {
-    public Message(string s, int c) {
-        content = s;
-        count = c;
+public class MessagesHolder {
+    public string tag;
+    public List<Message> messages = new();
+    public int totalCount = 0;
+    public MessagesHolder(string t, string fM) {
+        tag = t;
+        messages = new() { new Message(fM, 0, Time.time) };
     }
-    public Message(string s, int c, float l) {
-        content = s;
-        count = c;
+    public void AddMessage(string message) {
+        var count = 0;
+        foreach (var m in messages) {
+            if (m.content == message) {
+                count = totalCount = m.count + 1;
+                m.count++;
+                m.lastOccurrence = Time.realtimeSinceStartup;
+                break;
+            }
+        }
+        if (count == 0) messages.Add(new Message(message, count, Time.time));
+    }
+}
+public class Message {
+    public Message(string c, int i, float l) {
+        content = c;
+        count = i;
         lastOccurrence = l;
     }
+    public string content;
     public int count;
     public float lastOccurrence;
-    public string content;
 }
