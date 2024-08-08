@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 namespace MyUtils.Custom {
     public static class CustomLog {
@@ -19,6 +20,10 @@ namespace MyUtils.Custom {
 
             if (!found) logMessages.Add(new MessagesHolder(tag, message));
             CustomConsoleWindow.UpdateLog(logMessages);
+        }
+
+        public static void ClearLogs() {
+            logMessages = new();
         }
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using MyUtils.Custom;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEditor;
@@ -13,6 +14,8 @@ public class CustomConsoleWindow : EditorWindow {
     private Vector2 _scrollPos;
     #region Gui styles
     private GUIStyle _messageStyle;
+    private GUIStyle _previewMessageStyle;
+    private GUIStyle _buttonsStyle;
     private GUIStyle _messageCountStyle;
     private GUIStyle _foldoutStyle = null;
     private GUIStyle _messageBorderStyle;
@@ -39,7 +42,14 @@ public class CustomConsoleWindow : EditorWindow {
             alignment = TextAnchor.MiddleLeft,
             normal = { textColor = Color.white }
         };
-
+        _previewMessageStyle = new() {
+            wordWrap = true,
+            richText = true,
+            fontSize = 11,
+            fontStyle = FontStyle.Bold,
+            alignment = TextAnchor.MiddleLeft,
+            normal = { textColor = Color.white }
+        };
         _messageCountStyle = new() {
             wordWrap = true,
             richText = true,
@@ -61,6 +71,15 @@ public class CustomConsoleWindow : EditorWindow {
             margin = new RectOffset(0, 0, 5, 5),
             border = new RectOffset(1, 1, 1, 1)
         };
+        _foldoutStyle = new GUIStyle() {
+            wordWrap = true,
+            richText = true,
+            fontSize = 12,
+            fontStyle = FontStyle.Bold,
+            alignment = TextAnchor.MiddleLeft,
+            normal = { textColor = Color.green }
+
+        };
     }
 
     public static void UpdateLog(List<MessagesHolder> messages) {
@@ -70,43 +89,62 @@ public class CustomConsoleWindow : EditorWindow {
     }
 
     private void OnGUI() {
-
         GUILayout.Label("Custom Log Messages", EditorStyles.boldLabel);
         _scrollPos = GUILayout.BeginScrollView(_scrollPos, false, false);
 
-        _foldoutStyle ??= new GUIStyle(EditorStyles.foldout) {
-            wordWrap = true,
-            richText = true,
-            fontSize = 10,
-            fontStyle = FontStyle.Bold,
-            alignment = TextAnchor.MiddleLeft,
-            normal = { textColor = Color.green }
-        };
 
+        GenerateButtons();
+        GenerateFoldouts();
+
+        GUILayout.EndScrollView();
+    }
+
+    private void GenerateButtons() {
+        GUILayout.BeginHorizontal();
+        if (GUILayout.Button("Show all", GUILayout.MaxWidth(75f))) {
+            foreach (var messagesH in _logMessages) {
+                messagesH.isEnabled = true;
+            }
+        }
+        if (GUILayout.Button("Hide all", GUILayout.MaxWidth(75f))) {
+            foreach (var messagesH in _logMessages) {
+                messagesH.isEnabled = false;
+            }
+        }
+        if (GUILayout.Button("Clear", GUILayout.MaxWidth(75f))) {
+            _logMessages = new();
+            _foldouts = new();
+            CustomLog.ClearLogs();
+        }
+        GUILayout.EndHorizontal();
+    }
+    private void GenerateFoldouts() {
         foreach (var messagesHolder in _logMessages) {
             if (!_foldouts.ContainsKey(messagesHolder.tag)) {
                 _foldouts.Add(messagesHolder.tag, messagesHolder);
             }
 
             GUILayout.BeginVertical(_foldoutBorderStyle, GUILayout.ExpandWidth(false)); //start of box main box
-            GUILayout.BeginHorizontal();
-            _foldouts[messagesHolder.tag].isEnabled = EditorGUILayout.Foldout(_foldouts[messagesHolder.tag].isEnabled, messagesHolder.tag, _foldoutStyle);
+            GUILayout.BeginHorizontal(); //start of foldout label
+            _foldouts[messagesHolder.tag].isEnabled = EditorGUILayout.Foldout(_foldouts[messagesHolder.tag].isEnabled, $"|| {messagesHolder.tag} ||", true, _foldoutStyle);
+            if (messagesHolder.messages.Count > 0) {
+                GUILayout.Label(messagesHolder.messages[^1].content, _previewMessageStyle, GUILayout.ExpandWidth(false));
+            }
             if (messagesHolder.totalCount > 0) GUILayout.Label($"({messagesHolder.totalCount + 1})     ", _messageCountStyle, GUILayout.ExpandWidth(false));
             GUILayout.Label($" [{FormatTime(messagesHolder.lastOccurrence)}]  ", _messageCountStyle, GUILayout.ExpandWidth(false));
-            GUILayout.EndHorizontal();
+            GUILayout.EndHorizontal(); //end of foldout label
 
             if (_foldouts[messagesHolder.tag].isEnabled) {
                 for (int i = messagesHolder.messages.Count - 1; i >= 0; i--) {
                     var message = messagesHolder.messages[i];
-                    // GUILayout.BeginHorizontal();
-                    GUILayout.BeginVertical(_messageBorderStyle, GUILayout.ExpandWidth(true));
-                    GUILayout.BeginHorizontal();
+
+                    GUILayout.BeginVertical(_messageBorderStyle, GUILayout.ExpandWidth(true)); //start of message box
+                    GUILayout.BeginHorizontal();    //start of message label
                     GUILayout.Label(message.content, _messageStyle, GUILayout.ExpandWidth(true));
                     if (message.count > 0) GUILayout.Label($"({message.count + 1})     ", _messageCountStyle, GUILayout.ExpandWidth(false));
                     GUILayout.Label($"Last occurrence: [{FormatTime(message.lastOccurrence)}]  ", _messageCountStyle, GUILayout.ExpandWidth(false));
-                    GUILayout.EndHorizontal();
-                    GUILayout.EndVertical();
-                    // GUILayout.EndHorizontal();
+                    GUILayout.EndHorizontal();     //end of message label
+                    GUILayout.EndVertical();    //end of message box
                 }
 
             }
@@ -114,8 +152,9 @@ public class CustomConsoleWindow : EditorWindow {
 
 
         }
-        GUILayout.EndScrollView();
+
     }
+
     private Texture2D GenerateTexture(int w, int h, Color c) {
         Texture2D t = new(w, h);
         Color32[] p = new Color32[w * h];
@@ -128,19 +167,8 @@ public class CustomConsoleWindow : EditorWindow {
         return t;
     }
     public string FormatTime(float time) {
-        int hours, minutes;
-        int roundedTime = Mathf.FloorToInt(time);
-        hours = roundedTime / 3600;
-        if (hours > 0) roundedTime -= hours * 3600;
-        minutes = roundedTime / 60;
-        if (minutes > 0) roundedTime -= minutes * 60;
-        string nullString = "00";
-        return $"{(hours > 0 ? Format(hours) : nullString)}:{(minutes > 0 ? Format(minutes) : nullString)}:{(roundedTime > 0 ? Format(roundedTime) : nullString)}";
-
-        static string Format(int v) {
-            if (v < 10) return $"0{v}";
-            else return $"{v}";
-        }
+        var timeSpan = TimeSpan.FromSeconds(time);
+        return $"{timeSpan:hh\\:mm\\:ss}";
     }
 
 }
