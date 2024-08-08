@@ -11,7 +11,7 @@ namespace MyUtils.Custom {
 
             foreach (var m in logMessages) {
                 if (m.tag == tag) {
-                    m.AddMessage(message);
+                    m.AddMessage(message, colWithSame);
                     found = true;
                     break;
                 }

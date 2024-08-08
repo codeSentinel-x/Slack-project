@@ -6,6 +6,7 @@ using Unity.VisualScripting;
 using UnityEditor;
 using UnityEditor.Search;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class CustomConsoleWindow : EditorWindow {
     private static List<MessagesHolder> _logMessages = new();
@@ -13,7 +14,7 @@ public class CustomConsoleWindow : EditorWindow {
     #region Gui styles
     private GUIStyle _messageStyle;
     private GUIStyle _messageCountStyle;
-    private GUIStyle _foldoutStyle;
+    private GUIStyle _foldoutStyle = null;
     private GUIStyle _messageBorderStyle;
     private GUIStyle _foldoutBorderStyle;
     #endregion
@@ -33,7 +34,7 @@ public class CustomConsoleWindow : EditorWindow {
         _messageStyle = new() {
             wordWrap = true,
             richText = true,
-            fontSize = 10,
+            fontSize = 11,
             fontStyle = FontStyle.Bold,
             alignment = TextAnchor.MiddleLeft,
             normal = { textColor = Color.white }
@@ -42,7 +43,7 @@ public class CustomConsoleWindow : EditorWindow {
         _messageCountStyle = new() {
             wordWrap = true,
             richText = true,
-            fontSize = 10,
+            fontSize = 11,
             fontStyle = FontStyle.Bold,
             alignment = TextAnchor.MiddleRight,
             normal = { textColor = Color.white },
@@ -51,10 +52,11 @@ public class CustomConsoleWindow : EditorWindow {
             normal = { background = GenerateTexture(2, 2, new Color(0.2f, 0.2f, 0.2f, 1f)) },
             padding = new RectOffset(10, 10, 10, 10),
             margin = new RectOffset(0, 0, 5, 5),
-            border = new RectOffset(1, 1, 1, 1)
+            border = new RectOffset(1, 1, 1, 1),
+
         };
         _foldoutBorderStyle = new() {
-            normal = { background = GenerateTexture(2, 2, new Color(0f, 0f, 0f, 1f)) },
+            normal = { background = GenerateTexture(2, 2, new Color(0.1f, 0.1f, 0.1f, 1f)) },
             padding = new RectOffset(10, 10, 10, 10),
             margin = new RectOffset(0, 0, 5, 5),
             border = new RectOffset(1, 1, 1, 1)
@@ -70,43 +72,45 @@ public class CustomConsoleWindow : EditorWindow {
     private void OnGUI() {
 
         GUILayout.Label("Custom Log Messages", EditorStyles.boldLabel);
-        _scrollPos = GUILayout.BeginScrollView(_scrollPos, true, false);
+        _scrollPos = GUILayout.BeginScrollView(_scrollPos, false, false);
+
         _foldoutStyle ??= new GUIStyle(EditorStyles.foldout) {
             wordWrap = true,
             richText = true,
             fontSize = 10,
             fontStyle = FontStyle.Bold,
             alignment = TextAnchor.MiddleLeft,
-            normal = { textColor = Color.white }
+            normal = { textColor = Color.green }
         };
 
         foreach (var messagesHolder in _logMessages) {
             if (!_foldouts.ContainsKey(messagesHolder.tag)) {
                 _foldouts.Add(messagesHolder.tag, messagesHolder);
             }
-            GUILayout.BeginVertical(_foldoutBorderStyle, GUILayout.ExpandWidth(false));
+
+            GUILayout.BeginVertical(_foldoutBorderStyle, GUILayout.ExpandWidth(false)); //start of box main box
             GUILayout.BeginHorizontal();
-            _foldouts[messagesHolder.tag].isEnabled = EditorGUILayout.Foldout(_foldouts[messagesHolder.tag].isEnabled, messagesHolder.tag);
+            _foldouts[messagesHolder.tag].isEnabled = EditorGUILayout.Foldout(_foldouts[messagesHolder.tag].isEnabled, messagesHolder.tag, _foldoutStyle);
             if (messagesHolder.totalCount > 0) GUILayout.Label($"({messagesHolder.totalCount + 1})     ", _messageCountStyle, GUILayout.ExpandWidth(false));
-            GUILayout.Label($"Last occurrence: [{messagesHolder.lastOccurrence:f2}]  ", _messageCountStyle, GUILayout.ExpandWidth(false));
+            GUILayout.Label($" [{FormatTime(messagesHolder.lastOccurrence)}]  ", _messageCountStyle, GUILayout.ExpandWidth(false));
             GUILayout.EndHorizontal();
 
             if (_foldouts[messagesHolder.tag].isEnabled) {
                 for (int i = messagesHolder.messages.Count - 1; i >= 0; i--) {
                     var message = messagesHolder.messages[i];
-                    GUILayout.BeginHorizontal();
+                    // GUILayout.BeginHorizontal();
                     GUILayout.BeginVertical(_messageBorderStyle, GUILayout.ExpandWidth(true));
                     GUILayout.BeginHorizontal();
                     GUILayout.Label(message.content, _messageStyle, GUILayout.ExpandWidth(true));
                     if (message.count > 0) GUILayout.Label($"({message.count + 1})     ", _messageCountStyle, GUILayout.ExpandWidth(false));
-                    GUILayout.Label($"Last occurrence: [{message.lastOccurrence:f2}]  ", _messageCountStyle, GUILayout.ExpandWidth(false));
+                    GUILayout.Label($"Last occurrence: [{FormatTime(message.lastOccurrence)}]  ", _messageCountStyle, GUILayout.ExpandWidth(false));
                     GUILayout.EndHorizontal();
                     GUILayout.EndVertical();
-                    GUILayout.EndHorizontal();
+                    // GUILayout.EndHorizontal();
                 }
 
             }
-            GUILayout.EndVertical();
+            GUILayout.EndVertical(); //end of main box
 
 
         }
@@ -123,6 +127,21 @@ public class CustomConsoleWindow : EditorWindow {
         t.Apply();
         return t;
     }
+    public string FormatTime(float time) {
+        int hours, minutes;
+        int roundedTime = Mathf.FloorToInt(time);
+        hours = roundedTime / 3600;
+        if (hours > 0) roundedTime -= hours * 3600;
+        minutes = roundedTime / 60;
+        if (minutes > 0) roundedTime -= minutes * 60;
+        string nullString = "00";
+        return $"{(hours > 0 ? Format(hours) : nullString)}:{(minutes > 0 ? Format(minutes) : nullString)}:{(roundedTime > 0 ? Format(roundedTime) : nullString)}";
+
+        static string Format(int v) {
+            if (v < 10) return $"0{v}";
+            else return $"{v}";
+        }
+    }
 
 }
 public class MessagesHolder {
@@ -135,22 +154,29 @@ public class MessagesHolder {
         tag = t;
         messages = new() { new Message(fM, 0, Time.time) };
     }
-    public void AddMessage(string message) {
-        bool found = false; ;
-        foreach (var m in messages) {
-            if (m.content == message) {
-                totalCount = m.count + 1;
-                m.count++;
-                m.lastOccurrence = Time.realtimeSinceStartup;
-                lastOccurrence = Time.realtimeSinceStartup;
-                found = true;
-                break;
+    public void AddMessage(string message, bool collapse) {
+        if (collapse) {
+            bool found = false;
+            foreach (var m in messages) {
+                if (m.content == message) {
+                    totalCount++;
+                    m.count++;
+                    m.lastOccurrence = Time.time;
+                    lastOccurrence = Time.time;
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                messages.Add(new Message(message, 0, Time.time));
+                totalCount += 1;
+                lastOccurrence = Time.time;
             }
         }
-        if (!found) {
+        else {
             messages.Add(new Message(message, 0, Time.time));
             totalCount += 1;
-            lastOccurrence = Time.realtimeSinceStartup;
+            lastOccurrence = Time.time;
         }
     }
 }
