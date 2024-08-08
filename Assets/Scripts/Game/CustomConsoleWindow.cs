@@ -15,13 +15,13 @@ public class CustomConsoleWindow : EditorWindow {
     #region Gui styles
     private GUIStyle _messageStyle;
     private GUIStyle _previewMessageStyle;
-    private GUIStyle _buttonsStyle;
     private GUIStyle _messageCountStyle;
     private GUIStyle _foldoutStyle = null;
     private GUIStyle _messageBorderStyle;
     private GUIStyle _foldoutBorderStyle;
     #endregion
     private Dictionary<string, MessagesHolder> _foldouts = new();
+    private bool _updateMessages;
 
     [MenuItem("Window/CustomConsole")]
     public static void ShowWindow() {
@@ -30,8 +30,8 @@ public class CustomConsoleWindow : EditorWindow {
 
     private void OnEnable() {
         InitializeStyles();
-
     }
+
 
     private void InitializeStyles() {
         _messageStyle = new() {
@@ -77,7 +77,7 @@ public class CustomConsoleWindow : EditorWindow {
             fontSize = 12,
             fontStyle = FontStyle.Bold,
             alignment = TextAnchor.MiddleLeft,
-            normal = { textColor = Color.green }
+            normal = { textColor = Color.white }
 
         };
     }
@@ -89,6 +89,7 @@ public class CustomConsoleWindow : EditorWindow {
     }
 
     private void OnGUI() {
+        if (!_updateMessages) return;
         GUILayout.Label("Custom Log Messages", EditorStyles.boldLabel);
         _scrollPos = GUILayout.BeginScrollView(_scrollPos, false, false);
 
@@ -115,6 +116,12 @@ public class CustomConsoleWindow : EditorWindow {
             _logMessages = new();
             _foldouts = new();
             CustomLog.ClearLogs();
+        }
+        if (GUILayout.Button("Stop logs", GUILayout.MaxWidth(75f))) {
+            _updateMessages = false;
+        }
+        if (GUILayout.Button("Start logs", GUILayout.MaxWidth(75f))) {
+            _updateMessages = true;
         }
         GUILayout.EndHorizontal();
     }
