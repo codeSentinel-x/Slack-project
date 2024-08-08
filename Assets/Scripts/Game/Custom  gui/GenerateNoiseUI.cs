@@ -1,3 +1,7 @@
+using System;
+using JetBrains.Annotations;
+using Unity.VisualScripting;
+using UnityEditor.ShaderGraph;
 using UnityEngine;
 
 public class GenerateNoiseUI : MonoBehaviour {
@@ -6,6 +10,7 @@ public class GenerateNoiseUI : MonoBehaviour {
     public GUIStyle _customWindowStyle;
     public GUIStyle _labelStyle;
     public GUIStyle _boxStyle;
+    public GUIStyle _sliderStyle;
     private void InitializeStyles() {
         _labelStyle = new() {
             normal = { textColor = Color.white },
@@ -27,12 +32,20 @@ public class GenerateNoiseUI : MonoBehaviour {
 
         _customWindowRect = GUI.Window(0, _customWindowRect, CustomWindowFunction, "My Noise Generation", _customWindowStyle);
     }
-
+    private float _sliderValue;
     private void CustomWindowFunction(int id) {
         GUI.DragWindow(new Rect(0, 0, 10000, 20));
-        GUI.Box(new Rect(10, 100, _customWindowRect.width - 20, 40), "Test1", _boxStyle);
-        GUI.HorizontalSlider(new Rect(50, 100, _customWindowRect.width - 100, 40), 3, 0, 10);
-        GUI.Label(new Rect(10, 200, _customWindowRect.width - 20, 40), "Test", _labelStyle);
+        BuildSettingBox(100);
+        // GUI.Label(new Rect(10, 200, _customWindowRect.width - 20, 40), "Test", _labelStyle);
     }
 
+    private void BuildSettingBox(float y) {
+        float w = _customWindowRect.width;
+        Rect groupRect = new(10, y, w - 20, 200);
+        GUI.BeginGroup(groupRect);
+        GUI.Box(new Rect(0, 0, groupRect.width, groupRect.height), "Test1", _boxStyle);
+        _sliderValue = GUI.HorizontalSlider(new Rect(groupRect.width / 2 + 10, groupRect.height / 2, 200, groupRect.height), _sliderValue, 0, 10, _sliderStyle, GUI.skin.horizontalSliderThumb);
+        GUI.Label(new Rect(groupRect.width - 40, 0, groupRect.width, groupRect.height), _sliderValue.ToString(), _labelStyle);
+        GUI.EndGroup();
+    }
 }
