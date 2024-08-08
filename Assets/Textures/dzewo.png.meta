@@ -169,7 +169,8 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      dzewo_0: -5518540548040731771
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
