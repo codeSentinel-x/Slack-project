@@ -1,10 +1,7 @@
 using System;
-using System.Buffers;
-using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Animations;
 using MyUtils.Custom;
 public class NPC_Behaviour : MonoBehaviour {
     [Range(0f, 100f)] public float _food = 100;
@@ -126,8 +123,9 @@ public class NPC_Behaviour : MonoBehaviour {
         if (lifetime) finalMessage += $"Lifetime: {Time.time - _birthTime:f2} seconds.   ||   ";
         if (bold) finalMessage = $"<b>{finalMessage}</b>";
 
+#if UNITY_EDITOR
         CustomLog.Log(finalMessage, gameObject.name, collapse);
-
+#endif
     }
 }
 

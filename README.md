@@ -1,0 +1,2 @@
+<h1>Welcome to my noise generator project</h1>
+<h2>In this project you can test my procedural world generation, that is very flexible and adjustable. I also started working on npc behaviour but it's still in development. If you import unitypackage you should be able to test my custom console, that I made specially for this project</h2> 

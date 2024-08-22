@@ -1,8 +1,7 @@
-using UnityEngine;
 using System.Collections.Generic;
-using System;
 
 namespace MyUtils.Custom {
+#if UNITY_EDITOR
     public static class CustomLog {
         private static List<MessagesHolder> logMessages = new();
 
@@ -26,4 +25,5 @@ namespace MyUtils.Custom {
             logMessages = new();
         }
     }
+#endif
 }

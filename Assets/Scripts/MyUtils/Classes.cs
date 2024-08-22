@@ -1,6 +1,5 @@
 using System;
 using MyUtils.Structs;
-using Unity.Mathematics;
 using UnityEngine;
 
 namespace MyUtils.Classes {

@@ -1,14 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using MyUtils.Custom;
-using TMPro;
-using Unity.VisualScripting;
 using UnityEditor;
-using UnityEditor.Search;
 using UnityEngine;
-using UnityEngine.Rendering;
 
+#if UNITY_EDITOR
 public class CustomConsoleWindow : EditorWindow {
     private static List<MessagesHolder> _logMessages = new();
     private Vector2 _scrollPos;
@@ -225,3 +221,4 @@ public class Message {
     public int count;
     public float lastOccurrence;
 }
+#endif

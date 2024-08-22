@@ -1,8 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using MyUtils.Structs;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 [CreateAssetMenu(menuName = "ScriptableObjects/BiomeAssetSO")]
 public class BiomeAssetSO : ScriptableObject {

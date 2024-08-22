@@ -1,11 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using MyUtils;
 using MyUtils.Classes;
 using MyUtils.Structs;
-using NUnit.Framework;
-using Unity.Mathematics;
 using UnityEngine;
 
 public class WorldGeneration : MonoBehaviour {
