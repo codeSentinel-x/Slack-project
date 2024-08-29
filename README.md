@@ -25,16 +25,18 @@
 <h3>Both layers change how biomes are generated</h3>
 <h3>Press save button, add name, and press new save button, to save your settings</h3>
 
-![Screenshot 3](https://cloud-fkdlxgxyg-hack-club-bot.vercel.app/5screenshot_from_2024-08-29_19-22-23.png)
+![Screenshot 3](https://cloud-fkdlxgxyg-hack-club-bot.vercel.app/4screenshot_from_2024-08-29_19-22-17.png)
 <h3>Press load button, and than load next to your save, to load saved settings</h3>
 
-![Screenshot 4](https://cloud-fkdlxgxyg-hack-club-bot.vercel.app/6screenshot_from_2024-08-29_19-23-59.png)
+![Screenshot 4](https://cloud-fkdlxgxyg-hack-club-bot.vercel.app/5screenshot_from_2024-08-29_19-22-23.png)
 <h3>Press generate button to generate world, based on your settings</h3>
 
 ![Screenshot 5](https://cloud-fkdlxgxyg-hack-club-bot.vercel.app/2screenshot_from_2024-08-29_19-21-33.png)
 <h3>Press destroy button, to destroy created terrain </h3>
 <h3>Click somewhere on generated world to make your unit (red one) to go to this tile, and display tile info</h3>
-
-![Screenshot 6](https://cloud-fkdlxgxyg-hack-club-bot.vercel.app/2screenshot_from_2024-08-29_19-21-33.png)
 <h3>Unit by default won't walk on water and mountains</h3>
 <h3>Enjoy, and change settings how you want</h3>
+
+<h4>You can also download unitypackage and import it to empty unity project, to test more advanced features like environment generation</h4>
+
+![Screenshot 6](https://cloud-fkdlxgxyg-hack-club-bot.vercel.app/6screenshot_from_2024-08-29_19-23-59.png) 
